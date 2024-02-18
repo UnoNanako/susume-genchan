@@ -404,10 +404,22 @@ inline Matrix4x4 Transpose(const Matrix4x4& m) {
 inline Matrix4x4 MakeIdentity4x4() {
 	// clang-format off
 	Matrix4x4 identity;
-	identity.m[0][0] = 1.0f;	identity.m[0][1] = 0.0f;	identity.m[0][2] = 0.0f;	identity.m[0][3] = 0.0f;
-	identity.m[1][0] = 0.0f;	identity.m[1][1] = 1.0f;	identity.m[1][2] = 0.0f;	identity.m[1][3] = 0.0f;
-	identity.m[2][0] = 0.0f;	identity.m[2][1] = 0.0f;	identity.m[2][2] = 1.0f;	identity.m[2][3] = 0.0f;
-	identity.m[3][0] = 0.0f;	identity.m[3][1] = 0.0f;	identity.m[3][2] = 0.0f;	identity.m[3][3] = 1.0f;
+	identity.m[0][0] = 1.0f;	
+	identity.m[0][1] = 0.0f;	
+	identity.m[0][2] = 0.0f;	
+	identity.m[0][3] = 0.0f;
+	identity.m[1][0] = 0.0f;	
+	identity.m[1][1] = 1.0f;	
+	identity.m[1][2] = 0.0f;	
+	identity.m[1][3] = 0.0f;
+	identity.m[2][0] = 0.0f;	
+	identity.m[2][1] = 0.0f;	
+	identity.m[2][2] = 1.0f;	
+	identity.m[2][3] = 0.0f;
+	identity.m[3][0] = 0.0f;	
+	identity.m[3][1] = 0.0f;	
+	identity.m[3][2] = 0.0f;	
+	identity.m[3][3] = 1.0f;
 	return identity;
 	// clang-format on
 }
@@ -427,24 +439,66 @@ inline Matrix4x4 MakeScaleMatrix(const Vector3& scale) {
 }
 
 inline Matrix4x4 MakeRotateXMatrix(float radian) {
-	float cosTheta = std::cos(radian);
-	float sinTheta = std::sin(radian);
-	return { 1.0f, 0.0f,      0.0f,     0.0f, 0.0f, cosTheta, sinTheta, 0.0f,
-			0.0f, -sinTheta, cosTheta, 0.0f, 0.0f, 0.0f,     0.0f,     1.0f };
+	Matrix4x4 ret;
+	ret.m[0][0] = 1.0f;
+	ret.m[0][1] = 0.0f;
+	ret.m[0][2] = 0.0f;
+	ret.m[0][3] = 0.0f;
+	ret.m[1][0] = 0.0f;
+	ret.m[1][1] = std::cos(radian);
+	ret.m[1][2] = std::sin(radian);
+	ret.m[1][3] = 0.0f;
+	ret.m[2][0] = 0.0f;
+	ret.m[2][1] = -std::sin(radian);
+	ret.m[2][2] = std::cos(radian);
+	ret.m[2][3] = 0.0f;
+	ret.m[3][0] = 0.0f;
+	ret.m[3][1] = 0.0f;
+	ret.m[3][2] = 0.0f;
+	ret.m[3][3] = 1.0f;
+	return ret;
 }
 
 inline Matrix4x4 MakeRotateYMatrix(float radian) {
-	float cosTheta = std::cos(radian);
-	float sinTheta = std::sin(radian);
-	return { cosTheta, 0.0f, -sinTheta, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-			sinTheta, 0.0f, cosTheta,  0.0f, 0.0f, 0.0f, 0.0f, 1.0f };
+	Matrix4x4 ret;
+	ret.m[0][0] = std::cos(radian);
+	ret.m[0][1] = 0.0f;
+	ret.m[0][2] = -std::sin(radian);
+	ret.m[0][3] = 0.0f;
+	ret.m[1][0] = 0.0f;
+	ret.m[1][1] = 1.0f;
+	ret.m[1][2] = 0.0f;
+	ret.m[1][3] = 0.0f;
+	ret.m[2][0] = std::sin(radian);
+	ret.m[2][1] = 0.0f;
+	ret.m[2][2] = std::cos(radian);
+	ret.m[2][3] = 0.0f;
+	ret.m[3][0] = 0.0f;
+	ret.m[3][1] = 0.0f;
+	ret.m[3][2] = 0.0f;
+	ret.m[3][3] = 1.0f;
+	return ret;
 }
 
 inline Matrix4x4 MakeRotateZMatrix(float radian) {
-	float cosTheta = std::cos(radian);
-	float sinTheta = std::sin(radian);
-	return { cosTheta, sinTheta, 0.0f, 0.0f, -sinTheta, cosTheta, 0.0f, 0.0f,
-			0.0f,     0.0f,     1.0f, 0.0f, 0.0f,      0.0f,     0.0f, 1.0f };
+	Matrix4x4 ret;
+	ret.m[0][0] = std::cos(radian);
+	ret.m[0][1] = std::sin(radian);
+	ret.m[0][2] = 0.0f;
+	ret.m[0][3] = 0.0f;
+	ret.m[1][0] = -std::sin(radian);
+	ret.m[1][1] = std::cos(radian);
+	ret.m[1][2] = 0.0f;
+	ret.m[1][3] = 0.0f;
+	ret.m[2][0] = 0.0f;
+	ret.m[2][1] = 0.0f;
+	ret.m[2][2] = 1.0f;
+	ret.m[2][3] = 0.0f;
+	ret.m[3][0] = 0.0f;
+	ret.m[3][1] = 0.0f;
+	ret.m[3][2] = 0.0f;
+	ret.m[3][3] = 1.0f;
+	return ret;
 }
 
 inline Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
@@ -510,36 +564,72 @@ inline Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, c
 	return result;
 }
 
-// clang-format off
-inline Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip)
-{
-	float cotHalfFovV = 1.0f / std::tan(fovY / 2.0f);
-	return {
-		(cotHalfFovV / aspectRatio), 0.0f, 0.0f, 0.0f,
-		0.0f, cotHalfFovV, 0.0f, 0.0f,
-		0.0f, 0.0f, farClip / (farClip - nearClip), 1.0f,
-		0.0f, 0.0f, -(nearClip * farClip) / (farClip - nearClip), 0.0f
-	};
+//透視投影行列
+inline Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip) {
+	Matrix4x4 ret;
+	float dot = farClip * nearClip;
+	float tan = std::tan(fovY / 2.0f);
+	ret.m[0][0] = 1.0f / (aspectRatio * tan);
+	ret.m[0][1] = 0.0f;
+	ret.m[0][2] = 0.0f;
+	ret.m[0][3] = 0.0f;
+	ret.m[1][0] = 0.0f;
+	ret.m[1][1] = 1.0f / tan;
+	ret.m[1][2] = 0.0f;
+	ret.m[1][3] = 0.0f;
+	ret.m[2][0] = 0.0f;
+	ret.m[2][1] = 0.0f;
+	ret.m[2][2] = farClip / (farClip - nearClip);
+	ret.m[2][3] = 1.0f;
+	ret.m[3][0] = 0.0f;
+	ret.m[3][1] = 0.0f;
+	ret.m[3][2] = -dot / (farClip - nearClip);
+	ret.m[3][3] = 0.0f;
+	return ret;
 }
 
-inline Matrix4x4 MakeOrthographicMatrix(float left, float top, float right, float bottom, float nearClip, float farClip)
-{
-	return {
-		2.0f / (right - left), 0.0f, 0.0f, 0.0f,
-		0.0f, 2.0f / (top - bottom), 0.0f, 0.0f,
-		0.0f, 0.0f, 1.0f / (farClip - nearClip), 0.0f,
-		(left + right) / (left - right), (top + bottom) / (bottom - top), nearClip / (nearClip - farClip), 1.0f,
-	};
+//正射影行列(平行投影行列)
+inline Matrix4x4 MakeOrthographicMatrix(float left, float top, float right, float bottom, float nearClip, float farClip) {
+	Matrix4x4 ret;
+	ret.m[0][0] = 2.0f / (right - 1.0f);
+	ret.m[0][1] = 0.0f;
+	ret.m[0][2] = 0.0f;
+	ret.m[0][3] = 0.0f;
+	ret.m[1][0] = 0.0f;
+	ret.m[1][1] = 2.0f / (top - bottom);
+	ret.m[1][2] = 0.0f;
+	ret.m[1][3] = 0.0f;
+	ret.m[2][0] = 0.0f;
+	ret.m[2][1] = 0.0f;
+	ret.m[2][2] = 1.0f / (farClip - nearClip);
+	ret.m[2][3] = 0.0f;
+	ret.m[3][0] = (left + right) / (left - right);
+	ret.m[3][1] = (top + bottom) / (bottom - top);
+	ret.m[3][2] = nearClip / (nearClip - farClip);
+	ret.m[3][3] = 1.0f;
+	return ret;
 }
 
-inline Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth)
-{
-	return {
-		width / 2.0f, 0.0f, 0.0f, 0.0f,
-		0.0f, -height / 2.0f, 0.0f, 0.0f,
-		0.0f, 0.0f, maxDepth - minDepth, 0.0f,
-		left + width / 2.0f, top + height / 2.0f, minDepth, 1.0f,
-	};
+//ビューポート変換行列
+inline Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth) {
+	Matrix4x4 ret;
+	ret.m[0][0] = width / 2.0f;
+	ret.m[0][1] = 0.0f;
+	ret.m[0][2] = 0.0f;
+	ret.m[0][3] = 0.0f;
+	ret.m[1][0] = 0.0f;
+	ret.m[1][1] = -(height / 2.0f);
+	ret.m[1][2] = 0.0f;
+	ret.m[1][3] = 0.0f;
+	ret.m[2][0] = 0.0f;
+	ret.m[2][1] = 0.0f;
+	ret.m[2][2] = maxDepth - minDepth;
+	ret.m[2][3] = 0.0f;
+	ret.m[3][0] = left + width / 2.0f;
+	ret.m[3][1] = top + height / 2.0f;
+	ret.m[3][2] = minDepth;
+	ret.m[3][3] = 1.0f;
+	return ret;
 }
 
 //球と球の衝突判定

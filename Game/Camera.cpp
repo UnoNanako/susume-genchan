@@ -7,8 +7,8 @@
 void Camera::Initialize(DirectXCommon* dxCommon)
 {
 	transform = { {1.0f,1.0f,1.0f},{0.4f,0.0f,0.0f},{0.0f,10.0f,-20.0f} };
-	cameraRresource = dxCommon->CreateBufferResource(dxCommon->GetDevice(),sizeof(Vector3));
-	cameraRresource->Map(0, nullptr, reinterpret_cast<void**>(&cameraData));
+	cameraResource = dxCommon->CreateBufferResource(dxCommon->GetDevice(),sizeof(Vector3));
+	cameraResource->Map(0, nullptr, reinterpret_cast<void**>(&cameraData));
 }
 
 void Camera::Update()
@@ -26,5 +26,5 @@ void Camera::Update()
 
 void Camera::Bind(ID3D12GraphicsCommandList* commandList)
 {
-	commandList->SetGraphicsRootConstantBufferView(4, cameraRresource->GetGPUVirtualAddress());
+	commandList->SetGraphicsRootConstantBufferView(4, cameraResource->GetGPUVirtualAddress());
 }

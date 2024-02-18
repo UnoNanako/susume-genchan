@@ -5,16 +5,12 @@
 
 class DirectXCommon;
 
-class Camera
+class BirdEyeCamera
 {
 public:
 	void Initialize(DirectXCommon* dxCommon);
 	void Update();
 	void Bind(ID3D12GraphicsCommandList* commandList);
-	void SetTransform(Transform transform) { this->transform = transform; }
-	Transform GetTransform() { return transform; }
-	Matrix4x4 GetViewMatrix() { return viewMatrix; }
-	Matrix4x4 GetProjectionMatrix() { return projectionMatrix; }
 private:
 	Transform transform;
 	Matrix4x4 matrix;

@@ -98,6 +98,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BirdEyeCamera.cpp" />
     <ClCompile Include="Game\Camera.cpp" />
     <ClCompile Include="Game\Crosshair.cpp" />
     <ClCompile Include="Engine\DirectXCommon.cpp" />
@@ -131,6 +132,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Particle\ParticleCommon.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BirdEyeCamera.h" />
     <ClInclude Include="Game\Camera.h" />
     <ClInclude Include="Game\Crosshair.h" />
     <ClInclude Include="Engine\Light\DirectionalLight.h" />

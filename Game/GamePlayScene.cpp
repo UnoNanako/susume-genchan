@@ -7,6 +7,7 @@
 #include "Transform.h"
 #include "VertexData.h"
 #include "Camera.h"
+#include "BirdEyeCamera.h"
 #include "Light/LightList.h"
 #include "Player.h"
 #include "Map.h"
@@ -16,6 +17,7 @@
 #include "Game/Game.h"
 #include "3D/ModelCommon.h"
 #include "Particle/ParticleCommon.h"
+#include "externals/imgui/imgui.h"
 
 GamePlayScene::GamePlayScene(Game* game)
 {
@@ -27,6 +29,9 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	//カメラの初期化
 	camera = new Camera;
 	camera->Initialize(dxCommon);
+
+	mBirdEyeCamera = new BirdEyeCamera();
+	mBirdEyeCamera->Initialize(dxCommon);
 
 	lightList = new LightList();
 	lightList->Create(dxCommon);
@@ -52,6 +57,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 void GamePlayScene::Finalize()
 {
 	delete camera;
+	delete mBirdEyeCamera;
 	delete mPlayer;
 	delete mMap;
 	delete lightList;
@@ -61,8 +67,28 @@ void GamePlayScene::Finalize()
 
 void GamePlayScene::Update(Input* input)
 {
+	ImGui::Begin("Debug");
+	//DirectionalLightのintensity切り替え
+	ImGui::Checkbox("isDirectionalLight", &mIsDirectionalLight);
+	ImGui::Checkbox("isPlayerCamera", &mIsPlayerCamera);
+	ImGui::End();
+
+	if (mIsDirectionalLight == false) {
+		lightList->SetDirectionalLightIntensity(0.0f);
+	}
+	else {
+		lightList->SetDirectionalLightIntensity(0.7f);
+	}
+
+	if (mIsPlayerCamera == true) {
+		camera->Update();
+	}
+	else {
+		mBirdEyeCamera->Update();
+	}
+
 	Transform spriteTransform = { {0.5f,0.5f,0.5f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
-	camera->Update();
+	
 	lightList->Update();
 	mPlayer->Update(input);
 	mMap->Update();
@@ -86,7 +112,13 @@ void GamePlayScene::Update(Input* input)
 void GamePlayScene::Draw(DirectXCommon* dxCommon)
 {
 	mGame->GetModelCommon()->Bind(dxCommon);
-	camera->Bind(dxCommon->GetCommandList());
+	if (mIsPlayerCamera == true) {
+		camera->Bind(dxCommon->GetCommandList());
+	}
+	else {
+		mBirdEyeCamera->Bind(dxCommon->GetCommandList());
+	}
+
 	lightList->Bind(dxCommon->GetCommandList());
 	mPlayer->Draw(dxCommon->GetCommandList(),camera);
 	mMap->Draw(dxCommon->GetCommandList(), camera);

@@ -33,5 +33,6 @@ private:
 	//とりあえずの地形
 	vector<Model*> mTerrainModel; //壁や床など
 	vector<Transform> mTerrainTransform;
+	const int mTERRAIN_MAX = 5; //地形の数
 };
 

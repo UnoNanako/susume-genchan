@@ -18,6 +18,7 @@ public:
 
 	void SetSpotLightPos(Vector3 pos) { mSpotLightData->position = pos; }
 	void SetSpotLightDirection(Vector3 direction) { mSpotLightData->direction = direction; }
+	void SetDirectionalLightIntensity(float intensity) { mDirectionalLightData->intensity = intensity; }
 private:
 	//定数(シェーダー側と合わせる)
 	struct DirectionalLightForGPU {

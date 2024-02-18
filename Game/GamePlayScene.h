@@ -6,6 +6,7 @@ class Model;
 class SphereModel;
 class Texture;
 class Camera;
+class BirdEyeCamera;
 class LightList;
 class Input;
 class Player;
@@ -25,13 +26,16 @@ public:
 
 private:
 	Camera* camera;
+	BirdEyeCamera* mBirdEyeCamera;
 	LightList* lightList;
-
 	Player* mPlayer;
 	Map* mMap;
 	Crosshair* mCrosshair;
 	ParticleList* mParticle;
-
 	Game* mGame;
+
+	//フラグ
+	bool mIsDirectionalLight = false;
+	bool mIsPlayerCamera = false;
 };
 

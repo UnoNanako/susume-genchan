@@ -11,7 +11,7 @@ void LightList::Create(DirectXCommon* dxCommon)
 	mDirectionalLightResource = dxCommon->CreateBufferResource(dxCommon->GetDevice(), sizeof(DirectionalLightForGPU));
 	mDirectionalLightData = nullptr;
 	mDirectionalLightResource->Map(0, nullptr, reinterpret_cast<void**>(&mDirectionalLightData));
-	mDirectionalLightData->color = { 0.0f,0.0f,0.0f,1.0f };
+	mDirectionalLightData->color = { 1.0f,1.0f,1.0f,1.0f };
 	mDirectionalLightData->direction = { 0.0f,-1.0f,0.0f };
 	mDirectionalLightData->intensity = 0.0f;
 
