@@ -38,15 +38,15 @@ void Map::Create(DirectXCommon* dxCommon)
 		mTerrainTransform[i] = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 	}
 	//床
-	mTerrainTransform[0] = { {100.0f,1.0f,100.0f} ,{0.0f,0.0f,0.0f} ,{0.0f,-10.0f,0.0f} };
+	mTerrainTransform[0] = { {50.0f,1.0f,50.0f} ,{0.0f,0.0f,0.0f} ,{0.0f,-10.0f,0.0f} };
 	//壁1(右)
-	mTerrainTransform[1] = { {1.0f,2.0f,100.0f},{0.0f,0.0f,0.0f},{100.0f,-7.0f,0.0f} };
+	mTerrainTransform[1] = { {1.0f,2.0f,50.0f},{0.0f,0.0f,0.0f},{50.0f,-7.0f,0.0f} };
 	//壁2(左)
-	mTerrainTransform[2] = { {1.0f,2.0f,100.0f},{0.0f,0.0f,0.0f},{-100.0f,-7.0f,0.0f} };
+	mTerrainTransform[2] = { {1.0f,2.0f,50.0f},{0.0f,0.0f,0.0f},{-50.0f,-7.0f,0.0f} };
 	//壁3(奥)
-	mTerrainTransform[3] = { {100.0f,2.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,-7.0f,100.0f} };
+	mTerrainTransform[3] = { {50.0f,2.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,-7.0f,50.0f} };
 	//壁4(手前)
-	mTerrainTransform[4] = { {100.0f,2.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,-7.0f,-100.0f} };
+	mTerrainTransform[4] = { {50.0f,2.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,-7.0f,-50.0f} };
 
 	//mAABBInvisible
 	//mAABBInvisibleWall.resize(4);

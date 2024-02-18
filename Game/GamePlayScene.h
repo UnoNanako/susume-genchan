@@ -35,7 +35,7 @@ private:
 	Game* mGame;
 
 	//フラグ
-	bool mIsDirectionalLight = false;
-	bool mIsPlayerCamera = false;
+	bool mIsDirectionalLight = true;
+	bool mIsPlayerCamera = true;
 };
 

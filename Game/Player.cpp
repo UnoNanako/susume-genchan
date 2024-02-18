@@ -93,7 +93,7 @@ void Player::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
 	frontVec = { 0.0f,0.0f,1.0f };
 	frontVec = Multiply(frontVec, rotationMatrix);
 	mLightList->SetSpotLightDirection(frontVec);
-	camera->SetTransform(mTransform);
+	//camera->SetTransform(mTransform);
 	mTexture->Bind(commandList);
 	//mModel->Draw(commandList, camera,mTransform);
 }
