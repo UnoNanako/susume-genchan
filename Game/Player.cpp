@@ -12,7 +12,7 @@ void Player::Initialize(DirectXCommon* dxCommon)
 {
 	mDxCommon = dxCommon;
 	mVelocity = { 0.1f,0.0f,0.1f };
-	mTransform.translate = { 0.0f,0.0f,0.0f };
+	mTransform.translate = { -25.0f,-5.0f,-25.0f };
 	mTransform.rotate = { 0.0f,0.0f,0.0f };
 	mTransform.scale = { 1.0f,1.0f,1.0f };
 	mAABBtranslate = {
@@ -25,6 +25,8 @@ void Player::Initialize(DirectXCommon* dxCommon)
 	mModel = new Model();
 	mModel->Create(mDxCommon, "resources", "floor.obj");
 	mModel->SetTexture(mTexture);
+	mSpeed = 0.25f;
+	mRotateSpeed = 0.05f;
 }
 
 void Player::Update(Input* input)
@@ -36,13 +38,14 @@ void Player::Update(Input* input)
 	Matrix4x4 rotationZ = MakeRotateZMatrix(mTransform.rotate.z);
 	Matrix4x4 rotationMatrix = Multiply(rotationX, Multiply(rotationY, rotationZ));
 	Vector3 frontVec;
-	frontVec = {0.0f,0.0f,1.0f};
+	frontVec = {0.0f,0.0f,mSpeed};
 	Vector3 rightVec;
-	rightVec = { 1.0f,0.0f,0.0f };
+	rightVec = { mSpeed,0.0f,0.0f };
 	frontVec = Multiply(frontVec, rotationMatrix);
 	rightVec = Multiply(rightVec, rotationMatrix);
 	//ここまで
 
+	//キーボード
 	if (input->PushKey(DIK_W)) {
 		mTransform.translate.x += frontVec.x;
 		mTransform.translate.y += frontVec.y;
@@ -69,6 +72,26 @@ void Player::Update(Input* input)
 	if (input->PushKey(DIK_RIGHT)) {
 		mTransform.rotate.y += 0.05f;
 	}
+
+	//ゲームパッド
+	//Lスティック
+	Vector2 lStick = input->GetLStick();
+	frontVec.x *= lStick.y;
+	frontVec.y *= lStick.y;
+	frontVec.z *= lStick.y;
+	rightVec.x *= lStick.x;
+	rightVec.y *= lStick.x;
+	rightVec.z *= lStick.x;
+	mTransform.translate.x += frontVec.x;
+	mTransform.translate.y += frontVec.y;
+	mTransform.translate.z += frontVec.z;
+	mTransform.translate.x += rightVec.x;
+	mTransform.translate.y += rightVec.y;
+	mTransform.translate.z += rightVec.z;
+	//Rスティック
+	Vector2 rStick = input->GetRStick();
+	mTransform.rotate.y += (rStick.x * mRotateSpeed);
+
 	if (mIsHit == true) {
 		mVelocity = { 0.0f,0.0f,0.0f };
 	}
@@ -79,6 +102,7 @@ void Player::Update(Input* input)
 	ImGui::Begin("Debug");
 	ImGui::DragFloat3("player Position", &mTransform.translate.x, 0.01f, 0.0f, 10.0f);
 	ImGui::DragFloat3("player Rotation", &mTransform.rotate.x, 0.01f, 0.0f, 10.0f);
+	ImGui::Checkbox("isPlayerCamera2", &mIsPlayerCamera);
 	ImGui::End();
 }
 
@@ -93,7 +117,12 @@ void Player::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
 	frontVec = { 0.0f,0.0f,1.0f };
 	frontVec = Multiply(frontVec, rotationMatrix);
 	mLightList->SetSpotLightDirection(frontVec);
-	//camera->SetTransform(mTransform);
-	mTexture->Bind(commandList);
+	if (mIsPlayerCamera == true) {
+		camera->SetTransform(mTransform);
+	}
+	else {
+		camera->SetTransform({ {1.0f,1.0f,1.0f},{0.8f,0.0f,0.0f},{0.0f,95.0f,-100.0f} });
+	}
+	//mTexture->Bind(commandList);
 	//mModel->Draw(commandList, camera,mTransform);
 }

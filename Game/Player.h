@@ -30,5 +30,8 @@ private:
 
 	AABB mAABBtranslate;
 	bool mIsHit;
+	bool mIsPlayerCamera;
+	float mSpeed;
+	float mRotateSpeed;
 };
 

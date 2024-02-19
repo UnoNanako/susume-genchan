@@ -10,7 +10,7 @@
 void Map::Create(DirectXCommon* dxCommon)
 {
 	mDxCommon = dxCommon;
-	
+
 	mTerrainTexture = new Texture();
 	mTerrainTexture->Create(mDxCommon, "resources/grass.png");
 
@@ -18,9 +18,6 @@ void Map::Create(DirectXCommon* dxCommon)
 	mModel->Create(mDxCommon, "resources", "terrain.obj");
 	mModel->SetTexture(mTerrainTexture);
 	mTransform = { {1.0f,1.0f,1.0f} ,{0.0f,0.0f,0.0f},{0.0f,-1.0f,0.0f} };
-
-	mTerrainTexture = new Texture();
-	mTerrainTexture->Create(mDxCommon, "resources/trainTexture/M_train_2_BaseColor.png");
 
 	mTrainModel = new Model();
 	mTrainModel->Create(mDxCommon, "resources", "train.obj");
@@ -32,21 +29,46 @@ void Map::Create(DirectXCommon* dxCommon)
 	for (uint32_t i = 0; i < mTerrainModel.size(); ++i) {
 		mTerrainModel[i] = new Model();
 		mTerrainModel[i]->Create(mDxCommon, "resources", "floor.obj");
+		mTerrainModel[i]->SetTexture(mTerrainTexture);
 	}
 	mTerrainTransform.resize(mTERRAIN_MAX);
 	for (uint32_t i = 0; i < mTerrainTransform.size(); ++i) {
 		mTerrainTransform[i] = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 	}
 	//床
-	mTerrainTransform[0] = { {50.0f,1.0f,50.0f} ,{0.0f,0.0f,0.0f} ,{0.0f,-10.0f,0.0f} };
-	//壁1(右)
-	mTerrainTransform[1] = { {1.0f,2.0f,50.0f},{0.0f,0.0f,0.0f},{50.0f,-7.0f,0.0f} };
-	//壁2(左)
-	mTerrainTransform[2] = { {1.0f,2.0f,50.0f},{0.0f,0.0f,0.0f},{-50.0f,-7.0f,0.0f} };
-	//壁3(奥)
-	mTerrainTransform[3] = { {50.0f,2.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,-7.0f,50.0f} };
-	//壁4(手前)
-	mTerrainTransform[4] = { {50.0f,2.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,-7.0f,-50.0f} };
+	mTerrainTransform[0] = { {60.0f,1.0f,60.0f} ,{0.0f,0.0f,0.0f} ,{0.0f,-10.0f,0.0f} };
+	//壁1
+	mTerrainTransform[1] = { {5.0f,5.0f,20.0f},{0.0f,0.0f,0.0f},{-17.5f,-7.5f,-20.0f} };
+	//壁2
+	mTerrainTransform[2] = { {5.0f,5.0f,20.0f},{0.0f,0.0f,0.0f},{-17.5f,-7.5f,0.0f} };
+	//壁3
+	mTerrainTransform[3] = { {5.0f,5.0f,15.0f},{0.0f,0.0f,0.0f},{-22.5f,-7.5f,12.5f} };
+	//壁4
+	mTerrainTransform[4] = { {10.0f,5.0f,5.0f},{0.0f,0.0f,0.0f},{0.0f,-7.5f,22.5f} };
+	//壁5
+	mTerrainTransform[5] = { {5.0f,5.0f,5.0f},{0.0f,0.0f,0.0f},{2.5f,-7.5f,17.5f} };
+	//壁6
+	mTerrainTransform[6] = { {10.0f,5.0f,10.0f},{0.0f,0.0f,0.0f},{0.0f,-7.5f,10.0f} };
+	//壁7
+	mTerrainTransform[7] = { {10.0f,5.0f,10.0f},{0.0f,0.0f,0.0f},{-5.0f,-7.5f,0.0f} };
+	//壁8
+	mTerrainTransform[8] = { {5.0f,5.0f,10.0f},{0.0f,0.0f,0.0f},{-7.5f,-7.5f,-10.0f} };
+	//壁9
+	mTerrainTransform[9] = { {15.0f,5.0f,10.0f},{0.0f,0.0f,0.0f},{-2.5f,-7.5f,-20.0f} };
+	//壁10
+	mTerrainTransform[10] = { {10.0f,5.0f,10.0f},{0.0f,0.0f,0.0f},{15.0f,-7.5f,-20.0f} };
+	//壁11
+	mTerrainTransform[11] = { {20.0f,5.0f,5.0f},{0.0f,0.0f,0.0f},{15.0f,-7.5f,-2.5f} };
+	//壁12
+	mTerrainTransform[12] = { {5.0f,5.0f,10.0f},{0.0f,0.0f,0.0f},{27.5f,-7.5f,10.0f} };
+	//壁13
+	mTerrainTransform[13] = { {5.0f,10.0f,10.0f},{0.0f,0.0f,0.0f},{27.5f,-5.0f,20.0f} };
+
+	mTerrainAABB.resize(mTERRAIN_MAX);
+	//床、壁のmin,maxを求める
+	for (uint32_t i = 0; i < mTerrainModel.size(); ++i) {
+		mTerrainAABB[i] = CalcurateAABB(mTerrainTransform[i].translate, mTerrainTransform[i].scale);
+	}
 
 	//mAABBInvisible
 	//mAABBInvisibleWall.resize(4);
@@ -86,4 +108,20 @@ void Map::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
 	for (uint32_t i = 0; i < mTerrainModel.size(); ++i) {
 		mTerrainModel[i]->Draw(commandList, camera, mTerrainTransform[i]);
 	}
+}
+
+AABB Map::CalcurateAABB(const Vector3& translate, const Vector3& scale)
+{
+	AABB ret;
+	ret.min = {
+		{ translate.x - (scale.x / 2.0f) },
+		{ translate.y - (scale.y / 2.0f) },
+		{ translate.z - (scale.z / 2.0f) }
+	};
+	ret.max = {
+		{ translate.x + (scale.x / 2.0f) },
+		{ translate.y + (scale.y / 2.0f) },
+		{ translate.z + (scale.z / 2.0f) }
+	};
+	return ret;
 }

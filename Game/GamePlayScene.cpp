@@ -70,7 +70,7 @@ void GamePlayScene::Update(Input* input)
 	ImGui::Begin("Debug");
 	//DirectionalLightのintensity切り替え
 	ImGui::Checkbox("isDirectionalLight", &mIsDirectionalLight);
-	ImGui::Checkbox("isPlayerCamera", &mIsPlayerCamera);
+	//ImGui::Checkbox("isPlayerCamera", &mIsPlayerCamera);
 	ImGui::End();
 
 	if (mIsDirectionalLight == false) {
@@ -95,6 +95,18 @@ void GamePlayScene::Update(Input* input)
 	mCrosshair->Update();
 	mParticle->Update(camera);
 	CollisionResult collisionResult;
+
+	//壁との当たり判定
+	for (uint32_t i = 0; i < mMap->GetTerrainModel().size(); ++i) {
+		if (IsCollision(mPlayer->GetAABB(), mMap->GetTerrainAABB()[i], collisionResult)) {
+			mPlayer->SetIsHit(true);
+			Vector3 pos = mPlayer->GetTranslate();
+			pos.x += collisionResult.normal.x * collisionResult.depth;
+			//pos.y += collisionResult.normal.y * collisionResult.depth;
+			pos.z += collisionResult.normal.z * collisionResult.depth;
+			mPlayer->SetTranslate(pos);
+		}
+	}
 
 	//見えない壁との当たり判定
 	/*for (int i = 0; i < 4; i++) {
