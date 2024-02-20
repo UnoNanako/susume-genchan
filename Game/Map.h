@@ -3,7 +3,7 @@
 #include "Transform.h"
 #include "GameObject.h"
 #include <vector>
-
+#include "externals/nlohmann/json.hpp"
 using namespace std;
 
 class Texture;

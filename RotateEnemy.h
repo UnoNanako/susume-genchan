@@ -13,5 +13,6 @@ public:
 	void Draw(ID3D12GraphicsCommandList* commandList, Camera* camera) override;
 
 private:
+
 };
 
