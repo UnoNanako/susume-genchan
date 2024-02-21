@@ -90,6 +90,19 @@ void Map::Create(DirectXCommon* dxCommon)
 	//	{mTrainTransform.translate.x + sizeX - 40.0f, mTrainTransform.translate.y - 100.0f, mTrainTransform.translate.z - sizeZ},
 	//	{mTrainTransform.translate.x + sizeX + 40.0f, mTrainTransform.translate.y + 100.0f, mTrainTransform.translate.z + sizeZ}
 	//};
+
+	//ファイル読み込み
+	std::ifstream ifs(pathToJSON.c_str());
+	if (ifs.good()) {
+		nlohmann::json j;
+		ifs >> j;
+	}
+
+	//保存
+	std::ofstream file(pathToJSON.c_str());
+	nlohmann::json data;
+
+	file << data.dump(4) << std::endl;
 }
 
 void Map::Update()

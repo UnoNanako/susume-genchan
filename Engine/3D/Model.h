@@ -7,8 +7,6 @@
 #include <Windows.h>
 #include <wrl.h>
 
-using namespace std;
-
 class DirectXCommon;
 class Texture;
 struct Material;
@@ -18,7 +16,7 @@ class Camera;
 
 //モデルデータ
 struct ModelData {
-	vector<VertexData> vertices;
+	std::vector<VertexData> vertices;
 	MaterialData material;
 };
 

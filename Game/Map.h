@@ -3,12 +3,14 @@
 #include "Transform.h"
 #include "GameObject.h"
 #include <vector>
-#include "externals/nlohmann/json.hpp"
-using namespace std;
+#include <nlohmann/json.hpp>
+#include <fstream>
 
 class Texture;
 class Model;
 struct AABB;
+
+const std::string pathToJSON("./resources/json/map.json");
 
 class Map : public GameObject
 {
@@ -20,9 +22,9 @@ public:
 	//translateとscaleを渡すとmin,maxを求めてくれる関数
 	AABB CalcurateAABB(const Vector3& translate, const Vector3& scale);
 	
-	vector<Model*> GetTerrainModel() { return mTerrainModel; }
-	vector<Transform> GetTerrainTransform() { return mTerrainTransform; }
-	vector<AABB> GetTerrainAABB() { return mTerrainAABB; }
+	std::vector<Model*> GetTerrainModel() { return mTerrainModel; }
+	std::vector<Transform> GetTerrainTransform() { return mTerrainTransform; }
+	std::vector<AABB> GetTerrainAABB() { return mTerrainAABB; }
 
 	//vector<AABB> GetAABBInvisible() { return mAABBInvisibleWall; }
 private:
@@ -38,9 +40,9 @@ private:
 	Transform mTrainTransform;
 
 	//とりあえずの地形
-	vector<Model*> mTerrainModel; //壁や床など
-	vector<Transform> mTerrainTransform;
+	std::vector<Model*> mTerrainModel; //壁や床など
+	std::vector<Transform> mTerrainTransform;
 	const int mTERRAIN_MAX = 15; //地形の数
-	vector<AABB> mTerrainAABB;
+	std::vector<AABB> mTerrainAABB;
 };
 

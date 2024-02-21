@@ -57,7 +57,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>$(ProjectDir)externals\assimp\include;$(ProjectDir)Engine;$(ProjectDir)Game;$(ProjectDir)Math;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)externals\assimp\include;$(ProjectDir)Engine;$(ProjectDir)Game;$(ProjectDir)Math;$(ProjectDir);$(ProjectDir)externals</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -81,7 +81,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>$(ProjectDir)externals\assimp\include;$(ProjectDir)Engine;$(ProjectDir)Game;$(ProjectDir)Math;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)externals\assimp\include;$(ProjectDir)Engine;$(ProjectDir)Game;$(ProjectDir)Math;$(ProjectDir);$(ProjectDir)externals</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

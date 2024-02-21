@@ -16,6 +16,8 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+using namespace std;
+
 void Model::Create(DirectXCommon* dxCommon, const std::string& directoryPath,const std::string& filePath)
 {
 	Load(directoryPath,filePath);

@@ -3,8 +3,6 @@
 #include "Transform.h"
 #include <d3d12.h>
 
-using namespace std;
-
 class Input;
 class Texture;
 class LightList;
