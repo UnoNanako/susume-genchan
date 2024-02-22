@@ -107,6 +107,9 @@ void GamePlayScene::Update(Input* input)
 	mMap->Update();
 	mCrosshair->Update();
 	mParticle->Update(camera);
+	for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
+		mRotateEnemies[i]->Update();
+	}
 	CollisionResult collisionResult;
 
 	//壁との当たり判定

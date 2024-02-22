@@ -21,6 +21,9 @@ void RotateEnemy::Initialize(DirectXCommon* dxCommon)
 
 void RotateEnemy::Update()
 {
+	ImGui::Begin("Debug");
+	ImGui::DragFloat3("enemy translate", &mTransform.translate.x, 0.01f);
+	ImGui::End();
 }
 
 void RotateEnemy::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
