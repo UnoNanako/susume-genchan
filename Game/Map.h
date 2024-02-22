@@ -18,7 +18,7 @@ public:
 	void Create(DirectXCommon* dxCommon);
 	void Update();
 	void Draw(ID3D12GraphicsCommandList* commandList,Camera* camera);
-
+	void Finalize();
 	//translateとscaleを渡すとmin,maxを求めてくれる関数
 	AABB CalcurateAABB(const Vector3& translate, const Vector3& scale);
 	
@@ -26,13 +26,9 @@ public:
 	std::vector<Transform> GetTerrainTransform() { return mTerrainTransform; }
 	std::vector<AABB> GetTerrainAABB() { return mTerrainAABB; }
 
-	//vector<AABB> GetAABBInvisible() { return mAABBInvisibleWall; }
 private:
 	//地面
 	Texture* mTerrainTexture;
-
-	//壁(目に見えない)
-	//vector<AABB> mAABBInvisibleWall;
 
 	//電車(のちに削除)
 	Model* mTrainModel;

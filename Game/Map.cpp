@@ -35,92 +35,62 @@ void Map::Create(DirectXCommon* dxCommon)
 	for (uint32_t i = 0; i < mTerrainTransform.size(); ++i) {
 		mTerrainTransform[i] = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 	}
-	//床
-	mTerrainTransform[0] = { {60.0f,1.0f,60.0f} ,{0.0f,0.0f,0.0f} ,{0.0f,-10.0f,0.0f} };
-	//壁1
-	mTerrainTransform[1] = { {5.0f,5.0f,20.0f},{0.0f,0.0f,0.0f},{-17.5f,-7.5f,-20.0f} };
-	//壁2
-	mTerrainTransform[2] = { {5.0f,5.0f,20.0f},{0.0f,0.0f,0.0f},{-17.5f,-7.5f,0.0f} };
-	//壁3
-	mTerrainTransform[3] = { {5.0f,5.0f,15.0f},{0.0f,0.0f,0.0f},{-22.5f,-7.5f,12.5f} };
-	//壁4
-	mTerrainTransform[4] = { {10.0f,5.0f,5.0f},{0.0f,0.0f,0.0f},{0.0f,-7.5f,22.5f} };
-	//壁5
-	mTerrainTransform[5] = { {5.0f,5.0f,5.0f},{0.0f,0.0f,0.0f},{2.5f,-7.5f,17.5f} };
-	//壁6
-	mTerrainTransform[6] = { {10.0f,5.0f,10.0f},{0.0f,0.0f,0.0f},{0.0f,-7.5f,10.0f} };
-	//壁7
-	mTerrainTransform[7] = { {10.0f,5.0f,10.0f},{0.0f,0.0f,0.0f},{-5.0f,-7.5f,0.0f} };
-	//壁8
-	mTerrainTransform[8] = { {5.0f,5.0f,10.0f},{0.0f,0.0f,0.0f},{-7.5f,-7.5f,-10.0f} };
-	//壁9
-	mTerrainTransform[9] = { {15.0f,5.0f,10.0f},{0.0f,0.0f,0.0f},{-2.5f,-7.5f,-20.0f} };
-	//壁10
-	mTerrainTransform[10] = { {10.0f,5.0f,10.0f},{0.0f,0.0f,0.0f},{15.0f,-7.5f,-20.0f} };
-	//壁11
-	mTerrainTransform[11] = { {20.0f,5.0f,5.0f},{0.0f,0.0f,0.0f},{15.0f,-7.5f,-2.5f} };
-	//壁12
-	mTerrainTransform[12] = { {5.0f,5.0f,10.0f},{0.0f,0.0f,0.0f},{27.5f,-7.5f,10.0f} };
-	//壁13
-	mTerrainTransform[13] = { {5.0f,10.0f,10.0f},{0.0f,0.0f,0.0f},{27.5f,-5.0f,20.0f} };
+	
+	//jsonファイル読み込み
+	//読み込むファイルの名前を作成
+	std::ifstream ifs(pathToJSON.c_str());
+	if (ifs.good()) {
+		nlohmann::json mJson;
+		ifs >> mJson;
+
+		//読み込んだデータをそれぞれの変数に代入する
+		for (uint32_t i = 0; i < mTerrainModel.size(); ++i) {
+			nlohmann::json& terrainData = mJson[std::format("Terranin{}", i)]; //これあとで理解
+			mTerrainTransform[i].translate.x = terrainData["Position"][0].get<float>();
+			mTerrainTransform[i].translate.y = terrainData["Position"][1].get<float>();
+			mTerrainTransform[i].translate.z = terrainData["Position"][2].get<float>();
+			mTerrainTransform[i].scale.x = terrainData["Scale"][0].get<float>();
+			mTerrainTransform[i].scale.y = terrainData["Scale"][1].get<float>();
+			mTerrainTransform[i].scale.z = terrainData["Scale"][2].get<float>();
+		}
+	}
 
 	mTerrainAABB.resize(mTERRAIN_MAX);
 	//床、壁のmin,maxを求める
 	for (uint32_t i = 0; i < mTerrainModel.size(); ++i) {
 		mTerrainAABB[i] = CalcurateAABB(mTerrainTransform[i].translate, mTerrainTransform[i].scale);
 	}
-
-	//mAABBInvisible
-	//mAABBInvisibleWall.resize(4);
-	//float sizeX = 50.0f;
-	//float sizeZ = 150.0f;
-	//mAABBInvisibleWall[0] = { //playerから見て正面
-	//	{mTrainTransform.translate.x - sizeX, mTrainTransform.translate.y - 100.0f , mTrainTransform.translate.z + sizeZ - 20.0f},
-	//	{mTrainTransform.translate.x + sizeX, mTrainTransform.translate.y + 100.0f , mTrainTransform.translate.z + sizeZ + 20.0f}
-	//};																		
-	//mAABBInvisibleWall[1] = { //playerから見て後ろ						   
-	//	{mTrainTransform.translate.x - sizeX, mTrainTransform.translate.y - 100.0f, mTrainTransform.translate.z - sizeZ - 20.0f},
-	//	{mTrainTransform.translate.x + sizeX, mTrainTransform.translate.y + 100.0f, mTrainTransform.translate.z - sizeZ + 20.0f}
-	//};																		
-	//mAABBInvisibleWall[2] = { //playerから見て左								
-	//	{mTrainTransform.translate.x - sizeX - 40.0f ,mTrainTransform.translate.y - 100.0f, mTrainTransform.translate.z - sizeZ},
-	//	{mTrainTransform.translate.x - sizeX + 40.0f,mTrainTransform.translate.y + 100.0f, mTrainTransform.translate.z + sizeZ }
-	//};																		
-	//mAABBInvisibleWall[3] = { //playerから見て右								
-	//	{mTrainTransform.translate.x + sizeX - 40.0f, mTrainTransform.translate.y - 100.0f, mTrainTransform.translate.z - sizeZ},
-	//	{mTrainTransform.translate.x + sizeX + 40.0f, mTrainTransform.translate.y + 100.0f, mTrainTransform.translate.z + sizeZ}
-	//};
-
-	//ファイル読み込み
-	std::ifstream ifs(pathToJSON.c_str());
-	if (ifs.good()) {
-		nlohmann::json j;
-		ifs >> j;
-	}
-
-	//保存
-	std::ofstream file(pathToJSON.c_str());
-	nlohmann::json data;
-
-	file << data.dump(4) << std::endl;
 }
 
 void Map::Update()
 {
 	ImGui::Begin("Debug");
-	ImGui::DragFloat3("terrainRotation", &mTerrainTransform[1].rotate.x, 0.01f);
+	ImGui::DragFloat3("terrainTranslate", &mTerrainTransform[0].translate.x, 0.01f);
 	ImGui::End();
 }
 
 void Map::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
 {
-	//mTerrainTexture->Bind(commandList);
-	//mTerrainTexture->Bind(commandList);
-	//mModel->Draw(commandList,camera, mTransform); 
-	//mTrainModel->Draw(commandList, camera, mTrainTransform);
 	for (uint32_t i = 0; i < mTerrainModel.size(); ++i) {
 		mTerrainModel[i]->Draw(commandList, camera, mTerrainTransform[i]);
 	}
+}
+
+void Map::Finalize()
+{
+	//json書き込み
+	std::ofstream file(pathToJSON.c_str());
+	nlohmann::json data;
+	for (uint32_t i = 0; i < mTerrainModel.size(); ++i) {
+		nlohmann::json& terrainData = data[std::format("Terranin{}", i)]; //これあとで理解
+		terrainData["Position"].push_back(mTerrainTransform[i].translate.x);
+		terrainData["Position"].push_back(mTerrainTransform[i].translate.y);
+		terrainData["Position"].push_back(mTerrainTransform[i].translate.z);
+		terrainData["Scale"].push_back(mTerrainTransform[i].scale.x);
+		terrainData["Scale"].push_back(mTerrainTransform[i].scale.y);
+		terrainData["Scale"].push_back(mTerrainTransform[i].scale.z);
+	}
+	file << data.dump(4) << std::endl;
 }
 
 AABB Map::CalcurateAABB(const Vector3& translate, const Vector3& scale)

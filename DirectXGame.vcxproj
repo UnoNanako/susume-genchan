@@ -131,7 +131,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\3D\ModelCommon.cpp" />
     <ClCompile Include="Engine\Particle\ParticleCommon.cpp" />
     <ClCompile Include="Game\WalkEnemy.cpp" />
-    <ClCompile Include="RotateEnemy.cpp" />
+    <ClCompile Include="Game\RotateEnemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BirdEyeCamera.h" />
@@ -175,7 +175,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\3D\ModelCommon.h" />
     <ClInclude Include="Engine\Particle\ParticleCommon.h" />
     <ClInclude Include="Game\WalkEnemy.h" />
-    <ClInclude Include="RotateEnemy.h" />
+    <ClInclude Include="Game\RotateEnemy.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

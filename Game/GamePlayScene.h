@@ -1,5 +1,6 @@
 #pragma once
 #include "Transform.h"
+#include <vector>
 
 class DirectXCommon;
 class Sprite;
@@ -15,6 +16,7 @@ class Map;
 class Crosshair;
 class ParticleList;
 class Game;
+class RotateEnemy;
 
 class GamePlayScene
 {
@@ -34,6 +36,8 @@ private:
 	Crosshair* mCrosshair;
 	ParticleList* mParticle;
 	Game* mGame;
+	const int mROTATEENEMY_MAX = 1;
+	std::vector<RotateEnemy*> mRotateEnemies;
 
 	//フラグ
 	bool mIsDirectionalLight = true;

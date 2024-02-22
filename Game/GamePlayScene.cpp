@@ -16,6 +16,7 @@
 #include "Particle/ParticleList.h"
 #include "Game/Game.h"
 #include "3D/ModelCommon.h"
+#include "Game/RotateEnemy.h"
 #include "Particle/ParticleCommon.h"
 #include "externals/imgui/imgui.h"
 
@@ -52,10 +53,19 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	//particle
 	mParticle = new ParticleList();
 	mParticle->Create(dxCommon);
+
+	//rotateEnemy
+	mRotateEnemies.resize(mROTATEENEMY_MAX);
+	for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
+		mRotateEnemies[i] = new RotateEnemy();
+		mRotateEnemies[i]->Initialize(dxCommon);
+	}
+	mRotateEnemies[0]->SetTranslate({ 12.5f,5.5f,12.5f });
 }
 
 void GamePlayScene::Finalize()
 {
+	mMap->Finalize();
 	delete camera;
 	delete mBirdEyeCamera;
 	delete mPlayer;
@@ -63,6 +73,9 @@ void GamePlayScene::Finalize()
 	delete lightList;
 	delete mCrosshair;
 	delete mParticle;
+	for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
+		delete mRotateEnemies[i];
+	}
 }
 
 void GamePlayScene::Update(Input* input)
@@ -107,18 +120,6 @@ void GamePlayScene::Update(Input* input)
 			mPlayer->SetTranslate(pos);
 		}
 	}
-
-	//見えない壁との当たり判定
-	/*for (int i = 0; i < 4; i++) {
-		if (IsCollision(mPlayer->GetAABB(), mMap->GetAABBInvisible()[i], collisionResult)) {
-			mPlayer->SetIsHit(true);
-			Vector3 pos = mPlayer->GetTranslate();
-			pos.x += collisionResult.normal.x * collisionResult.depth;
-			pos.y += collisionResult.normal.y * collisionResult.depth;
-			pos.z += collisionResult.normal.z * collisionResult.depth;
-			mPlayer->SetTranslate(pos);
-		}
-	}*/
 }
 
 void GamePlayScene::Draw(DirectXCommon* dxCommon)
@@ -135,7 +136,9 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 	mPlayer->Draw(dxCommon->GetCommandList(),camera);
 	mMap->Draw(dxCommon->GetCommandList(), camera);
 	mCrosshair->Draw(dxCommon->GetCommandList());
-
+	for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
+		mRotateEnemies[i]->Draw(dxCommon->GetCommandList(), camera);
+	}
 	mGame->GetParticleCommon()->Bind(dxCommon);
 	//mParticle->Draw(dxCommon->GetCommandList(), camera, { 0.0f,0.0f,0.0f });
 }
