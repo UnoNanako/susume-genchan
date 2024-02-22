@@ -137,7 +137,7 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 
 	lightList->Bind(dxCommon->GetCommandList());
 	mPlayer->Draw(dxCommon->GetCommandList(),camera);
-	mMap->Draw(dxCommon->GetCommandList(), camera);
+	//mMap->Draw(dxCommon->GetCommandList(), camera);
 	mCrosshair->Draw(dxCommon->GetCommandList());
 	for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
 		mRotateEnemies[i]->Draw(dxCommon->GetCommandList(), camera);
