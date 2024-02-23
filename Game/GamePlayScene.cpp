@@ -123,6 +123,15 @@ void GamePlayScene::Update(Input* input)
 			mPlayer->SetTranslate(pos);
 		}
 	}
+
+	//rotateEnemyとの当たり判定
+	for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
+		if (IsCollision(mPlayer->GetAABB(), mRotateEnemies[i]->GetAABB(), collisionResult)) {
+			ImGui::Begin("Debug");
+			ImGui::Text("Dead");
+			ImGui::End();
+		}
+	}
 }
 
 void GamePlayScene::Draw(DirectXCommon* dxCommon)
