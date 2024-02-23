@@ -23,7 +23,7 @@ Player::Player()
 void Player::Initialize(DirectXCommon* dxCommon)
 {
 	mDxCommon = dxCommon;
-	mTransform.translate = { -25.0f,-5.0f,-25.0f };
+	mTransform.translate = { -25.0f,5.0f,-25.0f };
 	mTransform.rotate = { 0.0f,0.0f,0.0f };
 	mTransform.scale = { 1.0f,1.0f,1.0f };
 	mAABBtranslate = {

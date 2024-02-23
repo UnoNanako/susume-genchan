@@ -17,5 +17,6 @@ public:
 
 	void SetTranslate(const Vector3& translate) { mTransform.translate = translate; }
 private:
+
 };
 

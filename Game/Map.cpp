@@ -12,7 +12,7 @@ void Map::Create(DirectXCommon* dxCommon)
 	mDxCommon = dxCommon;
 
 	mTerrainTexture = new Texture();
-	mTerrainTexture->Create(mDxCommon, "resources/grass.png");
+	mTerrainTexture->Create(mDxCommon, "resources/blocks/grass/Blocks_PixelArt.png");
 
 	mModel = new Model();
 	mModel->Create(mDxCommon, "resources", "terrain.obj");
@@ -37,7 +37,7 @@ void Map::Create(DirectXCommon* dxCommon)
 		for (uint32_t i = 0; i < terrainCount; ++i) {
 			Model* newModel;
 			newModel = new Model();
-			newModel->Create(mDxCommon, "resources", "floor.obj");
+			newModel->Create(mDxCommon, "resources/blocks/grass", "grass.obj");
 			newModel->SetTexture(mTerrainTexture);
 			mTerrainModel.emplace_back(newModel);
 
@@ -68,7 +68,7 @@ void Map::Update()
 	if (ImGui::Button("Create")) {
 		Model* newModel;
 		newModel = new Model();
-		newModel->Create(mDxCommon, "resources", "floor.obj");
+		newModel->Create(mDxCommon, "resources/blocks/grass", "grass.obj");
 		newModel->SetTexture(mTerrainTexture);
 		mTerrainModel.emplace_back(newModel);
 		Transform newTransform;

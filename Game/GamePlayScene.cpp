@@ -60,7 +60,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 		mRotateEnemies[i] = new RotateEnemy();
 		mRotateEnemies[i]->Initialize(dxCommon);
 	}
-	mRotateEnemies[0]->SetTranslate({ 15.0f,-9.0f,12.5f });
+	mRotateEnemies[0]->SetTranslate({ 15.0f,2.5f,12.5f });
 }
 
 void GamePlayScene::Finalize()
