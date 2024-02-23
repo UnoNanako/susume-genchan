@@ -11,6 +11,7 @@ struct AABB;
 class Player : public GameObject
 {
 public:
+	Player();
 	void Initialize(DirectXCommon* dxCommon);
 	void Update(Input* input);
 	void Draw(ID3D12GraphicsCommandList* commandList,Camera* camera);

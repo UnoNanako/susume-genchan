@@ -55,7 +55,7 @@ void Model::Create(DirectXCommon* dxCommon, const std::string& directoryPath,con
 	transformationMatrixData->WVP = MakeIdentity4x4();
 	transformationMatrixData->World = MakeIdentity4x4();
 	//CPUで動かす用のTransformWVP作る
-	transform = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
+	mTransform = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 }
 
 void Model::Update()
@@ -63,11 +63,11 @@ void Model::Update()
 	
 }
 
-void Model::Draw(ID3D12GraphicsCommandList* commandList,Camera* camera,const Transform &transform)
+void Model::Draw(ID3D12GraphicsCommandList* commandList,Camera* camera,const Transform &mTransform)
 {
 	//const float kPi = std::numbers::pi_v<float>;
 	//Model用のWorldViewProjectionMatrixをつくる
-	Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
+	Matrix4x4 worldMatrix = MakeAffineMatrix(mTransform.scale, mTransform.rotate, mTransform.translate);
 	Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(camera->GetViewMatrix(), camera->GetProjectionMatrix()));
 	transformationMatrixData->WVP = worldViewProjectionMatrix;
 	transformationMatrixData->World = worldMatrix;

@@ -159,51 +159,51 @@ inline Vector3 Multiply(const Vector3& v, const Matrix4x4& m) {
 	return result;
 }
 
-inline Matrix3x3 Transpose(const Matrix3x3& matrix) {
+inline Matrix3x3 Transpose(const Matrix3x3& mMatrix) {
 	Matrix3x3 result;
-	result.m[0][0] = matrix.m[0][0];
-	result.m[0][1] = matrix.m[1][0];
-	result.m[0][2] = matrix.m[2][0];
-	result.m[1][0] = matrix.m[0][1];
-	result.m[1][1] = matrix.m[1][1];
-	result.m[1][2] = matrix.m[2][1];
-	result.m[2][0] = matrix.m[0][2];
-	result.m[2][1] = matrix.m[1][2];
-	result.m[2][2] = matrix.m[2][2];
+	result.m[0][0] = mMatrix.m[0][0];
+	result.m[0][1] = mMatrix.m[1][0];
+	result.m[0][2] = mMatrix.m[2][0];
+	result.m[1][0] = mMatrix.m[0][1];
+	result.m[1][1] = mMatrix.m[1][1];
+	result.m[1][2] = mMatrix.m[2][1];
+	result.m[2][0] = mMatrix.m[0][2];
+	result.m[2][1] = mMatrix.m[1][2];
+	result.m[2][2] = mMatrix.m[2][2];
 	return result;
 }
 
-inline Matrix3x3 Inverse(const Matrix3x3& matrix) {
+inline Matrix3x3 Inverse(const Matrix3x3& mMatrix) {
 	Matrix3x3 result;
-	float determinant = matrix.m[0][0] * matrix.m[1][1] * matrix.m[2][2] +
-		matrix.m[0][1] * matrix.m[1][2] * matrix.m[2][0] +
-		matrix.m[0][2] * matrix.m[1][0] * matrix.m[2][1] -
-		matrix.m[0][2] * matrix.m[1][1] * matrix.m[2][0] -
-		matrix.m[0][1] * matrix.m[1][0] * matrix.m[2][2] -
-		matrix.m[0][0] * matrix.m[1][2] * matrix.m[2][1];
+	float determinant = mMatrix.m[0][0] * mMatrix.m[1][1] * mMatrix.m[2][2] +
+		mMatrix.m[0][1] * mMatrix.m[1][2] * mMatrix.m[2][0] +
+		mMatrix.m[0][2] * mMatrix.m[1][0] * mMatrix.m[2][1] -
+		mMatrix.m[0][2] * mMatrix.m[1][1] * mMatrix.m[2][0] -
+		mMatrix.m[0][1] * mMatrix.m[1][0] * mMatrix.m[2][2] -
+		mMatrix.m[0][0] * mMatrix.m[1][2] * mMatrix.m[2][1];
 	assert(determinant != 0.0f);
 	float determinantRecp = 1.0f / determinant;
 
 	result.m[0][0] =
-		(matrix.m[1][1] * matrix.m[2][2] - matrix.m[1][2] * matrix.m[2][1]) * determinantRecp;
+		(mMatrix.m[1][1] * mMatrix.m[2][2] - mMatrix.m[1][2] * mMatrix.m[2][1]) * determinantRecp;
 	result.m[0][1] =
-		-(matrix.m[0][1] * matrix.m[2][2] - matrix.m[0][2] * matrix.m[2][1]) * determinantRecp;
+		-(mMatrix.m[0][1] * mMatrix.m[2][2] - mMatrix.m[0][2] * mMatrix.m[2][1]) * determinantRecp;
 	result.m[0][2] =
-		(matrix.m[0][1] * matrix.m[1][2] - matrix.m[0][2] * matrix.m[1][1]) * determinantRecp;
+		(mMatrix.m[0][1] * mMatrix.m[1][2] - mMatrix.m[0][2] * mMatrix.m[1][1]) * determinantRecp;
 
 	result.m[1][0] =
-		-(matrix.m[1][0] * matrix.m[2][2] - matrix.m[1][2] * matrix.m[2][0]) * determinantRecp;
+		-(mMatrix.m[1][0] * mMatrix.m[2][2] - mMatrix.m[1][2] * mMatrix.m[2][0]) * determinantRecp;
 	result.m[1][1] =
-		(matrix.m[0][0] * matrix.m[2][2] - matrix.m[0][2] * matrix.m[2][0]) * determinantRecp;
+		(mMatrix.m[0][0] * mMatrix.m[2][2] - mMatrix.m[0][2] * mMatrix.m[2][0]) * determinantRecp;
 	result.m[1][2] =
-		-(matrix.m[0][0] * matrix.m[1][2] - matrix.m[0][2] * matrix.m[1][0]) * determinantRecp;
+		-(mMatrix.m[0][0] * mMatrix.m[1][2] - mMatrix.m[0][2] * mMatrix.m[1][0]) * determinantRecp;
 
 	result.m[2][0] =
-		(matrix.m[1][0] * matrix.m[2][1] - matrix.m[1][1] * matrix.m[2][0]) * determinantRecp;
+		(mMatrix.m[1][0] * mMatrix.m[2][1] - mMatrix.m[1][1] * mMatrix.m[2][0]) * determinantRecp;
 	result.m[2][1] =
-		-(matrix.m[0][0] * matrix.m[2][1] - matrix.m[0][1] * matrix.m[2][0]) * determinantRecp;
+		-(mMatrix.m[0][0] * mMatrix.m[2][1] - mMatrix.m[0][1] * mMatrix.m[2][0]) * determinantRecp;
 	result.m[2][2] =
-		(matrix.m[0][0] * matrix.m[1][1] - matrix.m[0][1] * matrix.m[1][0]) * determinantRecp;
+		(mMatrix.m[0][0] * mMatrix.m[1][1] - mMatrix.m[0][1] * mMatrix.m[1][0]) * determinantRecp;
 
 	return result;
 }

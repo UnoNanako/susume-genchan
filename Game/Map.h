@@ -38,7 +38,7 @@ private:
 	//とりあえずの地形
 	std::vector<Model*> mTerrainModel; //壁や床など
 	std::vector<Transform> mTerrainTransform;
-	const int mTERRAIN_MAX = 15; //地形の数
+	const int mTERRAIN_MAX = 100; //地形の数
 	std::vector<AABB> mTerrainAABB;
 };
 

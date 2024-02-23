@@ -8,14 +8,15 @@ class DirectXCommon;
 class BirdEyeCamera
 {
 public:
+	BirdEyeCamera();
 	void Initialize(DirectXCommon* dxCommon);
 	void Update();
 	void Bind(ID3D12GraphicsCommandList* commandList);
 private:
-	Transform transform;
-	Matrix4x4 matrix;
-	Matrix4x4 viewMatrix;
-	Matrix4x4 projectionMatrix;
+	Transform mTransform;
+	Matrix4x4 mMatrix;
+	Matrix4x4 mViewMatrix;
+	Matrix4x4 mProjectionMatrix;
 
 	Vector3* cameraData = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12Resource> cameraResource;

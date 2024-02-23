@@ -16,7 +16,7 @@ public:
 	void Create(DirectXCommon* dxCommon, const std::string& filePath);
 	void Update();
 	void Draw(ID3D12GraphicsCommandList *commandList);
-	void SetTransform(Transform transform) { this->transform = transform; }
+	void SetTransform(Transform mTransform) { this->mTransform = mTransform; }
 	~Sprite();
 private:
 	Texture* texture;
@@ -29,6 +29,6 @@ private:
 	Material* materialData;
 	Microsoft::WRL::ComPtr<ID3D12Resource> transformationMatrixResource;
 	TransformationMatrix* transformationMatrixData;
-	Transform transform;
+	Transform mTransform;
 };
 

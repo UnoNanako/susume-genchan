@@ -65,16 +65,16 @@ void Sprite::Create(DirectXCommon* dxCommon, const std::string& filePath)
 	transformationMatrixData->WVP = MakeIdentity4x4();
 	transformationMatrixData->World = MakeIdentity4x4();
 	//CPUで動かす用のTransformWVP作る
-	transform = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
+	mTransform = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 }
 
 void Sprite::Update()
 {
 	// Sprite用のWorldViewProjectionMatrixを作る
-	Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
-	Matrix4x4 viewMatrix = MakeIdentity4x4();
-	Matrix4x4 projectionMatrix = MakeOrthographicMatrix(0.0f, 0.0f, float(WinApiManager::kClientWidth), float(WinApiManager::kClientHeight), 0.0f, 100.0f);
-	Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(viewMatrix, projectionMatrix));
+	Matrix4x4 worldMatrix = MakeAffineMatrix(mTransform.scale, mTransform.rotate, mTransform.translate);
+	Matrix4x4 mViewMatrix = MakeIdentity4x4();
+	Matrix4x4 mProjectionMatrix = MakeOrthographicMatrix(0.0f, 0.0f, float(WinApiManager::kClientWidth), float(WinApiManager::kClientHeight), 0.0f, 100.0f);
+	Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(mViewMatrix, mProjectionMatrix));
 	transformationMatrixData->WVP = worldViewProjectionMatrix;
 	transformationMatrixData->World = worldMatrix;
 }

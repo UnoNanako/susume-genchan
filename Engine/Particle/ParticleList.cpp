@@ -78,7 +78,7 @@ void ParticleList::Update(Camera* camera){
 	}*/
 }
 
-void ParticleList::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera,const Transform &transform){
+void ParticleList::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera,const Transform &mTransform){
 	//Particle用のWorldViewProjectionMatrixをつくる
 	/*Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
 	Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(camera->GetViewMatrix(), camera->GetProjectionMatrix()));

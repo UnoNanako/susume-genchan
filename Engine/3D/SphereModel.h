@@ -16,7 +16,7 @@ public:
 	void Update();
 	void Draw(ID3D12GraphicsCommandList *commandList, Camera* camera);
 
-	void SetTranslate(Vector3 translate) { transform.translate = translate; }
+	void SetTranslate(Vector3 translate) { mTransform.translate = translate; }
 
 private:
 	const uint32_t kSubdivision = 16; //分割数
@@ -24,7 +24,7 @@ private:
 	const float kPi = std::numbers::pi_v<float>;
 	const float kLonEvery = (2 * kPi) / float(kSubdivision); //経度分割1つ分の角度
 	const float kLatEvery = kPi / float(kSubdivision); //緯度分割1つ分の角度
-	Transform transform;
+	Transform mTransform;
 	Transform cameraTransform;
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};

@@ -60,7 +60,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 		mRotateEnemies[i] = new RotateEnemy();
 		mRotateEnemies[i]->Initialize(dxCommon);
 	}
-	mRotateEnemies[0]->SetTranslate({ 12.5f,5.5f,12.5f });
+	mRotateEnemies[0]->SetTranslate({ 15.0f,-9.0f,12.5f });
 }
 
 void GamePlayScene::Finalize()
@@ -137,11 +137,14 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 
 	lightList->Bind(dxCommon->GetCommandList());
 	mPlayer->Draw(dxCommon->GetCommandList(),camera);
-	//mMap->Draw(dxCommon->GetCommandList(), camera);
-	mCrosshair->Draw(dxCommon->GetCommandList());
+	mMap->Draw(dxCommon->GetCommandList(), camera);
 	for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
 		mRotateEnemies[i]->Draw(dxCommon->GetCommandList(), camera);
 	}
+
 	mGame->GetParticleCommon()->Bind(dxCommon);
 	//mParticle->Draw(dxCommon->GetCommandList(), camera, { 0.0f,0.0f,0.0f });
+
+	mGame->GetModelCommon()->Bind(dxCommon);
+	mCrosshair->Draw(dxCommon->GetCommandList());
 }

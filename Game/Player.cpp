@@ -8,10 +8,21 @@
 #include "Light/LightList.h"
 #include "externals/imgui/imgui.h"
 
+Player::Player()
+	:mIsHit(false)
+	,mIsPlayerCamera(false)
+	, mAABBtranslate({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} })
+	,mLightList(nullptr)
+	,mRotateSpeed(0.05f)
+	,mSpeed(0.25f)
+	,mTexture(nullptr)
+	,mVelocity({0.1f,0.0f,0.1f})
+{
+}
+
 void Player::Initialize(DirectXCommon* dxCommon)
 {
 	mDxCommon = dxCommon;
-	mVelocity = { 0.1f,0.0f,0.1f };
 	mTransform.translate = { -25.0f,-5.0f,-25.0f };
 	mTransform.rotate = { 0.0f,0.0f,0.0f };
 	mTransform.scale = { 1.0f,1.0f,1.0f };
@@ -19,14 +30,11 @@ void Player::Initialize(DirectXCommon* dxCommon)
 		{0.0f,0.0f,0.0f},
 		{0.0f,0.0f,0.0f}
 	};
-	mIsHit = false;
 	mTexture = new Texture();
 	mTexture->Create(mDxCommon, "resources/uvChecker.png");
 	mModel = new Model();
 	mModel->Create(mDxCommon, "resources", "floor.obj");
 	mModel->SetTexture(mTexture);
-	mSpeed = 0.25f;
-	mRotateSpeed = 0.05f;
 }
 
 void Player::Update(Input* input)

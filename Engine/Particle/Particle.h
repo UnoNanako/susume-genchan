@@ -3,7 +3,7 @@
 
 //Particle構造体
 struct Particle {
-	Transform transform;
+	Transform mTransform;
 	Vector3 velocity;
 	Vector4 color;
 	float lifeTime;

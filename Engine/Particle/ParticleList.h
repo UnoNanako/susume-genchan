@@ -19,7 +19,7 @@ class ParticleList
 public:
 	void Create(DirectXCommon* dxCommon);
 	void Update(Camera* camera);
-	void Draw(ID3D12GraphicsCommandList* commandList,Camera* camera,const Transform &transform);
+	void Draw(ID3D12GraphicsCommandList* commandList,Camera* camera,const Transform &mTransform);
 
 private:
 	const float kDeltaTime = 1.0f / 60.0f;
