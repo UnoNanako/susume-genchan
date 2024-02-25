@@ -5,18 +5,9 @@
 #include "MyMath.h"
 
 BirdEyeCamera::BirdEyeCamera()
-	:mTransform({ {1.0f,1.0f,1.0f},{0.5f,0.0f,0.0f},{0.0f,10.0f,-20.0f} })
-	,mMatrix(MakeIdentity4x4())
-	,mViewMatrix(MakeIdentity4x4())
-	,mProjectionMatrix(MakeIdentity4x4())
 {
-}
-
-void BirdEyeCamera::Initialize(DirectXCommon* dxCommon)
-{
-	mTransform = { {1.0f,1.0f,1.0f},{0.5f,0.0f,0.0f},{0.0f,10.0f,-20.0f} };
-	cameraResource = dxCommon->CreateBufferResource(dxCommon->GetDevice(), sizeof(Vector3));
-	cameraResource->Map(0, nullptr, reinterpret_cast<void**>(&cameraData));
+	mTransform = { {1.0f,1.0f,1.0f},{0.8f,0.0f,0.0f},{0.0f,50.0f,-45.0f} };
+	
 }
 
 void BirdEyeCamera::Update()
@@ -31,7 +22,10 @@ void BirdEyeCamera::Update()
 	*cameraData = { mTransform.translate };
 }
 
-void BirdEyeCamera::Bind(ID3D12GraphicsCommandList* commandList)
+void BirdEyeCamera::UpdateCameraPosition(const Vector3& translate, float angle, float distance)
 {
-	commandList->SetGraphicsRootConstantBufferView(4, cameraResource->GetGPUVirtualAddress());
+	//カメラの位置を計算
+	Vector3 camera;
+	camera.x = translate.x + distance * cos(angle);
+	camera.z = translate.z + distance * sin(angle);
 }

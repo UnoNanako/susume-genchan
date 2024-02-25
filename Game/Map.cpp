@@ -1,7 +1,7 @@
 #include "Map.h"
 #include "3D/Model.h"
 #include "Transform.h"
-#include "Camera.h"
+#include "PlayerCamera.h"
 #include "VertexData.h"
 #include "2D/Texture.h"
 #include "Math/MyMath.h"

@@ -5,7 +5,7 @@
 #include "Transform.h"
 #include "VertexData.h"
 #include "externals/imgui/imgui.h"
-#include "Camera.h"
+#include "PlayerCamera.h"
 
 void SphereModel::Create(DirectXCommon* dxCommon)
 {

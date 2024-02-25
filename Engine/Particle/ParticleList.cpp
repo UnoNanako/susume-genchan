@@ -1,7 +1,7 @@
 #include "ParticleList.h"
 #include "Particle.h"
 #include "MyMath.h"
-#include "Camera.h"
+#include "PlayerCamera.h"
 #include "2D/Texture.h"
 #include "DirectXCommon.h"
 #include "Transform.h"

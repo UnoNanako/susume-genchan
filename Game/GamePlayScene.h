@@ -8,6 +8,7 @@ class Model;
 class SphereModel;
 class Texture;
 class Camera;
+class PlayerCamera;
 class BirdEyeCamera;
 class LightList;
 class Input;
@@ -28,7 +29,7 @@ public:
 	void Draw(DirectXCommon* dxCommon);
 
 private:
-	Camera* camera;
+	PlayerCamera* mPlayerCamera;
 	BirdEyeCamera* mBirdEyeCamera;
 	LightList* lightList;
 	Player* mPlayer;

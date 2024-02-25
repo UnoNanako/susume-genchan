@@ -6,7 +6,7 @@
 #include "2D/Texture.h"
 #include "Transform.h"
 #include "VertexData.h"
-#include "Camera.h"
+#include "PlayerCamera.h"
 #include "BirdEyeCamera.h"
 #include "Light/LightList.h"
 #include "Player.h"
@@ -28,8 +28,8 @@ GamePlayScene::GamePlayScene(Game* game)
 void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 {
 	//カメラの初期化
-	camera = new Camera;
-	camera->Initialize(dxCommon);
+	mPlayerCamera = new PlayerCamera;
+	mPlayerCamera->Initialize(dxCommon);
 
 	mBirdEyeCamera = new BirdEyeCamera();
 	mBirdEyeCamera->Initialize(dxCommon);
@@ -66,7 +66,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 void GamePlayScene::Finalize()
 {
 	mMap->Finalize();
-	delete camera;
+	delete mPlayerCamera;
 	delete mBirdEyeCamera;
 	delete mPlayer;
 	delete mMap;
@@ -83,7 +83,7 @@ void GamePlayScene::Update(Input* input)
 	ImGui::Begin("Debug");
 	//DirectionalLightのintensity切り替え
 	ImGui::Checkbox("isDirectionalLight", &mIsDirectionalLight);
-	//ImGui::Checkbox("isPlayerCamera", &mIsPlayerCamera);
+	ImGui::Checkbox("isPlayerCamera", &mIsPlayerCamera);
 	ImGui::End();
 
 	if (mIsDirectionalLight == false) {
@@ -94,7 +94,7 @@ void GamePlayScene::Update(Input* input)
 	}
 
 	if (mIsPlayerCamera == true) {
-		camera->Update();
+		mPlayerCamera->Update();
 	}
 	else {
 		mBirdEyeCamera->Update();
@@ -106,7 +106,7 @@ void GamePlayScene::Update(Input* input)
 	mPlayer->Update(input);
 	mMap->Update();
 	mCrosshair->Update();
-	mParticle->Update(camera);
+	mParticle->Update(mPlayerCamera);
 	for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
 		mRotateEnemies[i]->Update();
 	}
@@ -137,18 +137,23 @@ void GamePlayScene::Update(Input* input)
 void GamePlayScene::Draw(DirectXCommon* dxCommon)
 {
 	mGame->GetModelCommon()->Bind(dxCommon);
+	lightList->Bind(dxCommon->GetCommandList());
 	if (mIsPlayerCamera == true) {
-		camera->Bind(dxCommon->GetCommandList());
+		mPlayerCamera->Bind(dxCommon->GetCommandList());
+		mPlayerCamera->SetTransform(mPlayer->GetTransform());
+		mPlayer->Draw(dxCommon->GetCommandList(), mPlayerCamera);
+		mMap->Draw(dxCommon->GetCommandList(), mPlayerCamera);
+		for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
+			mRotateEnemies[i]->Draw(dxCommon->GetCommandList(), mPlayerCamera);
+		}
 	}
 	else {
 		mBirdEyeCamera->Bind(dxCommon->GetCommandList());
-	}
-
-	lightList->Bind(dxCommon->GetCommandList());
-	mPlayer->Draw(dxCommon->GetCommandList(),camera);
-	mMap->Draw(dxCommon->GetCommandList(), camera);
-	for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
-		mRotateEnemies[i]->Draw(dxCommon->GetCommandList(), camera);
+		mPlayer->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
+		mMap->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
+		for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
+			mRotateEnemies[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
+		}
 	}
 
 	mGame->GetParticleCommon()->Bind(dxCommon);

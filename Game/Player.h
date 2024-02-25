@@ -19,6 +19,7 @@ public:
 	AABB GetAABB() { return mAABBtranslate; }
 	Vector3 GetVelocity() { return mVelocity; }
 	Vector3 GetTranslate() { return mTransform.translate; }
+	Transform GetTransform() { return mTransform; }
 	void SetTranslate(Vector3 translate) { mTransform.translate = translate; }
 	void SetVelocity(Vector3 velocity) { mVelocity = velocity; }
 	void SetIsHit(bool isHit) { mIsHit = isHit; }
@@ -29,7 +30,6 @@ private:
 
 	AABB mAABBtranslate;
 	bool mIsHit;
-	bool mIsPlayerCamera;
 	float mSpeed;
 	float mRotateSpeed;
 };

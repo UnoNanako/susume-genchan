@@ -2,7 +2,7 @@
 #include "Transform.h"
 #include "3D/Model.h"
 #include "2D/Texture.h"
-#include "Camera.h"
+#include "PlayerCamera.h"
 #include "VertexData.h"
 #include "Input/Input.h"
 #include "Light/LightList.h"
@@ -10,7 +10,6 @@
 
 Player::Player()
 	:mIsHit(false)
-	,mIsPlayerCamera(false)
 	, mAABBtranslate({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} })
 	,mLightList(nullptr)
 	,mRotateSpeed(0.05f)
@@ -110,7 +109,6 @@ void Player::Update(Input* input)
 	ImGui::Begin("Debug");
 	ImGui::DragFloat3("player Position", &mTransform.translate.x, 0.01f, 0.0f, 10.0f);
 	ImGui::DragFloat3("player Rotation", &mTransform.rotate.x, 0.01f, 0.0f, 10.0f);
-	ImGui::Checkbox("isPlayerCamera2", &mIsPlayerCamera);
 	ImGui::End();
 }
 
@@ -125,12 +123,7 @@ void Player::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
 	frontVec = { 0.0f,0.0f,1.0f };
 	frontVec = Multiply(frontVec, rotationMatrix);
 	mLightList->SetSpotLightDirection(frontVec);
-	if (mIsPlayerCamera == true) {
-		camera->SetTransform(mTransform);
-	}
-	else {
-		camera->SetTransform({ {1.0f,1.0f,1.0f},{0.8f,0.0f,0.0f},{0.0f,95.0f,-100.0f} });
-	}
-	//mTexture->Bind(commandList);
-	//mModel->Draw(commandList, camera,mTransform);
+
+	mTexture->Bind(commandList);
+	mModel->Draw(commandList, camera,mTransform);
 }
