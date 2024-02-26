@@ -11,6 +11,7 @@ class Model;
 struct AABB;
 
 const std::string pathToJSON("./resources/json/map.json");
+const std::string pathToAABBJSON("./resources/json/mapAABB.json");
 
 class Map : public GameObject
 {
@@ -25,20 +26,18 @@ public:
 	std::vector<Model*> GetTerrainModel() { return mTerrainModel; }
 	std::vector<Transform> GetTerrainTransform() { return mTerrainTransform; }
 	std::vector<AABB> GetTerrainAABB() { return mTerrainAABB; }
+	std::vector<AABB> GetInvisibleAABB() { return mInvisibleAABB; }
 
 private:
-	//地面
+	//地形
 	Texture* mTerrainTexture;
-
-	//電車(のちに削除)
-	Model* mTrainModel;
-	Texture* mTrainTexture;
-	Transform mTrainTransform;
-
-	//とりあえずの地形
 	std::vector<Model*> mTerrainModel; //壁や床など
 	std::vector<Transform> mTerrainTransform;
-	const int mTERRAIN_MAX = 100; //地形の数
 	std::vector<AABB> mTerrainAABB;
+
+	//見えない壁(当たり判定用)
+	std::vector<Model*> mInvisibleAABBModel; //見えない壁のvector
+	std::vector<Transform> mInvisibleAABBTransform;
+	std::vector<AABB> mInvisibleAABB; 
 };
 

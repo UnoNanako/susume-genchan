@@ -98,6 +98,9 @@ void GamePlayScene::Update(Input* input)
 	}
 	else {
 		mBirdEyeCamera->Update();
+		//mBirdEyeCamera->UpdateCameraPosition(mPlayer->GetTranslate(), angle, distance);
+		//角度を更新して回転
+		//angle += 0.01f;
 	}
 
 	Transform spriteTransform = { {0.5f,0.5f,0.5f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };

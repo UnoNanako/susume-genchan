@@ -7,7 +7,9 @@
 BirdEyeCamera::BirdEyeCamera()
 {
 	mTransform = { {1.0f,1.0f,1.0f},{0.8f,0.0f,0.0f},{0.0f,50.0f,-45.0f} };
-	
+	mTarget = { 0.0f,0.0f,0.0f };
+	mUp = { 0.0f,1.0f,0.0f };
+	mViewMatrix = CreateLookAt(mTransform.translate, mTarget, mUp);
 }
 
 void BirdEyeCamera::Update()
@@ -25,7 +27,8 @@ void BirdEyeCamera::Update()
 void BirdEyeCamera::UpdateCameraPosition(const Vector3& translate, float angle, float distance)
 {
 	//カメラの位置を計算
-	Vector3 camera;
-	camera.x = translate.x + distance * cos(angle);
-	camera.z = translate.z + distance * sin(angle);
+	mTransform.translate.x = translate.x + distance * cos(angle);
+	mTransform.translate.z = translate.z + distance * sin(angle);
+	//注視点はプレイヤーの位置を設定
+	mTarget = translate;
 }

@@ -21,9 +21,91 @@ const float kInfinity = std::numeric_limits<float>::infinity(); //無限
 struct Vector2 {
 	float x, y;
 };
+
 struct Vector3 {
 	float x, y, z;
+	Vector3() {
+		x = 0.0f;
+		y = 0.0f;
+		z = 0.0f;
+	}
+	Vector3(float x, float y, float z) {
+		this->x = x;
+		this->y = y;
+		this->z = z;
+	}
+
+	void Normalize() {
+		float length = sqrtf((x * x) + (y * y) + (z * z));
+		x /= length;
+		y /= length;
+		z /= length;
+	}
+
+	// +記号オーバーロード
+	Vector3 operator+(Vector3 v) {
+		Vector3 ret;
+		ret.x = x + v.x;
+		ret.y = y + v.y;
+		ret.z = z + v.z;
+		return ret;
+	}
+	// -記号をオーバーロード
+	Vector3 operator-(Vector3 v) {
+		Vector3 ret;
+		ret.x = x - v.x;
+		ret.y = y - v.y;
+		ret.z = z - v.z;
+		return ret;
+	}
+	// *記号をオーバーロード
+	Vector3 operator*(float scaler) {
+		Vector3 ret;
+		ret.x = x * scaler;
+		ret.y = y * scaler;
+		ret.z = z * scaler;
+		return ret;
+	}
+	// /記号をオーバーロード
+	Vector3 operator/(float scaler) {
+		Vector3 ret;
+		ret.x = x / scaler;
+		ret.y = y / scaler;
+		ret.z = z / scaler;
+		return ret;
+	}
+	// +=のオーバーロード
+	void operator+=(Vector3 v) {
+		x += v.x;
+		y += v.y;
+		z += v.z;
+	}
+	// -=のオーバーロード
+	void operator-=(Vector3 v) {
+		x -= v.x;
+		y -= v.y;
+		z -= v.z;
+	}
+	// *記号をオーバーロード
+	void operator*=(float scaler) {
+		x *= scaler;
+		y *= scaler;
+		z *= scaler;
+	}
+	// /記号をオーバーロード
+	void operator/=(float scaler) {
+		x /= scaler;
+		y /= scaler;
+		z /= scaler;
+	}
 };
+
+inline Vector3 Normalize(const Vector3& v) {
+	Vector3 ret = v;
+	ret.Normalize();
+	return ret;
+}
+
 struct Vector4 {
 	float x, y, z, w;
 };
@@ -125,11 +207,11 @@ inline float Dot(const Vector3& v1, const Vector3& v2) { return v1.x * v2.x + v1
 
 inline float Length(const Vector3& v) { return std::sqrt(Dot(v, v)); }
 
-inline Vector3 Normalize(const Vector3& v) {
-	float length = Length(v);
-	assert(length != 0.0f);
-	return { v.x / length, v.y / length, v.z / length };
-}
+//inline Vector3 Normalize(const Vector3& v) {
+//	float length = Length(v);
+//	assert(length != 0.0f);
+//	return { v.x / length, v.y / length, v.z / length };
+//}
 
 // クロス積
 inline Vector3 Cross(const Vector3& v1, const Vector3& v2) {
@@ -404,21 +486,21 @@ inline Matrix4x4 Transpose(const Matrix4x4& m) {
 inline Matrix4x4 MakeIdentity4x4() {
 	// clang-format off
 	Matrix4x4 identity;
-	identity.m[0][0] = 1.0f;	
-	identity.m[0][1] = 0.0f;	
-	identity.m[0][2] = 0.0f;	
+	identity.m[0][0] = 1.0f;
+	identity.m[0][1] = 0.0f;
+	identity.m[0][2] = 0.0f;
 	identity.m[0][3] = 0.0f;
-	identity.m[1][0] = 0.0f;	
-	identity.m[1][1] = 1.0f;	
-	identity.m[1][2] = 0.0f;	
+	identity.m[1][0] = 0.0f;
+	identity.m[1][1] = 1.0f;
+	identity.m[1][2] = 0.0f;
 	identity.m[1][3] = 0.0f;
-	identity.m[2][0] = 0.0f;	
-	identity.m[2][1] = 0.0f;	
-	identity.m[2][2] = 1.0f;	
+	identity.m[2][0] = 0.0f;
+	identity.m[2][1] = 0.0f;
+	identity.m[2][2] = 1.0f;
 	identity.m[2][3] = 0.0f;
-	identity.m[3][0] = 0.0f;	
-	identity.m[3][1] = 0.0f;	
-	identity.m[3][2] = 0.0f;	
+	identity.m[3][0] = 0.0f;
+	identity.m[3][1] = 0.0f;
+	identity.m[3][2] = 0.0f;
 	identity.m[3][3] = 1.0f;
 	return identity;
 	// clang-format on
@@ -766,4 +848,30 @@ inline Matrix4x4 InverseMatrixFromOBB(const OBB& obb) {
 	inverseMatrix.m[3][2] = -Dot(obb.center, obb.orientations[2]);
 	inverseMatrix.m[3][3] = 1.0f;
 	return inverseMatrix;
+}
+
+//カメラのビュー行列を求める関数
+inline Matrix4x4 CreateLookAt(const Vector3& eye, const Vector3& target, const Vector3& up) {
+	Vector3 axisZ = Normalize(Subtract(target , eye));
+	Vector3 axisX = Normalize(Cross(up, axisZ));
+	Vector3 axisY = Normalize(Cross(axisZ, axisX));
+	Vector3 trans = Vector3(-Dot(axisX, eye), -Dot(axisY, eye), -Dot(axisZ, eye));
+	Matrix4x4 ret;
+	ret.m[0][0] = axisX.x;
+	ret.m[0][1] = axisY.x;
+	ret.m[0][2] = axisZ.x;
+	ret.m[0][3] = 0.0f;
+	ret.m[1][0] = axisX.y;
+	ret.m[1][1] = axisY.y;
+	ret.m[1][2] = axisZ.y;
+	ret.m[1][3] = 0.0f;
+	ret.m[2][0] = axisX.z;
+	ret.m[2][1] = axisY.z;
+	ret.m[2][2] = axisZ.z;
+	ret.m[2][3] = 0.0f;
+	ret.m[3][0] = trans.x;
+	ret.m[3][1] = trans.y;
+	ret.m[3][2] = trans.z;
+	ret.m[3][3] = 1.0f;
+	return ret;
 }
