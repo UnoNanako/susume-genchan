@@ -46,6 +46,6 @@ private:
 
 	//BirdEyeCameraの回転角度と距離
 	float angle = 0.0f;
-	float distance = 10.0f;
+	float distance = 5.0f;
 };
 

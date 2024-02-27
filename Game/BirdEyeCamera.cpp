@@ -3,6 +3,7 @@
 #include "DirectXCommon.h"
 #include "externals/imgui/imgui.h"
 #include "MyMath.h"
+#include "Engine/Input/Input.h"
 
 BirdEyeCamera::BirdEyeCamera()
 {
@@ -24,11 +25,19 @@ void BirdEyeCamera::Update()
 	*cameraData = { mTransform.translate };
 }
 
-void BirdEyeCamera::UpdateCameraPosition(const Vector3& translate, float angle, float distance)
+void BirdEyeCamera::UpdateCameraPosition(const Vector3& translate,float distance,Input* input)
 {
+	if (input->PushKey(DIK_LEFT)) {
+		mAngleY -= 0.01f;
+	}
+	if (input->PushKey(DIK_RIGHT)) {
+		mAngleY += 0.01f;
+	}
 	//カメラの位置を計算
-	mTransform.translate.x = translate.x + distance * cos(angle);
-	mTransform.translate.z = translate.z + distance * sin(angle);
+	mTransform.translate.x = translate.x + distance * cos(mAngleY);
+	mTransform.translate.z = translate.z + distance * sin(mAngleY);
 	//注視点はプレイヤーの位置を設定
 	mTarget = translate;
+	//ビュー行列を更新
+	mViewMatrix = CreateLookAt(mTransform.translate, mTarget, mUp);
 }
