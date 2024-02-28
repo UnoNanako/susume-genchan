@@ -21,5 +21,6 @@ private:
 	Vector3 mTarget; //注視点
 	Vector3 mUp; //カメラの上方向
 	float mAngleY; //横角度
+	float mAngleX; //縦方向
 };
 
