@@ -19,33 +19,17 @@ void BirdEyeCamera::Update()
 	ImGui::DragFloat3("Position", &mTransform.translate.x, 0.05f);
 	ImGui::DragFloat3("Rotate", &mTransform.rotate.x, 0.05f);
 	ImGui::End();
+
+	float x = mRadius * sin(mPolarAngle) * cos(mAzimuthalAngle);
+	float y = mRadius * cos(mPolarAngle);
+	float z = mRadius * sin(mPolarAngle) * sin(mAzimuthalAngle);
+	mTransform.translate.x = x;
+	mTransform.translate.y = y;
+	mTransform.translate.z = z;
+
 	mMatrix = MakeAffineMatrix(mTransform.scale, mTransform.rotate, mTransform.translate);
 	mViewMatrix = Inverse(mMatrix);
 	mProjectionMatrix = MakePerspectiveFovMatrix(50.0f * (kPi / 180.0f), WinApiManager::kClientWidth / float(WinApiManager::kClientHeight), 0.1f, 1000.0f);
 	*cameraData = { mTransform.translate };
 }
 
-void BirdEyeCamera::UpdateCameraPosition(const Vector3& translate,float distance,Input* input)
-{
-	if (input->PushKey(DIK_LEFT)) {
-		mAngleY -= 0.01f;
-	}
-	if (input->PushKey(DIK_RIGHT)) {
-		mAngleY += 0.01f;
-	}
-	if (input->PushKey(DIK_UP)) {
-		mAngleX += 0.01f;
-	}
-	if (input->PushKey(DIK_DOWN)) {
-		mAngleX -= 0.01f;
-	}
-	//カメラの位置を計算
-	mTransform.translate.x = translate.x + distance * cos(mAngleY);
-	mTransform.translate.z = translate.z + distance * sin(mAngleY);
-	mTransform.translate.z = translate.z + distance * cos(mAngleX);
-	mTransform.translate.y = translate.y + distance * sin(mAngleX);
-	//注視点はプレイヤーの位置を設定
-	mTarget = translate;
-	//ビュー行列を更新
-	mViewMatrix = CreateLookAt(mTransform.translate, mTarget, mUp);
-}

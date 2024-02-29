@@ -14,13 +14,11 @@ class BirdEyeCamera : public Camera
 public:
 	BirdEyeCamera();
 	void Update() override;
-	void UpdateCameraPosition(const Vector3& translate,float distance,Input* input);
 private:
-	//カメラの位置(親クラス)
-	//ビュー行列(親クラス)
-	Vector3 mTarget; //注視点
-	Vector3 mUp; //カメラの上方向
-	float mAngleY; //横角度
-	float mAngleX; //縦方向
+	float mRadius; //球の半径
+	float mPolarAngle; //方位角
+	float mAzimuthalAngle; //仰角
+	Vector3 mTarget; //注視点の座標
+	Vector3 mUp; //カメラの上方向の座標
 };
 
