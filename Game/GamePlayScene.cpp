@@ -95,7 +95,7 @@ void GamePlayScene::Update(Input* input)
 	Transform spriteTransform = { {0.5f,0.5f,0.5f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 	
 	lightList->Update();
-	mPlayer->Update(input,mBirdEyeCamera->GetViewMatrix());
+	mPlayer->Update(input,mBirdEyeCamera->GetLon());
 
 	if (mIsPlayerCamera == true) {
 		mPlayerCamera->Update();

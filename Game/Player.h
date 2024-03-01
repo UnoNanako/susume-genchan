@@ -13,7 +13,7 @@ class Player : public GameObject
 public:
 	Player();
 	void Initialize(DirectXCommon* dxCommon);
-	void Update(Input* input,Matrix4x4 viewMatrix);
+	void Update(Input* input, float theta);
 	void Draw(ID3D12GraphicsCommandList* commandList,Camera* camera);
 	void SetLightList(LightList* lightList) { mLightList = lightList; }
 	AABB GetAABB() { return mAABBtranslate; }

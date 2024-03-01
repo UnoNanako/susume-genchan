@@ -36,7 +36,7 @@ void Player::Initialize(DirectXCommon* dxCommon)
 	mModel->SetTexture(mTexture);
 }
 
-void Player::Update(Input* input, Matrix4x4 viewMatrix)
+void Player::Update(Input* input, float theta)
 {
 	//読む！理解する！
 	//ここから
@@ -47,18 +47,7 @@ void Player::Update(Input* input, Matrix4x4 viewMatrix)
 
 	//ここまで
 
-	viewMatrix.m[3][0] = 0.0f;
-	viewMatrix.m[3][1] = 0.0f;
-	viewMatrix.m[3][2] = 0.0f;
-
-	viewMatrix.m[0][0] = 1.0f;
-	viewMatrix.m[1][0] = 0.0f;
-	viewMatrix.m[2][0] = 0.0f;
-
-	viewMatrix.m[0][2] = 0.0f;
-	viewMatrix.m[1][2] = 0.0f;
-	viewMatrix.m[2][2] = 1.0f;
-	mTransposeViewMatrix = Transpose(viewMatrix);
+	mTransposeViewMatrix = MakeRotateYMatrix(theta);
 	Vector3 frontVec;
 	frontVec = { 0.0f,0.0f,mSpeed };
 	Vector3 rightVec;
