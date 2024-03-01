@@ -73,12 +73,12 @@ void Player::Update(Input* input)
 		mTransform.translate.y += rightVec.y;
 		mTransform.translate.z += rightVec.z;
 	}
-	if (input->PushKey(DIK_LEFT)) {
+	/*if (input->PushKey(DIK_LEFT)) {
 		mTransform.rotate.y -= 0.05f;
 	}
 	if (input->PushKey(DIK_RIGHT)) {
 		mTransform.rotate.y += 0.05f;
-	}
+	}*/
 
 	//ゲームパッド
 	//Lスティック

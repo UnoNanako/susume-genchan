@@ -97,7 +97,7 @@ void GamePlayScene::Update(Input* input)
 		mPlayerCamera->Update();
 	}
 	else {
-		mBirdEyeCamera->Update();
+		mBirdEyeCamera->Update(input,mPlayer->GetTranslate());
 		//mBirdEyeCamera->UpdateCameraPosition(mPlayer->GetTranslate(),distance,input);
 		//角度を更新して回転
 		//angle += 0.01f;
