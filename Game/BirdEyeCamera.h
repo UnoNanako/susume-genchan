@@ -14,6 +14,8 @@ class BirdEyeCamera : public Camera
 public:
 	BirdEyeCamera();
 	void Update(Input* input,Vector3 playerTranslate);
+	float GetLon() { return mLon; }
+	Matrix4x4 GetViewMatrix() { return mViewMatrix; }
 private:
 	float mRadius; //球の半径
 	float mLat; //緯度

@@ -13,7 +13,7 @@ class Player : public GameObject
 public:
 	Player();
 	void Initialize(DirectXCommon* dxCommon);
-	void Update(Input* input);
+	void Update(Input* input,Matrix4x4 viewMatrix);
 	void Draw(ID3D12GraphicsCommandList* commandList,Camera* camera);
 	void SetLightList(LightList* lightList) { mLightList = lightList; }
 	AABB GetAABB() { return mAABBtranslate; }
@@ -21,6 +21,7 @@ public:
 	Vector3 GetTranslate() { return mTransform.translate; }
 	Transform GetTransform() { return mTransform; }
 	void SetTranslate(Vector3 translate) { mTransform.translate = translate; }
+	void SetRotate(float rotateY) { mTransform.rotate.y = rotateY; }
 	void SetVelocity(Vector3 velocity) { mVelocity = velocity; }
 	void SetIsHit(bool isHit) { mIsHit = isHit; }
 private:
@@ -32,5 +33,7 @@ private:
 	bool mIsHit;
 	float mSpeed;
 	float mRotateSpeed;
+
+	Matrix4x4 mTransposeViewMatrix;
 };
 

@@ -12,6 +12,8 @@ BirdEyeCamera::BirdEyeCamera()
 	mUp = { 0.0f,1.0f,0.0f };
 	mViewMatrix = CreateLookAt(mTransform.translate, mTarget, mUp);
 	mRadius = 50.0f;
+	mLat = 1.0f;
+	mLon = 1.0f;
 }
 
 void BirdEyeCamera::Update(Input* input, Vector3 playerTranslate)
@@ -22,10 +24,10 @@ void BirdEyeCamera::Update(Input* input, Vector3 playerTranslate)
 	ImGui::End();
 
 	if (input->PushKey(DIK_LEFT)) {
-		mLon -= 0.01f;
+		mLon += 0.01f;
 	}
 	if (input->PushKey(DIK_RIGHT)) {
-		mLon += 0.01f;
+		mLon -= 0.01f;
 	}
 	if (input->PushKey(DIK_UP)) {
 		mLat += 0.01f;

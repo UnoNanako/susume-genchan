@@ -92,21 +92,18 @@ void GamePlayScene::Update(Input* input)
 	else {
 		lightList->SetDirectionalLightIntensity(0.7f);
 	}
+	Transform spriteTransform = { {0.5f,0.5f,0.5f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
+	
+	lightList->Update();
+	mPlayer->Update(input,mBirdEyeCamera->GetViewMatrix());
 
 	if (mIsPlayerCamera == true) {
 		mPlayerCamera->Update();
 	}
 	else {
 		mBirdEyeCamera->Update(input,mPlayer->GetTranslate());
-		//mBirdEyeCamera->UpdateCameraPosition(mPlayer->GetTranslate(),distance,input);
-		//角度を更新して回転
-		//angle += 0.01f;
 	}
 
-	Transform spriteTransform = { {0.5f,0.5f,0.5f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
-	
-	lightList->Update();
-	mPlayer->Update(input);
 	mMap->Update();
 	mCrosshair->Update();
 	mParticle->Update(mPlayerCamera);

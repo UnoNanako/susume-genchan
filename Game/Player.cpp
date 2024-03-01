@@ -11,11 +11,11 @@
 Player::Player()
 	:mIsHit(false)
 	, mAABBtranslate({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} })
-	,mLightList(nullptr)
-	,mRotateSpeed(0.05f)
-	,mSpeed(0.25f)
-	,mTexture(nullptr)
-	,mVelocity({0.1f,0.0f,0.1f})
+	, mLightList(nullptr)
+	, mRotateSpeed(0.05f)
+	, mSpeed(0.25f)
+	, mTexture(nullptr)
+	, mVelocity({ 0.1f,0.0f,0.1f })
 {
 }
 
@@ -36,7 +36,7 @@ void Player::Initialize(DirectXCommon* dxCommon)
 	mModel->SetTexture(mTexture);
 }
 
-void Player::Update(Input* input)
+void Player::Update(Input* input, Matrix4x4 viewMatrix)
 {
 	//読む！理解する！
 	//ここから
@@ -44,13 +44,27 @@ void Player::Update(Input* input)
 	Matrix4x4 rotationY = MakeRotateYMatrix(mTransform.rotate.y);
 	Matrix4x4 rotationZ = MakeRotateZMatrix(mTransform.rotate.z);
 	Matrix4x4 rotationMatrix = Multiply(rotationX, Multiply(rotationY, rotationZ));
+
+	//ここまで
+
+	viewMatrix.m[3][0] = 0.0f;
+	viewMatrix.m[3][1] = 0.0f;
+	viewMatrix.m[3][2] = 0.0f;
+
+	viewMatrix.m[0][0] = 1.0f;
+	viewMatrix.m[1][0] = 0.0f;
+	viewMatrix.m[2][0] = 0.0f;
+
+	viewMatrix.m[0][2] = 0.0f;
+	viewMatrix.m[1][2] = 0.0f;
+	viewMatrix.m[2][2] = 1.0f;
+	mTransposeViewMatrix = Transpose(viewMatrix);
 	Vector3 frontVec;
-	frontVec = {0.0f,0.0f,mSpeed};
+	frontVec = { 0.0f,0.0f,mSpeed };
 	Vector3 rightVec;
 	rightVec = { mSpeed,0.0f,0.0f };
-	frontVec = Multiply(frontVec, rotationMatrix);
-	rightVec = Multiply(rightVec, rotationMatrix);
-	//ここまで
+	frontVec = Multiply(frontVec, mTransposeViewMatrix);
+	rightVec = Multiply(rightVec, mTransposeViewMatrix);
 
 	//キーボード
 	if (input->PushKey(DIK_W)) {
@@ -125,5 +139,5 @@ void Player::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
 	mLightList->SetSpotLightDirection(frontVec);
 
 	mTexture->Bind(commandList);
-	mModel->Draw(commandList, camera,mTransform);
+	mModel->Draw(commandList, camera, mTransform);
 }
