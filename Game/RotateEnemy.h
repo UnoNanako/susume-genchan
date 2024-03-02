@@ -3,6 +3,7 @@
 #include <d3d12.h>
 #include "Transform.h"
 #include <vector>
+#include <chrono>
 
 class DirectXCommon;
 class Camera;
@@ -31,5 +32,8 @@ private:
 	bool mIsRotate;
 	AABB mAABB;
 	float mFovAngle; //視野角
+	float mLength;
+	bool mIsPlayerInView; //プレイヤーが視野内にいるか
+	std::chrono::steady_clock::time_point mLastRotationTime; //最後の回転時間
 };
 
