@@ -109,10 +109,12 @@ void GamePlayScene::Update(Input* input)
 	mParticle->Update(mPlayerCamera);
 	for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
 		mRotateEnemies[i]->Update();
+		mRotateEnemies[i]->DetectPlayer(mPlayer);
+		mRotateEnemies[i]->TrackPlayer(mPlayer);
 	}
 	CollisionResult collisionResult;
 
-	//壁との当たり判定
+	//壁とプレイヤーの当たり判定
 	for (uint32_t i = 0; i < mMap->GetTerrainModel().size(); ++i) {
 		if (IsCollision(mPlayer->GetAABB(), mMap->GetTerrainAABB()[i], collisionResult)) {
 			mPlayer->SetIsHit(true);
@@ -124,12 +126,24 @@ void GamePlayScene::Update(Input* input)
 		}
 	}
 
-	//rotateEnemyとの当たり判定
+	//rotateEnemyとプレイヤーの当たり判定
 	for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
 		if (IsCollision(mPlayer->GetAABB(), mRotateEnemies[i]->GetAABB(), collisionResult)) {
 			ImGui::Begin("Debug");
 			ImGui::Text("Dead");
 			ImGui::End();
+		}
+	}
+
+	//壁とrotateEnemyの当たり判定
+	for (uint32_t i = 0; i < mMap->GetTerrainModel().size(); ++i) {
+		for (uint32_t j = 0; j < mRotateEnemies.size(); ++j) {
+			if (IsCollision(mRotateEnemies[j]->GetAABB(), mMap->GetTerrainAABB()[i], collisionResult)) {
+				Vector3 pos = mRotateEnemies[j]->GetTranslate();
+				pos.x += collisionResult.normal.x * collisionResult.depth;
+				pos.z += collisionResult.normal.z * collisionResult.depth;
+				mRotateEnemies[j]->SetTranslate(pos);
+			}
 		}
 	}
 }

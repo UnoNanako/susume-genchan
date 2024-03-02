@@ -13,7 +13,7 @@ BirdEyeCamera::BirdEyeCamera()
 	mViewMatrix = CreateLookAt(mTransform.translate, mTarget, mUp);
 	mRadius = 50.0f;
 	mLat = 1.0f;
-	mLon = 1.0f;
+	mLon = 0.0f;
 }
 
 void BirdEyeCamera::Update(Input* input, Vector3 playerTranslate)
@@ -22,6 +22,14 @@ void BirdEyeCamera::Update(Input* input, Vector3 playerTranslate)
 	ImGui::DragFloat3("Position", &mTransform.translate.x, 0.05f);
 	ImGui::DragFloat3("Rotate", &mTransform.rotate.x, 0.05f);
 	ImGui::End();
+
+	//ゲームパッドの右スティックの入力を取得
+	Vector2 rSttick = input->GetRStick();
+	//カメラの方位角と仰角を更新
+	mLon -= rSttick.x * 0.02f;
+	mLat += rSttick.y * 0.02f;
+
+	mLat = Max((kPi/18.0f), Min(mLat, static_cast<float>(kPi / 2)));
 
 	if (input->PushKey(DIK_LEFT)) {
 		mLon += 0.01f;

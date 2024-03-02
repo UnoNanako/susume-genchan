@@ -13,7 +13,7 @@ Player::Player()
 	, mAABBtranslate({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} })
 	, mLightList(nullptr)
 	, mRotateSpeed(0.05f)
-	, mSpeed(0.25f)
+	, mSpeed(0.2f)
 	, mTexture(nullptr)
 	, mVelocity({ 0.1f,0.0f,0.1f })
 {
@@ -47,7 +47,7 @@ void Player::Update(Input* input, float theta)
 
 	//ここまで
 
-	mTransposeViewMatrix = MakeRotateYMatrix(theta);
+	mTransposeViewMatrix = MakeRotateYMatrix(-theta - kPi / 2.0f);
 	Vector3 frontVec;
 	frontVec = { 0.0f,0.0f,mSpeed };
 	Vector3 rightVec;
@@ -100,7 +100,8 @@ void Player::Update(Input* input, float theta)
 	mTransform.translate.z += rightVec.z;
 	//Rスティック
 	Vector2 rStick = input->GetRStick();
-	mTransform.rotate.y += (rStick.x * mRotateSpeed);
+	//mTransform.rotate.y += (rStick.x * mRotateSpeed);
+	mTransform.rotate.y = -theta - kPi/2.0f;
 
 	if (mIsHit == true) {
 		mVelocity = { 0.0f,0.0f,0.0f };

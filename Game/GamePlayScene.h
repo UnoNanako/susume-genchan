@@ -42,7 +42,7 @@ private:
 
 	//フラグ
 	bool mIsDirectionalLight = true;
-	bool mIsPlayerCamera = true;
+	bool mIsPlayerCamera = false;
 
 	//BirdEyeCameraの回転角度と距離
 	float angle = 0.0f;
