@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include <d3d12.h>
+#include <chrono>
 
 class AABB;
 
@@ -17,5 +18,7 @@ public:
 	void SetTranslate(Vector3 translate) { mTransform.translate = translate; }
 private:
 	AABB mAABB;
+	float mSpeed;
+	std::chrono::steady_clock::time_point mRoundtripTime; //往復する時間
 };
 

@@ -81,7 +81,6 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	//movingFloor
 	mMovingFloor = new MovingFloor();
 	mMovingFloor->Initialize(dxCommon);
-	mMovingFloor->SetTranslate({ 15.0f,0.0f,32.5f });
 }
 
 void GamePlayScene::Finalize()
