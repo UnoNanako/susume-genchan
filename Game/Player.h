@@ -15,7 +15,10 @@ public:
 	void Initialize(DirectXCommon* dxCommon);
 	void Update(Input* input, float theta);
 	void Draw(ID3D12GraphicsCommandList* commandList,Camera* camera);
-	void SetLightList(LightList* lightList) { mLightList = lightList; }
+	
+	/// <summary>
+	/// アクセッサ
+	/// </summary>
 	AABB GetAABB() { return mAABBtranslate; }
 	Vector3 GetVelocity() { return mVelocity; }
 	Vector3 GetTranslate() { return mTransform.translate; }
@@ -24,6 +27,8 @@ public:
 	void SetRotate(float rotateY) { mTransform.rotate.y = rotateY; }
 	void SetVelocity(Vector3 velocity) { mVelocity = velocity; }
 	void SetIsHit(bool isHit) { mIsHit = isHit; }
+	void SetLightList(LightList* lightList) { mLightList = lightList; }
+
 private:
 	Vector3 mVelocity;
 	Texture* mTexture;
@@ -33,6 +38,7 @@ private:
 	bool mIsHit;
 	float mSpeed;
 	float mRotateSpeed;
+	float mGravity; //重力
 
 	Matrix4x4 mTransposeViewMatrix;
 };

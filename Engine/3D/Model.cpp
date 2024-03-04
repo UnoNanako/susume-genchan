@@ -193,7 +193,7 @@ void Model::Load(const std::string& directoryPath, const std::string& filename)
 	for (uint32_t meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex) {
 		aiMesh* mesh = scene->mMeshes[meshIndex];
 		assert(mesh->HasNormals()); //法線がないMeshは今回は非対応
-		assert(mesh->HasTextureCoords(0)); //TexcoordがないMwshは今回は非対応
+		assert(mesh->HasTextureCoords(0)); //TexcoordがないMeshは今回は非対応
 		//ここからMeshの中身(Face)の解析を行っていく
 		for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex) {
 			aiFace& face = mesh->mFaces[faceIndex];

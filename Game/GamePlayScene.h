@@ -18,6 +18,9 @@ class Crosshair;
 class ParticleList;
 class Game;
 class RotateEnemy;
+class Gem;
+class Star;
+class MovingFloor;
 
 class GamePlayScene
 {
@@ -37,8 +40,15 @@ private:
 	Crosshair* mCrosshair;
 	ParticleList* mParticle;
 	Game* mGame;
+
+	//敵
 	const int mROTATEENEMY_MAX = 1;
 	std::vector<RotateEnemy*> mRotateEnemies;
+	//アイテム
+	std::vector<Gem*> mGems;
+	Star* mStar;
+	//動く床
+	MovingFloor* mMovingFloor;
 
 	//フラグ
 	bool mIsDirectionalLight = true;

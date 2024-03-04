@@ -12,6 +12,9 @@
 #include "Player.h"
 #include "Map.h"
 #include "MyMath.h"
+#include "Gem.h"
+#include "Game/Star.h"
+#include "Game/MovingFloor.h"
 #include "Crosshair.h"
 #include "Particle/ParticleList.h"
 #include "Game/Game.h"
@@ -60,7 +63,25 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 		mRotateEnemies[i] = new RotateEnemy();
 		mRotateEnemies[i]->Initialize(dxCommon);
 	}
-	mRotateEnemies[0]->SetTranslate({ 15.0f,2.5f,12.5f });
+	mRotateEnemies[0]->SetTranslate({ 15.0f,2.0f,12.5f });
+
+	//gem
+	mGems.resize(1);
+	for (uint32_t i = 0; i < mGems.size(); ++i) {
+		mGems[i] = new Gem();
+		mGems[i]->Initialize(dxCommon);
+	}
+	mGems[0]->SetTranslate({ 17.5f,10.0f,-15.0f });
+
+	//star
+	mStar = new Star();
+	mStar->Initialize(dxCommon);
+	mStar->SetTranslate({22.5f,5.0f,25.0f});
+
+	//movingFloor
+	mMovingFloor = new MovingFloor();
+	mMovingFloor->Initialize(dxCommon);
+	mMovingFloor->SetTranslate({ 15.0f,0.0f,32.5f });
 }
 
 void GamePlayScene::Finalize()
@@ -76,6 +97,11 @@ void GamePlayScene::Finalize()
 	for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
 		delete mRotateEnemies[i];
 	}
+	for (uint32_t i = 0; i < mGems.size(); ++i) {
+		delete mGems[i];
+	}
+	delete mStar;
+	delete mMovingFloor;
 }
 
 void GamePlayScene::Update(Input* input)
@@ -112,8 +138,13 @@ void GamePlayScene::Update(Input* input)
 		mRotateEnemies[i]->DetectPlayer(mPlayer);
 		mRotateEnemies[i]->TrackPlayer(mPlayer);
 	}
-	CollisionResult collisionResult;
+	for (uint32_t i = 0; i < mGems.size(); ++i) {
+		mGems[i]->Update();
+	}
+	mStar->Update();
+	mMovingFloor->Update();
 
+	CollisionResult collisionResult;
 	//壁とプレイヤーの当たり判定
 	for (uint32_t i = 0; i < mMap->GetTerrainModel().size(); ++i) {
 		if (IsCollision(mPlayer->GetAABB(), mMap->GetTerrainAABB()[i], collisionResult)) {
@@ -146,6 +177,14 @@ void GamePlayScene::Update(Input* input)
 			}
 		}
 	}
+
+	//starとplayerの当たり判定
+	if (IsCollision(mPlayer->GetAABB(), mStar->GetAABB(), collisionResult)) {
+		Vector3 pos = mPlayer->GetTranslate();
+		pos.x += collisionResult.normal.x * collisionResult.depth;
+		pos.z += collisionResult.normal.z * collisionResult.depth;
+		mPlayer->SetTranslate(pos);
+	}
 }
 
 void GamePlayScene::Draw(DirectXCommon* dxCommon)
@@ -169,7 +208,12 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 			mRotateEnemies[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
 		}
 	}
-
+	
+	for (uint32_t i = 0; i < mGems.size(); ++i) {
+		mGems[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
+	}
+	mStar->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
+	mMovingFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
 	mGame->GetParticleCommon()->Bind(dxCommon);
 	//mParticle->Draw(dxCommon->GetCommandList(), camera, { 0.0f,0.0f,0.0f });
 

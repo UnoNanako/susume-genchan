@@ -7,7 +7,7 @@
 
 BirdEyeCamera::BirdEyeCamera()
 {
-	mTransform = { {1.0f,1.0f,1.0f},{0.8f,0.0f,0.0f},{0.0f,50.0f,-45.0f} };
+	mTransform = { {1.0f,1.0f,1.0f},{0.8f,0.0f,0.0f},{-50.0f,35.0f,-55.0f} };
 	mTarget = { 0.0f,0.0f,0.0f };
 	mUp = { 0.0f,1.0f,0.0f };
 	mViewMatrix = CreateLookAt(mTransform.translate, mTarget, mUp);

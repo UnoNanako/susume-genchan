@@ -16,13 +16,14 @@ Player::Player()
 	, mSpeed(0.2f)
 	, mTexture(nullptr)
 	, mVelocity({ 0.1f,0.0f,0.1f })
+	, mGravity(0.8f)
 {
 }
 
 void Player::Initialize(DirectXCommon* dxCommon)
 {
 	mDxCommon = dxCommon;
-	mTransform.translate = { -25.0f,5.0f,-25.0f };
+	mTransform.translate = { -25.0f,50.0f,-25.0f };
 	mTransform.rotate = { 0.0f,0.0f,0.0f };
 	mTransform.scale = { 1.0f,1.0f,1.0f };
 	mAABBtranslate = {
@@ -38,6 +39,11 @@ void Player::Initialize(DirectXCommon* dxCommon)
 
 void Player::Update(Input* input, float theta)
 {
+	mTransform.translate.y -= mGravity;
+	if (mIsHit == true) {
+		mTransform.translate.y = 4.0f;
+		mGravity = 0.0f;
+	}
 	//読む！理解する！
 	//ここから
 	Matrix4x4 rotationX = MakeRotateXMatrix(mTransform.rotate.x);
