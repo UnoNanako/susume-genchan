@@ -11,6 +11,7 @@
 #include "Light/LightList.h"
 #include "Player.h"
 #include "Map.h"
+#include "Game/Switch.h"
 #include "MyMath.h"
 #include "Gem.h"
 #include "Game/Star.h"
@@ -76,11 +77,15 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	//star
 	mStar = new Star();
 	mStar->Initialize(dxCommon);
-	mStar->SetTranslate({22.5f,5.0f,25.0f});
+	mStar->SetTranslate({17.5f,5.0f,80.0f});
 
 	//movingFloor
 	mMovingFloor = new MovingFloor();
 	mMovingFloor->Initialize(dxCommon);
+
+	//switch
+	mSwitch = new Switch();
+	mSwitch->Initialize(dxCommon);
 }
 
 void GamePlayScene::Finalize()
@@ -101,6 +106,7 @@ void GamePlayScene::Finalize()
 	}
 	delete mStar;
 	delete mMovingFloor;
+	delete mSwitch;
 }
 
 void GamePlayScene::Update(Input* input)
@@ -142,6 +148,7 @@ void GamePlayScene::Update(Input* input)
 	}
 	mStar->Update();
 	mMovingFloor->Update();
+	mSwitch->Update();
 
 	CollisionResult collisionResult;
 	//壁とプレイヤーの当たり判定
@@ -184,6 +191,14 @@ void GamePlayScene::Update(Input* input)
 		pos.z += collisionResult.normal.z * collisionResult.depth;
 		mPlayer->SetTranslate(pos);
 	}
+
+	//switchとplayerの当たり判定
+	if (IsCollision(mPlayer->GetAABB(), mSwitch->GetAABB(), collisionResult)) {
+		Vector3 pos = mPlayer->GetTranslate();
+		pos.x += collisionResult.normal.x * collisionResult.depth;
+		pos.y += collisionResult.normal.y * collisionResult.depth;
+		pos.z += collisionResult.normal.z * collisionResult.depth;
+	}
 }
 
 void GamePlayScene::Draw(DirectXCommon* dxCommon)
@@ -213,6 +228,7 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 	}
 	mStar->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
 	mMovingFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
+	mSwitch->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
 	mGame->GetParticleCommon()->Bind(dxCommon);
 	//mParticle->Draw(dxCommon->GetCommandList(), camera, { 0.0f,0.0f,0.0f });
 

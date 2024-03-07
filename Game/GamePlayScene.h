@@ -21,6 +21,7 @@ class RotateEnemy;
 class Gem;
 class Star;
 class MovingFloor;
+class Switch;
 
 class GamePlayScene
 {
@@ -49,13 +50,11 @@ private:
 	Star* mStar;
 	//動く床
 	MovingFloor* mMovingFloor;
+	//スイッチ
+	Switch* mSwitch;
 
 	//フラグ
 	bool mIsDirectionalLight = true;
 	bool mIsPlayerCamera = false;
-
-	//BirdEyeCameraの回転角度と距離
-	float angle = 0.0f;
-	float distance = 5.0f;
 };
 

@@ -491,6 +491,30 @@
             5.0
         ]
     },
+    "Terrain46": {
+        "Position": [
+            12.5,
+            0.0,
+            80.0
+        ],
+        "Scale": [
+            5.0,
+            5.0,
+            5.0
+        ]
+    },
+    "Terrain47": {
+        "Position": [
+            17.5,
+            0.0,
+            80.0
+        ],
+        "Scale": [
+            5.0,
+            5.0,
+            5.0
+        ]
+    },
     "Terrain5": {
         "Position": [
             -17.5,
@@ -551,5 +575,5 @@
             5.0
         ]
     },
-    "TerrainCount": 46
+    "TerrainCount": 48
 }
