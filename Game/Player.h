@@ -7,6 +7,7 @@ class Input;
 class Texture;
 class LightList;
 struct AABB;
+class MovingFloor;
 
 class Player : public GameObject
 {
@@ -28,6 +29,7 @@ public:
 	void SetVelocity(Vector3 velocity) { mVelocity = velocity; }
 	void SetIsHit(bool isHit) { mIsHit = isHit; }
 	void SetLightList(LightList* lightList) { mLightList = lightList; }
+	void SetMovingFloor(MovingFloor* movingFloor) { mMovingFloor = movingFloor; }
 
 private:
 	Vector3 mVelocity;
@@ -41,5 +43,7 @@ private:
 	float mGravity; //重力
 
 	Matrix4x4 mTransposeViewMatrix;
+
+	MovingFloor* mMovingFloor;
 };
 

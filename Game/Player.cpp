@@ -16,7 +16,7 @@ Player::Player()
 	, mSpeed(0.2f)
 	, mTexture(nullptr)
 	, mVelocity({ 0.1f,0.0f,0.1f })
-	, mGravity(0.8f)
+	, mGravity(0.05f)
 {
 }
 
@@ -39,10 +39,11 @@ void Player::Initialize(DirectXCommon* dxCommon)
 
 void Player::Update(Input* input, float theta)
 {
-	mTransform.translate.y -= mGravity;
+	mVelocity.y -= mGravity;
+	mTransform.translate.y += mVelocity.y;
 	if (mIsHit == true) {
-		mTransform.translate.y = 4.0f;
-		mGravity = 0.0f;
+		mTransform.translate.y = 2.0f;
+		mVelocity.y = 0.0f;
 	}
 	//読む！理解する！
 	//ここから
@@ -109,9 +110,6 @@ void Player::Update(Input* input, float theta)
 	//mTransform.rotate.y += (rStick.x * mRotateSpeed);
 	mTransform.rotate.y = -theta - kPi/2.0f;
 
-	if (mIsHit == true) {
-		mVelocity = { 0.0f,0.0f,0.0f };
-	}
 	mAABBtranslate = {
 		{mTransform.translate.x - mTransform.scale.x,mTransform.translate.y - mTransform.scale.y,mTransform.translate.z - mTransform.scale.z},
 		{mTransform.translate.x + mTransform.scale.x,mTransform.translate.y + mTransform.scale.y,mTransform.translate.z + mTransform.scale.z}

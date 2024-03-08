@@ -152,12 +152,13 @@ void GamePlayScene::Update(Input* input)
 
 	CollisionResult collisionResult;
 	//壁とプレイヤーの当たり判定
+	mPlayer->SetIsHit(false);
 	for (uint32_t i = 0; i < mMap->GetTerrainModel().size(); ++i) {
 		if (IsCollision(mPlayer->GetAABB(), mMap->GetTerrainAABB()[i], collisionResult)) {
 			mPlayer->SetIsHit(true);
 			Vector3 pos = mPlayer->GetTranslate();
 			pos.x += collisionResult.normal.x * collisionResult.depth;
-			//pos.y += collisionResult.normal.y * collisionResult.depth;
+			pos.y += collisionResult.normal.y * collisionResult.depth;
 			pos.z += collisionResult.normal.z * collisionResult.depth;
 			mPlayer->SetTranslate(pos);
 		}
