@@ -18,6 +18,7 @@ void Gem::Initialize(DirectXCommon* dxCommon)
 void Gem::Update()
 {
 	mTransform.rotate.y += 0.05f;
+	mTransform.UpdateMatrix();
 }
 
 void Gem::Draw(ID3D12GraphicsCommandList* commansList, Camera* camera)

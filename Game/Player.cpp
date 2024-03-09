@@ -42,7 +42,7 @@ void Player::Update(Input* input, float theta)
 	mVelocity.y -= mGravity;
 	mTransform.translate.y += mVelocity.y;
 	if (mIsHit == true) {
-		mTransform.translate.y = 2.0f;
+		mTransform.translate.y = 3.0f;
 		mVelocity.y = 0.0f;
 	}
 	//読む！理解する！
@@ -109,15 +109,16 @@ void Player::Update(Input* input, float theta)
 	Vector2 rStick = input->GetRStick();
 	//mTransform.rotate.y += (rStick.x * mRotateSpeed);
 	mTransform.rotate.y = -theta - kPi/2.0f;
-
+	Vector3 worldPos = GetWorldPosition();
 	mAABBtranslate = {
-		{mTransform.translate.x - mTransform.scale.x,mTransform.translate.y - mTransform.scale.y,mTransform.translate.z - mTransform.scale.z},
-		{mTransform.translate.x + mTransform.scale.x,mTransform.translate.y + mTransform.scale.y,mTransform.translate.z + mTransform.scale.z}
+		{worldPos.x - mTransform.scale.x,worldPos.y - mTransform.scale.y,worldPos.z - mTransform.scale.z},
+		{worldPos.x + mTransform.scale.x,worldPos.y + mTransform.scale.y,worldPos.z + mTransform.scale.z}
 	};
 	ImGui::Begin("Debug");
 	ImGui::DragFloat3("player Position", &mTransform.translate.x, 0.01f, 0.0f, 10.0f);
 	ImGui::DragFloat3("player Rotation", &mTransform.rotate.x, 0.01f, 0.0f, 10.0f);
 	ImGui::End();
+	mTransform.UpdateMatrix();
 }
 
 void Player::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)

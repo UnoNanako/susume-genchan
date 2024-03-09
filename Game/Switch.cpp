@@ -19,6 +19,8 @@ void Switch::Initialize(DirectXCommon* dxCommon)
 
 void Switch::Update()
 {
+	mAABB = CalcurateAABB(mTransform.translate);
+	mTransform.UpdateMatrix();
 }
 
 void Switch::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
@@ -26,4 +28,20 @@ void Switch::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
 	mRed->Bind(commandList);
 	mBlue->Bind(commandList);
 	mModel->Draw(commandList, camera, mTransform);
+}
+
+AABB Switch::CalcurateAABB(const Vector3& translate)
+{
+	AABB ret;
+	ret.min = {
+		{translate.x - (5.0f / 2.0f)},
+		{translate.y - (5.0f / 2.0f)},
+		{translate.z - (5.0f / 2.0f)}
+	};
+	ret.max = {
+		{translate.x + (5.0f / 2.0f)},
+		{translate.y + (5.0f / 2.0f)},
+		{translate.z + (5.0f / 2.0f)}
+	};
+	return ret;
 }

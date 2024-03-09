@@ -46,6 +46,7 @@ void RotateEnemy::Update()
 			mLastRotationTime = now;
 		}
 	}
+	mTransform.UpdateMatrix();
 }
 
 void RotateEnemy::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)

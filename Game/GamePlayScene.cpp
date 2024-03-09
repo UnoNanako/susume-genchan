@@ -126,13 +126,14 @@ void GamePlayScene::Update(Input* input)
 	Transform spriteTransform = { {0.5f,0.5f,0.5f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 	
 	lightList->Update();
+	mMovingFloor->Update();
 	mPlayer->Update(input,mBirdEyeCamera->GetLon());
 
 	if (mIsPlayerCamera == true) {
 		mPlayerCamera->Update();
 	}
 	else {
-		mBirdEyeCamera->Update(input,mPlayer->GetTranslate());
+		mBirdEyeCamera->Update(input,mPlayer->GetWorldPosition());
 	}
 
 	mMap->Update();
@@ -147,7 +148,7 @@ void GamePlayScene::Update(Input* input)
 		mGems[i]->Update();
 	}
 	mStar->Update();
-	mMovingFloor->Update();
+	
 	mSwitch->Update();
 
 	CollisionResult collisionResult;
@@ -199,7 +200,37 @@ void GamePlayScene::Update(Input* input)
 		pos.x += collisionResult.normal.x * collisionResult.depth;
 		pos.y += collisionResult.normal.y * collisionResult.depth;
 		pos.z += collisionResult.normal.z * collisionResult.depth;
+		mPlayer->SetTranslate(pos);
+		mMovingFloor->SetIsMoving(true);
 	}
+
+	//movingFloorとplayerの当たり判定
+	if (IsCollision(mPlayer->GetAABB(), mMovingFloor->GetAABB(), collisionResult)) {
+		mPlayer->SetIsHit(true);
+		mIsHit = true;
+		Vector3 pos = mPlayer->GetTranslate();
+		pos.x += collisionResult.normal.x * collisionResult.depth;
+		pos.y += collisionResult.normal.y * collisionResult.depth;
+		pos.z += collisionResult.normal.z * collisionResult.depth;
+		mPlayer->SetTranslate(pos);
+		if (mPlayer->GetParent() == nullptr) {
+			//playerとmoveFloorの親子関係を結ぶ
+			Matrix4x4 local = Multiply(mPlayer->GetWorldMatrix(), Inverse(mMovingFloor->GetWorldMatrix()));
+			mPlayer->SetTranslate(Vector3{ local.m[3][0],local.m[3][1],local.m[3][2] });
+		}
+		auto& tmp = mMovingFloor->GetTransform();
+		mPlayer->SetParent(&tmp);
+	}
+	else {
+		mPlayer->SetParent(nullptr);
+		if (mIsHit == true) {
+			mIsHit = false;
+			Matrix4x4 world = mPlayer->GetWorldMatrix();
+			mPlayer->SetTranslate(Vector3{ world.m[3][0],world.m[3][1],world.m[3][2] });
+		}
+	}
+
+	mPlayer->GetTransform().UpdateMatrix();
 }
 
 void GamePlayScene::Draw(DirectXCommon* dxCommon)

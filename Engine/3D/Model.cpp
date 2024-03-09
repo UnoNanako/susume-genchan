@@ -67,7 +67,7 @@ void Model::Draw(ID3D12GraphicsCommandList* commandList,Camera* camera,const Tra
 {
 	//const float kPi = std::numbers::pi_v<float>;
 	//Model用のWorldViewProjectionMatrixをつくる
-	Matrix4x4 worldMatrix = MakeAffineMatrix(mTransform.scale, mTransform.rotate, mTransform.translate);
+	Matrix4x4 worldMatrix = mTransform.mMatWorld;//MakeAffineMatrix(mTransform.scale, mTransform.rotate, mTransform.translate);
 	Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(camera->GetViewMatrix(), camera->GetProjectionMatrix()));
 	transformationMatrixData->WVP = worldViewProjectionMatrix;
 	transformationMatrixData->World = worldMatrix;

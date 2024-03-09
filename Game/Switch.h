@@ -10,6 +10,8 @@ public:
 	void Initialize(DirectXCommon* dxCommon)override;
 	void Update();
 	void Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)override;
+	//minとmaxを求める関数
+	AABB CalcurateAABB(const Vector3& translate);
 
 	/// <summary>
 	/// アクセッサ

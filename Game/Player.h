@@ -24,12 +24,17 @@ public:
 	Vector3 GetVelocity() { return mVelocity; }
 	Vector3 GetTranslate() { return mTransform.translate; }
 	Transform GetTransform() { return mTransform; }
+	Vector3 GetWorldPosition() { return Vector3{ mTransform.mMatWorld.m[3][0],mTransform.mMatWorld.m[3][1],mTransform.mMatWorld.m[3][2] }; }
+	Matrix4x4 GetWorldMatrix() { return mTransform.mMatWorld; }
+	Transform* GetParent() { return mTransform.mParent; }
 	void SetTranslate(Vector3 translate) { mTransform.translate = translate; }
 	void SetRotate(float rotateY) { mTransform.rotate.y = rotateY; }
 	void SetVelocity(Vector3 velocity) { mVelocity = velocity; }
 	void SetIsHit(bool isHit) { mIsHit = isHit; }
 	void SetLightList(LightList* lightList) { mLightList = lightList; }
 	void SetMovingFloor(MovingFloor* movingFloor) { mMovingFloor = movingFloor; }
+	//親となるトランスフォームをセット
+	void SetParent(Transform* parent) { mTransform.mParent = parent; }
 
 private:
 	Vector3 mVelocity;

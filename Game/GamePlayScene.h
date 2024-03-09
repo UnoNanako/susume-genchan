@@ -56,5 +56,6 @@ private:
 	//フラグ
 	bool mIsDirectionalLight = true;
 	bool mIsPlayerCamera = false;
+	bool mIsHit = false;
 };
 

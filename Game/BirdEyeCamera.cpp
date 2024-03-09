@@ -43,6 +43,7 @@ void BirdEyeCamera::Update(Input* input, Vector3 playerTranslate)
 	if (input->PushKey(DIK_DOWN)) {
 		mLat -= 0.01f;
 	}
+	
 	float x = mRadius * sin(mLat) * cos(mLon) + playerTranslate.x;
 	float y = mRadius * cos(mLat) + playerTranslate.y;
 	float z = mRadius * sin(mLat) * sin(mLon) +playerTranslate.z;

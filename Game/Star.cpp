@@ -16,6 +16,7 @@ void Star::Update()
 {
 	mTransform.rotate.y += 0.05f;
 	mAABB = CalcurateAABB(mTransform.translate);
+	mTransform.UpdateMatrix();
 }
 
 void Star::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)

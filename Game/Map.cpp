@@ -114,29 +114,9 @@ void Map::Update()
 	}
 	ImGui::DragFloat3("floorScale", &mTerrainTransform[0].scale.x, 0.01f);
 	ImGui::End();
-
-	/*ImGui::Begin("invisible");
-	if (ImGui::Button("Create")) {
-		Model* newModel;
-		newModel = new Model();
-		newModel->Create(mDxCommon, "resources", "floor.obj");
-		mInvisibleAABBModel.emplace_back(newModel);
-		Transform newTransform;
-		newTransform.scale.x = 5.0f;
-		newTransform.scale.y = 5.0f;
-		newTransform.scale.z = 5.0f;
-		newTransform.rotate.x = 0.0f;
-		newTransform.rotate.y = 0.0f;
-		newTransform.rotate.z = 0.0f;
-		mInvisibleAABBTransform.emplace_back(newTransform);
-		AABB newAABB;
-		newAABB = CalcurateAABB(newTransform.translate, newTransform.scale);
-		mInvisibleAABB.emplace_back(newAABB);
+	for (uint32_t i = 0; i < mTerrainModel.size(); ++i) {
+		mTerrainTransform[i].UpdateMatrix();
 	}
-	for (uint32_t i = 0; i < mInvisibleAABBModel.size(); ++i) {
-		ImGui::DragFloat3(std::format("invisibleTransform{}", i).c_str(), &mInvisibleAABBTransform[i].translate.x, 0.01f);
-	}
-	ImGui::End();*/
 }
 
 void Map::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
