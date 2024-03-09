@@ -41,14 +41,14 @@ private:
 	Texture* mTexture;
 	LightList* mLightList;
 
-	AABB mAABBtranslate;
-	bool mIsHit;
-	float mSpeed;
-	float mRotateSpeed;
+	AABB mAABBtranslate; //当たり判定用
+	bool mIsHit; //壁や床に当たったかどうかを管理するフラグ
+	float mSpeed; 
+	float mRotateSpeed; //回転スピード
 	float mGravity; //重力
 
 	Matrix4x4 mTransposeViewMatrix;
 
-	MovingFloor* mMovingFloor;
+	MovingFloor* mMovingFloor; //動く床
 };
 

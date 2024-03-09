@@ -23,9 +23,11 @@ Player::Player()
 void Player::Initialize(DirectXCommon* dxCommon)
 {
 	mDxCommon = dxCommon;
-	mTransform.translate = { -25.0f,50.0f,-25.0f };
-	mTransform.rotate = { 0.0f,0.0f,0.0f };
-	mTransform.scale = { 1.0f,1.0f,1.0f };
+	mTransform = {
+		{1.0f,1.0f,1.0f}, //scale
+		{0.0f,0.0f,0.0f}, //rotate
+		{-25.0f,50.0f,-25.0f} //translate
+	};
 	mAABBtranslate = {
 		{0.0f,0.0f,0.0f},
 		{0.0f,0.0f,0.0f}
@@ -39,28 +41,35 @@ void Player::Initialize(DirectXCommon* dxCommon)
 
 void Player::Update(Input* input, float theta)
 {
-	mVelocity.y -= mGravity;
+	mVelocity.y -= mGravity; //毎フレーム重力をかけている
 	mTransform.translate.y += mVelocity.y;
-	if (mIsHit == true) {
+	if (mIsHit == true) { //地面に当たったら
 		mTransform.translate.y = 3.0f;
 		mVelocity.y = 0.0f;
 	}
 	//読む！理解する！
 	//ここから
+	//3軸の回転行列を作成
 	Matrix4x4 rotationX = MakeRotateXMatrix(mTransform.rotate.x);
 	Matrix4x4 rotationY = MakeRotateYMatrix(mTransform.rotate.y);
 	Matrix4x4 rotationZ = MakeRotateZMatrix(mTransform.rotate.z);
+	//3軸の回転行列を1つの行列に結合
 	Matrix4x4 rotationMatrix = Multiply(rotationX, Multiply(rotationY, rotationZ));
 
-	//ここまで
-
+	//ビューの座標系を変換するための行列
+	//y軸回りの回転を行い、thetaとpi/2を引いた角度で回転
 	mTransposeViewMatrix = MakeRotateYMatrix(-theta - kPi / 2.0f);
+	//前方
 	Vector3 frontVec;
 	frontVec = { 0.0f,0.0f,mSpeed };
+	//右方向
 	Vector3 rightVec;
 	rightVec = { mSpeed,0.0f,0.0f };
+	//2つのベクトルをそれぞれビュー行列で変換。ビューに対して前方と右方向のベクトルが求まる
 	frontVec = Multiply(frontVec, mTransposeViewMatrix);
 	rightVec = Multiply(rightVec, mTransposeViewMatrix);
+
+	//ここまで
 
 	//キーボード
 	if (input->PushKey(DIK_W)) {

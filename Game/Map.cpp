@@ -37,6 +37,7 @@ void Map::Create(DirectXCommon* dxCommon)
 			Transform newTransform;
 
 			nlohmann::json& terrainData = mJson[std::format("Terrain{}", i)]; //これあとで理解
+			//各地形のTransformをベクターに追加。これにより、あとで地形の位置、スケール、回転などを取得できるようになる
 			newTransform.translate.x = terrainData["Position"][0].get<float>();
 			newTransform.translate.y = terrainData["Position"][1].get<float>();
 			newTransform.translate.z = terrainData["Position"][2].get<float>();

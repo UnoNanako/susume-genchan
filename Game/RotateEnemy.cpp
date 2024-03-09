@@ -65,9 +65,11 @@ bool RotateEnemy::DetectPlayer(Player* player)
 	Vector3 toPlayer = playerPosition - position;
 	toPlayer.Normalize();
 	toPlayer.y = 0.0f;
-	//敵の全歩を表すベクトルを計算する
+	//敵の前方を表すベクトルを計算する
+	//敵の向きはY軸回りに回転していると考え、Z軸が正面を向いていると仮定して回転行列を使って計算
 	Vector3 forwardDirection = Multiply(Vector3(0.0f, 0.0f, 1.0f),MakeRotateYMatrix(mTransform.rotate.y)); //仮にZ軸が正面を向いていると仮定
 	//プレイヤーが敵の視野角内に収まっているかどうかを判定する
+	//敵の前方ベクトルと敵からプレイヤーへの方向ベクトルの間の内積を計算し、その値が視野角の余弦以上かどうかで行う。
 	float dotProduct = Dot(forwardDirection, toPlayer); //内積を計算
 	float fovCosine = cosf(mFovAngle * 0.5f);
 	//内積が視野角の余弦以上であれば、プレイヤーは視野角内に収まっている
@@ -87,10 +89,13 @@ void RotateEnemy::TrackPlayer(Player* player)
 		Vector3 playerPosition = player->GetTranslate();
 		//敵からプレイヤーへのベクトルを計算する
 		Vector3 toPlayer = playerPosition - mTransform.translate;
+		//↑のベクトルの長さがmLengthよりも短い場合、プレイヤーが敵の攻撃範囲内にいると判断される。
 		if (Length(toPlayer) <= mLength) {
 			mIsPlayerInView = true;
 			toPlayer.Normalize();
 			//敵の向きをプレイヤーの方向に向ける
+			//方向ベクトルを正規化し、敵の向きをプレイヤーの方向に向ける。
+			//Y軸方向の回転角度を計算し、Y軸回りの回転を適用する。
 			mTransform.rotate.y = toPlayer.y;
 			mTransform.rotate.x = 0.0f;
 			mTransform.rotate.y = atan2(toPlayer.x, toPlayer.z);
