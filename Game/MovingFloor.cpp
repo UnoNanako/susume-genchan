@@ -8,7 +8,11 @@ void MovingFloor::Initialize(DirectXCommon* dxCommon)
 {
 	mDxCommon = dxCommon;
 	mSpeed = -0.15f;
-	mTransform = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{ 15.0f,0.0f,32.5f } };
+	mTransform = {
+		{1.0f,1.0f,1.0f},
+		{0.0f,0.0f,0.0f},
+		{15.0f,0.0f,32.5f}
+	};
 	mModel = new Model();
 	mModel->Create(mDxCommon, "resources/moveFloor", "moveFloor.obj");
 	mIsMoving = false;

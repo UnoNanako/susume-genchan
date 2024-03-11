@@ -22,6 +22,7 @@ class Gem;
 class Star;
 class MovingFloor;
 class Switch;
+class UpDownFloor;
 
 class GamePlayScene
 {
@@ -52,6 +53,8 @@ private:
 	MovingFloor* mMovingFloor;
 	//スイッチ
 	Switch* mSwitch;
+	//スイッチを押すと上下に動く床
+	UpDownFloor* mUpDownFloor;
 
 	//フラグ
 	bool mIsDirectionalLight = true;

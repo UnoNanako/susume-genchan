@@ -16,6 +16,7 @@
 #include "Gem.h"
 #include "Game/Star.h"
 #include "Game/MovingFloor.h"
+#include "Game/UpDownFloor.h"
 #include "Crosshair.h"
 #include "Particle/ParticleList.h"
 #include "Game/Game.h"
@@ -35,9 +36,11 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	mPlayerCamera = new PlayerCamera;
 	mPlayerCamera->Initialize(dxCommon);
 
+	//俯瞰カメラ
 	mBirdEyeCamera = new BirdEyeCamera();
 	mBirdEyeCamera->Initialize(dxCommon);
 
+	//ライト
 	lightList = new LightList();
 	lightList->Create(dxCommon);
 
@@ -86,6 +89,10 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	//switch
 	mSwitch = new Switch();
 	mSwitch->Initialize(dxCommon);
+
+	//UpDownFloor(スイッチを押すと上下に動く床)
+	mUpDownFloor = new UpDownFloor();
+	mUpDownFloor->Initialize(dxCommon);
 }
 
 void GamePlayScene::Finalize()
@@ -107,6 +114,7 @@ void GamePlayScene::Finalize()
 	delete mStar;
 	delete mMovingFloor;
 	delete mSwitch;
+	delete mUpDownFloor;
 }
 
 void GamePlayScene::Update(Input* input)
@@ -148,8 +156,8 @@ void GamePlayScene::Update(Input* input)
 		mGems[i]->Update();
 	}
 	mStar->Update();
-	
 	mSwitch->Update();
+	mUpDownFloor->Update();
 
 	CollisionResult collisionResult;
 	//壁とプレイヤーの当たり判定
@@ -261,6 +269,7 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 	mStar->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
 	mMovingFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
 	mSwitch->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
+	mUpDownFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
 	mGame->GetParticleCommon()->Bind(dxCommon);
 	//mParticle->Draw(dxCommon->GetCommandList(), camera, { 0.0f,0.0f,0.0f });
 
