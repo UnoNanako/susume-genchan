@@ -5,7 +5,7 @@
 
 class AABB;
 
-class UpDownFloor : public GameObject
+class UpFloor : public GameObject
 {
 public:
 	void Initialize(DirectXCommon* dxCommon)override;

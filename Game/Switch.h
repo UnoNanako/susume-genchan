@@ -19,6 +19,7 @@ public:
 	/// </summary>
 	AABB GetAABB() { return mAABB; }
 	void SetMoveFloor(MoveFloor* moveFloor) { mMoveFloor = moveFloor; }
+	void SetModel(Model* model) { mModel = model; }
 private:
 	AABB mAABB;
 	Texture* mRed;

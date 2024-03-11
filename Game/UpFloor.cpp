@@ -1,10 +1,10 @@
-#include "UpDownFloor.h"
+#include "UpFloor.h"
 #include "Transform.h"
 #include "3D/Model.h"
 #include "2D/Texture.h"
 #include "VertexData.h"
 
-void UpDownFloor::Initialize(DirectXCommon* dxCommon)
+void UpFloor::Initialize(DirectXCommon* dxCommon)
 {
 	mDxCommon = dxCommon;
 	mSpeed = -0.15f;
@@ -18,17 +18,17 @@ void UpDownFloor::Initialize(DirectXCommon* dxCommon)
 	mIsMoving = false;
 }
 
-void UpDownFloor::Update()
+void UpFloor::Update()
 {
 	mTransform.UpdateMatrix();
 }
 
-void UpDownFloor::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
+void UpFloor::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
 {
 	mModel->Draw(commandList, camera, mTransform);
 }
 
-AABB UpDownFloor::CalcurateAABB(const Vector3& translate)
+AABB UpFloor::CalcurateAABB(const Vector3& translate)
 {
 	AABB ret;
 	ret.min = {

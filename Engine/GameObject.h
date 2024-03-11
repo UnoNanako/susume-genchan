@@ -11,9 +11,18 @@ struct VertexData;
 class GameObject
 {
 public:
-	virtual void Initialize(DirectXCommon *dxCommon);
+	virtual void Initialize(DirectXCommon* dxCommon);
 	virtual void Update();
-	virtual void Draw(ID3D12GraphicsCommandList* commandList,Camera* camera);
+	virtual void Draw(ID3D12GraphicsCommandList* commandList, Camera* camera);
+
+	/// <summary>
+	/// アクセッサ
+	/// </summary>
+	Transform GetTransform() { return mTransform; }
+	Vector3 GetScale() { return mTransform.scale; }
+	Vector3 GetRotate() { return mTransform.rotate; }
+	Vector3 GetTranslate() { return mTransform.translate; }
+
 protected:
 	Model* mModel;
 	Texture* mTexture;

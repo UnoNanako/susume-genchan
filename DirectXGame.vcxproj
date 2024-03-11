@@ -140,7 +140,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Switch.cpp" />
     <ClCompile Include="Game\MoveFloor.cpp" />
     <ClCompile Include="Transform.cpp" />
-    <ClCompile Include="Game\UpDownFloor.cpp" />
+    <ClCompile Include="Game\UpFloor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -191,7 +191,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Star.h" />
     <ClInclude Include="Game\SlideFloor.h" />
     <ClInclude Include="Game\Switch.h" />
-    <ClInclude Include="Game\UpDownFloor.h" />
+    <ClInclude Include="Game\UpFloor.h" />
     <ClInclude Include="Game\MoveFloor.h" />
   </ItemGroup>
   <ItemGroup>

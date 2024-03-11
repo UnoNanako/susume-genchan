@@ -17,7 +17,7 @@
 #include "Game/Star.h"
 #include "Game/MoveFloor.h"
 #include "Game/SlideFloor.h"
-#include "Game/UpDownFloor.h"
+#include "Game/UpFloor.h"
 #include "Crosshair.h"
 #include "Particle/ParticleList.h"
 #include "Game/Game.h"
@@ -84,17 +84,19 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	mStar->SetTranslate({17.5f,5.0f,80.0f});
 
 	//movingFloor
-	mSlideFloor = new SlideFloor();
+	mSlideFloor = std::make_unique<SlideFloor>();
 	mSlideFloor->Initialize(dxCommon);
-
 	//switch
-	mSlideSwitch = new Switch();
-	mSlideSwitch->SetMoveFloor(mSlideFloor);
+	mSlideSwitch = std::make_unique<Switch>();
+	mSlideSwitch->SetMoveFloor(mSlideFloor.get());
 	mSlideSwitch->Initialize(dxCommon);
 
 	//UpDownFloor(スイッチを押すと上下に動く床)
-	mUpDownFloor = new UpDownFloor();
-	mUpDownFloor->Initialize(dxCommon);
+	mUpFloor = std::make_unique<UpFloor>();
+	mUpFloor->Initialize(dxCommon);
+	//upSwitch
+	mUpSwitch = std::make_unique<Switch>();
+	mUpSwitchModel = std::make_unique<Model>();
 }
 
 void GamePlayScene::Finalize()
@@ -114,9 +116,6 @@ void GamePlayScene::Finalize()
 		delete mGems[i];
 	}
 	delete mStar;
-	delete mSlideFloor;
-	delete mSlideSwitch;
-	delete mUpDownFloor;
 }
 
 void GamePlayScene::Update(Input* input)
@@ -159,7 +158,7 @@ void GamePlayScene::Update(Input* input)
 	}
 	mStar->Update();
 	mSlideSwitch->Update();
-	mUpDownFloor->Update();
+	mUpFloor->Update();
 
 	CollisionResult collisionResult;
 	//壁とプレイヤーの当たり判定
@@ -270,7 +269,7 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 	mStar->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
 	mSlideFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
 	mSlideSwitch->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
-	mUpDownFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
+	mUpFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
 	mGame->GetParticleCommon()->Bind(dxCommon);
 	//mParticle->Draw(dxCommon->GetCommandList(), camera, { 0.0f,0.0f,0.0f });
 

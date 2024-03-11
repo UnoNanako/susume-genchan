@@ -23,7 +23,7 @@ class Star;
 class MoveFloor;
 class SlideFloor;
 class Switch;
-class UpDownFloor;
+class UpFloor;
 
 class GamePlayScene
 {
@@ -52,10 +52,15 @@ private:
 	Star* mStar;
 	//動く床
 	SlideFloor* mSlideFloor;
+	std::unique_ptr<SlideFloor> mSlideFloor;
 	//スイッチ
-	Switch* mSlideSwitch;
+	std::unique_ptr<Switch> mSlideSwitch;
 	//スイッチを押すと上下に動く床
-	UpDownFloor* mUpDownFloor;
+	std::unique_ptr<UpFloor> mUpFloor;
+	//upスイッチ
+	std::unique_ptr<Switch> mUpSwitch;
+	//upスイッチモデル
+	std::unique_ptr<Model> mUpSwitchModel;
 
 	//フラグ
 	bool mIsDirectionalLight = true;
