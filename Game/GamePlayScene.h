@@ -20,7 +20,8 @@ class Game;
 class RotateEnemy;
 class Gem;
 class Star;
-class MovingFloor;
+class MoveFloor;
+class SlideFloor;
 class Switch;
 class UpDownFloor;
 
@@ -50,9 +51,9 @@ private:
 	std::vector<Gem*> mGems;
 	Star* mStar;
 	//動く床
-	MovingFloor* mMovingFloor;
+	SlideFloor* mSlideFloor;
 	//スイッチ
-	Switch* mSwitch;
+	Switch* mSlideSwitch;
 	//スイッチを押すと上下に動く床
 	UpDownFloor* mUpDownFloor;
 

@@ -1,12 +1,13 @@
 #pragma once
 #include "GameObject.h"
+#include "Game/MoveFloor.h"
 #include "Transform.h"
 #include <d3d12.h>
 #include <chrono>
 
 class AABB;
 
-class MovingFloor : public GameObject
+class SlideFloor : public MoveFloor
 {
 public:
 	void Initialize(DirectXCommon* dxCommon)override;

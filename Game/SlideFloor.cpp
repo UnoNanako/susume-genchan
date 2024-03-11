@@ -1,10 +1,10 @@
-#include "MovingFloor.h"
+#include "SlideFloor.h"
 #include "Transform.h"
 #include "3D/Model.h"
 #include "2D/Texture.h"
 #include "VertexData.h"
 
-void MovingFloor::Initialize(DirectXCommon* dxCommon)
+void SlideFloor::Initialize(DirectXCommon* dxCommon)
 {
 	mDxCommon = dxCommon;
 	mSpeed = -0.15f;
@@ -18,7 +18,7 @@ void MovingFloor::Initialize(DirectXCommon* dxCommon)
 	mIsMoving = false;
 }
 
-void MovingFloor::Update()
+void SlideFloor::Update()
 {
 	if (mIsMoving == true) {
 		mTransform.translate.z += mSpeed;
@@ -33,12 +33,12 @@ void MovingFloor::Update()
 	mTransform.UpdateMatrix();
 }
 
-void MovingFloor::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
+void SlideFloor::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
 {
 	mModel->Draw(commandList, camera, mTransform);
 }
 
-AABB MovingFloor::CalcurateAABB(const Vector3& translate)
+AABB SlideFloor::CalcurateAABB(const Vector3& translate)
 {
 	AABB ret;
 	ret.min = {

@@ -15,12 +15,13 @@
 #include "MyMath.h"
 #include "Gem.h"
 #include "Game/Star.h"
-#include "Game/MovingFloor.h"
+#include "Game/MoveFloor.h"
+#include "Game/SlideFloor.h"
 #include "Game/UpDownFloor.h"
 #include "Crosshair.h"
 #include "Particle/ParticleList.h"
 #include "Game/Game.h"
-#include "3D/ModelCommon.h"
+#include "3D/ModelCommon.h" 
 #include "Game/RotateEnemy.h"
 #include "Particle/ParticleCommon.h"
 #include "externals/imgui/imgui.h"
@@ -83,12 +84,13 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	mStar->SetTranslate({17.5f,5.0f,80.0f});
 
 	//movingFloor
-	mMovingFloor = new MovingFloor();
-	mMovingFloor->Initialize(dxCommon);
+	mSlideFloor = new SlideFloor();
+	mSlideFloor->Initialize(dxCommon);
 
 	//switch
-	mSwitch = new Switch();
-	mSwitch->Initialize(dxCommon);
+	mSlideSwitch = new Switch();
+	mSlideSwitch->SetMoveFloor(mSlideFloor);
+	mSlideSwitch->Initialize(dxCommon);
 
 	//UpDownFloor(スイッチを押すと上下に動く床)
 	mUpDownFloor = new UpDownFloor();
@@ -112,8 +114,8 @@ void GamePlayScene::Finalize()
 		delete mGems[i];
 	}
 	delete mStar;
-	delete mMovingFloor;
-	delete mSwitch;
+	delete mSlideFloor;
+	delete mSlideSwitch;
 	delete mUpDownFloor;
 }
 
@@ -134,7 +136,7 @@ void GamePlayScene::Update(Input* input)
 	Transform spriteTransform = { {0.5f,0.5f,0.5f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 	
 	lightList->Update();
-	mMovingFloor->Update();
+	mSlideFloor->Update();
 	mPlayer->Update(input,mBirdEyeCamera->GetLon());
 
 	if (mIsPlayerCamera == true) {
@@ -156,7 +158,7 @@ void GamePlayScene::Update(Input* input)
 		mGems[i]->Update();
 	}
 	mStar->Update();
-	mSwitch->Update();
+	mSlideSwitch->Update();
 	mUpDownFloor->Update();
 
 	CollisionResult collisionResult;
@@ -203,17 +205,17 @@ void GamePlayScene::Update(Input* input)
 	}
 
 	//switchとplayerの当たり判定
-	if (IsCollision(mPlayer->GetAABB(), mSwitch->GetAABB(), collisionResult)) {
+	if (IsCollision(mPlayer->GetAABB(), mSlideSwitch->GetAABB(), collisionResult)) {
 		Vector3 pos = mPlayer->GetTranslate();
 		pos.x += collisionResult.normal.x * collisionResult.depth;
 		pos.y += collisionResult.normal.y * collisionResult.depth;
 		pos.z += collisionResult.normal.z * collisionResult.depth;
 		mPlayer->SetTranslate(pos);
-		mMovingFloor->SetIsMoving(true);
+		mSlideFloor->SetIsMoving(true);
 	}
 
 	//movingFloorとplayerの当たり判定
-	if (IsCollision(mPlayer->GetAABB(), mMovingFloor->GetAABB(), collisionResult)) {
+	if (IsCollision(mPlayer->GetAABB(), mSlideFloor->GetAABB(), collisionResult)) {
 		mPlayer->SetIsHit(true);
 		mIsHit = true;
 		Vector3 pos = mPlayer->GetTranslate();
@@ -223,10 +225,10 @@ void GamePlayScene::Update(Input* input)
 		mPlayer->SetTranslate(pos);
 		if (mPlayer->GetParent() == nullptr) {
 			//playerとmoveFloorの親子関係を結ぶ
-			Matrix4x4 local = Multiply(mPlayer->GetWorldMatrix(), Inverse(mMovingFloor->GetWorldMatrix()));
+			Matrix4x4 local = Multiply(mPlayer->GetWorldMatrix(), Inverse(mSlideFloor->GetWorldMatrix()));
 			mPlayer->SetTranslate(Vector3{ local.m[3][0],local.m[3][1],local.m[3][2] });
 		}
-		auto& tmp = mMovingFloor->GetTransform();
+		auto& tmp = mSlideFloor->GetTransform();
 		mPlayer->SetParent(&tmp);
 	}
 	else {
@@ -237,7 +239,6 @@ void GamePlayScene::Update(Input* input)
 			mPlayer->SetTranslate(Vector3{ world.m[3][0],world.m[3][1],world.m[3][2] });
 		}
 	}
-
 	mPlayer->GetTransform().UpdateMatrix();
 }
 
@@ -267,8 +268,8 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 		mGems[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
 	}
 	mStar->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
-	mMovingFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
-	mSwitch->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
+	mSlideFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
+	mSlideSwitch->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
 	mUpDownFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
 	mGame->GetParticleCommon()->Bind(dxCommon);
 	//mParticle->Draw(dxCommon->GetCommandList(), camera, { 0.0f,0.0f,0.0f });

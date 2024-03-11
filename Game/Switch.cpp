@@ -3,11 +3,15 @@
 #include "3D/Model.h"
 #include "2D/Texture.h"
 #include "VertexData.h"
+#include "Game/MoveFloor.h"
 
 void Switch::Initialize(DirectXCommon* dxCommon)
 {
 	mDxCommon = dxCommon;
 	mTransform = { {5.0f,5.0f,5.0f},{0.0f,0.0f,0.0f},{32.5f,0.0f,-20.0f} };
+
+	mMoveFloor = new MoveFloor();
+
 	mRed = new Texture();
 	mBlue = new Texture();
 	mRed->Create(mDxCommon, "resources/blocks/switch/red.png");
