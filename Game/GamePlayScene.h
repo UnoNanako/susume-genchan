@@ -1,6 +1,21 @@
 #pragma once
 #include "Transform.h"
 #include <vector>
+#include "Game/Player.h"
+#include "Game/Map.h"
+#include "Game/Crosshair.h"
+#include "Engine/Particle/ParticleList.h"
+#include "Game.h"
+#include "Game/RotateEnemy.h"
+#include "Game/Gem.h"
+#include "Game/Star.h"
+#include "Game/MoveFloor.h"
+#include "Game/SlideFloor.h"
+#include "Game/Switch.h"
+#include "Game/UpFloor.h"
+#include "Game/BirdEyeCamera.h"
+#include "Game/PlayerCamera.h"
+#include "Engine/Light/LightList.h"
 
 class DirectXCommon;
 class Sprite;
@@ -8,22 +23,7 @@ class Model;
 class SphereModel;
 class Texture;
 class Camera;
-class PlayerCamera;
-class BirdEyeCamera;
-class LightList;
 class Input;
-class Player;
-class Map;
-class Crosshair;
-class ParticleList;
-class Game;
-class RotateEnemy;
-class Gem;
-class Star;
-class MoveFloor;
-class SlideFloor;
-class Switch;
-class UpFloor;
 
 class GamePlayScene
 {

@@ -92,8 +92,8 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	mSlideSwitch->Initialize(dxCommon);
 
 	//UpDownFloor(スイッチを押すと上下に動く床)
-	mUpFloor = std::make_unique<UpFloor>();
-	mUpFloor->Initialize(dxCommon);
+	//mUpFloor = std::make_unique<UpFloor>();
+	//mUpFloor->Initialize(dxCommon);
 	//upSwitch
 	mUpSwitch = std::make_unique<Switch>();
 	mUpSwitchModel = std::make_unique<Model>();
@@ -144,7 +144,7 @@ void GamePlayScene::Update(Input* input)
 	}
 	mStar->Update();
 	mSlideSwitch->Update();
-	mUpFloor->Update();
+	//mUpFloor->Update();
 
 	CollisionResult collisionResult;
 	//壁とプレイヤーの当たり判定
@@ -255,7 +255,7 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 	mStar->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mSlideFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mSlideSwitch->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
-	mUpFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
+	//mUpFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mGame->GetParticleCommon()->Bind(dxCommon);
 	//mParticle->Draw(dxCommon->GetCommandList(), camera, { 0.0f,0.0f,0.0f });
 	mGame->GetModelCommon()->Bind(dxCommon);
