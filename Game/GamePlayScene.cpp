@@ -34,38 +34,38 @@ GamePlayScene::GamePlayScene(Game* game)
 void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 {
 	//カメラの初期化
-	mPlayerCamera = new PlayerCamera;
+	mPlayerCamera = std::make_unique<PlayerCamera>();
 	mPlayerCamera->Initialize(dxCommon);
 
 	//俯瞰カメラ
-	mBirdEyeCamera = new BirdEyeCamera();
+	mBirdEyeCamera = std::make_unique<BirdEyeCamera>();
 	mBirdEyeCamera->Initialize(dxCommon);
 
 	//ライト
-	lightList = new LightList();
-	lightList->Create(dxCommon);
+	mLightList = std::make_unique<LightList>();
+	mLightList->Create(dxCommon);
 
 	//player
-	mPlayer = new Player();
+	mPlayer = std::make_unique<Player>();
 	mPlayer->Initialize(dxCommon);
-	mPlayer->SetLightList(lightList);
+	mPlayer->SetLightList(mLightList.get());
 
 	//Map
-	mMap = new Map();
+	mMap = std::make_unique<Map>();
 	mMap->Create(dxCommon);
 
 	//crosshair
-	mCrosshair = new Crosshair();
+	mCrosshair = std::make_unique<Crosshair>();
 	mCrosshair->Initialize(dxCommon);
 
 	//particle
-	mParticle = new ParticleList();
+	mParticle = std::make_unique<ParticleList>();
 	mParticle->Create(dxCommon);
 
 	//rotateEnemy
 	mRotateEnemies.resize(mROTATEENEMY_MAX);
 	for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
-		mRotateEnemies[i] = new RotateEnemy();
+		mRotateEnemies[i] = std::make_unique<RotateEnemy>();
 		mRotateEnemies[i]->Initialize(dxCommon);
 	}
 	mRotateEnemies[0]->SetTranslate({ 15.0f,2.0f,12.5f });
@@ -73,13 +73,13 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	//gem
 	mGems.resize(1);
 	for (uint32_t i = 0; i < mGems.size(); ++i) {
-		mGems[i] = new Gem();
+		mGems[i] = std::make_unique<Gem>();
 		mGems[i]->Initialize(dxCommon);
 	}
 	mGems[0]->SetTranslate({ 17.5f,10.0f,-15.0f });
 
 	//star
-	mStar = new Star();
+	mStar = std::make_unique<Star>();
 	mStar->Initialize(dxCommon);
 	mStar->SetTranslate({17.5f,5.0f,80.0f});
 
@@ -102,20 +102,6 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 void GamePlayScene::Finalize()
 {
 	mMap->Finalize();
-	delete mPlayerCamera;
-	delete mBirdEyeCamera;
-	delete mPlayer;
-	delete mMap;
-	delete lightList;
-	delete mCrosshair;
-	delete mParticle;
-	for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
-		delete mRotateEnemies[i];
-	}
-	for (uint32_t i = 0; i < mGems.size(); ++i) {
-		delete mGems[i];
-	}
-	delete mStar;
 }
 
 void GamePlayScene::Update(Input* input)
@@ -127,14 +113,14 @@ void GamePlayScene::Update(Input* input)
 	ImGui::End();
 
 	if (mIsDirectionalLight == false) {
-		lightList->SetDirectionalLightIntensity(0.0f);
+		mLightList->SetDirectionalLightIntensity(0.0f);
 	}
 	else {
-		lightList->SetDirectionalLightIntensity(0.7f);
+		mLightList->SetDirectionalLightIntensity(0.7f);
 	}
 	Transform spriteTransform = { {0.5f,0.5f,0.5f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 	
-	lightList->Update();
+	mLightList->Update();
 	mSlideFloor->Update();
 	mPlayer->Update(input,mBirdEyeCamera->GetLon());
 
@@ -147,11 +133,11 @@ void GamePlayScene::Update(Input* input)
 
 	mMap->Update();
 	mCrosshair->Update();
-	mParticle->Update(mPlayerCamera);
+	mParticle->Update(mPlayerCamera.get());
 	for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
 		mRotateEnemies[i]->Update();
-		mRotateEnemies[i]->DetectPlayer(mPlayer);
-		mRotateEnemies[i]->TrackPlayer(mPlayer);
+		mRotateEnemies[i]->DetectPlayer(mPlayer.get());
+		mRotateEnemies[i]->TrackPlayer(mPlayer.get());
 	}
 	for (uint32_t i = 0; i < mGems.size(); ++i) {
 		mGems[i]->Update();
@@ -244,35 +230,34 @@ void GamePlayScene::Update(Input* input)
 void GamePlayScene::Draw(DirectXCommon* dxCommon)
 {
 	mGame->GetModelCommon()->Bind(dxCommon);
-	lightList->Bind(dxCommon->GetCommandList());
+	mLightList->Bind(dxCommon->GetCommandList());
 	if (mIsPlayerCamera == true) {
 		mPlayerCamera->Bind(dxCommon->GetCommandList());
 		mPlayerCamera->SetTransform(mPlayer->GetTransform());
-		mPlayer->Draw(dxCommon->GetCommandList(), mPlayerCamera);
-		mMap->Draw(dxCommon->GetCommandList(), mPlayerCamera);
+		mPlayer->Draw(dxCommon->GetCommandList(), mPlayerCamera.get());
+		mMap->Draw(dxCommon->GetCommandList(), mPlayerCamera.get());
 		for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
-			mRotateEnemies[i]->Draw(dxCommon->GetCommandList(), mPlayerCamera);
+			mRotateEnemies[i]->Draw(dxCommon->GetCommandList(), mPlayerCamera.get());
 		}
 	}
 	else {
 		mBirdEyeCamera->Bind(dxCommon->GetCommandList());
-		mPlayer->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
-		mMap->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
+		mPlayer->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
+		mMap->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 		for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
-			mRotateEnemies[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
+			mRotateEnemies[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 		}
 	}
 	
 	for (uint32_t i = 0; i < mGems.size(); ++i) {
-		mGems[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
+		mGems[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	}
-	mStar->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
-	mSlideFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
-	mSlideSwitch->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
-	mUpFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera);
+	mStar->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
+	mSlideFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
+	mSlideSwitch->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
+	mUpFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mGame->GetParticleCommon()->Bind(dxCommon);
 	//mParticle->Draw(dxCommon->GetCommandList(), camera, { 0.0f,0.0f,0.0f });
-
 	mGame->GetModelCommon()->Bind(dxCommon);
 	mCrosshair->Draw(dxCommon->GetCommandList());
 }

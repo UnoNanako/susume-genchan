@@ -35,23 +35,22 @@ public:
 	void Draw(DirectXCommon* dxCommon);
 
 private:
-	PlayerCamera* mPlayerCamera;
-	BirdEyeCamera* mBirdEyeCamera;
-	LightList* lightList;
-	Player* mPlayer;
-	Map* mMap;
-	Crosshair* mCrosshair;
-	ParticleList* mParticle;
+	std::unique_ptr<PlayerCamera> mPlayerCamera;
+	std::unique_ptr<BirdEyeCamera> mBirdEyeCamera;
+	std::unique_ptr<LightList> mLightList;
+	std::unique_ptr<Player> mPlayer;
+	std::unique_ptr<Map> mMap;
+	std::unique_ptr<Crosshair> mCrosshair;
+	std::unique_ptr<ParticleList> mParticle;
 	Game* mGame;
 
 	//敵
 	const int mROTATEENEMY_MAX = 1;
-	std::vector<RotateEnemy*> mRotateEnemies;
+	std::vector<std::unique_ptr<RotateEnemy>> mRotateEnemies;
 	//アイテム
-	std::vector<Gem*> mGems;
-	Star* mStar;
+	std::vector <std::unique_ptr<Gem>> mGems;
+	std::unique_ptr<Star> mStar;
 	//動く床
-	SlideFloor* mSlideFloor;
 	std::unique_ptr<SlideFloor> mSlideFloor;
 	//スイッチ
 	std::unique_ptr<Switch> mSlideSwitch;
