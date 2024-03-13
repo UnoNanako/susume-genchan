@@ -1,11 +1,12 @@
 #pragma once
 #include "GameObject.h"
+#include "Game/MoveFloor.h"
 #include "Transform.h"
 #include <d3d12.h>
 
 class AABB;
 
-class UpFloor : public GameObject
+class UpFloor : public MoveFloor
 {
 public:
 	void Initialize(DirectXCommon* dxCommon)override;
@@ -13,9 +14,18 @@ public:
 	void Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)override;
 	//minとmaxを求める関数
 	AABB CalcurateAABB(const Vector3& translate);
+
+	/// <summary>
+	/// アクセッサ
+	/// </summary>
+	AABB GetAABB() { return mAABB; }
+	Transform& GetTransform() { return mTransform; }
+	Vector3 GetWorldPosition() { return Vector3{ mTransform.mMatWorld.m[3][0],mTransform.mMatWorld.m[3][1],mTransform.mMatWorld.m[3][2] }; }
+	Matrix4x4 GetWorldMatrix() { return mTransform.mMatWorld; }
+	bool GetIsMove() { return mIsMove; }
+	void SetIsMove(bool isMove) { mIsMove = isMove; }
 private:
 	AABB mAABB;
 	float mSpeed;
-	bool mIsMoving; //動いているか
 };
 

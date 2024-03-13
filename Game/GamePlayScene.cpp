@@ -83,21 +83,23 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	mStar->Initialize(dxCommon);
 	mStar->SetTranslate({17.5f,5.0f,80.0f});
 
-	//movingFloor
+	//movingFloor(スイッチを押すとスライドし始める床)
 	mSlideFloor = std::make_unique<SlideFloor>();
 	mSlideFloor->Initialize(dxCommon);
 	//switch
 	mSlideSwitch = std::make_unique<Switch>();
 	mSlideSwitch->SetMoveFloor(mSlideFloor.get());
 	mSlideSwitch->Initialize(dxCommon);
+	mSlideSwitch->SetTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{27.5f,2.5f,-20.0f} });
 
-	//UpDownFloor(スイッチを押すと上下に動く床)
+	//UpFloor(スイッチを押すと上に動く床)
 	mUpFloor = std::make_unique<UpFloor>();
 	mUpFloor->Initialize(dxCommon);
 	//upSwitch
 	mUpSwitch = std::make_unique<Switch>();
-	mUpSwitchModel = std::make_unique<Model>();
-	mUpSwitchModel->Create(dxCommon, "resources/updownFloor", "switch.obj");
+	mUpSwitch->SetMoveFloor(mUpFloor.get());
+	mUpSwitch->Initialize(dxCommon);
+	mUpSwitch->SetTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{7.5f,2.0f,-20.0f} });
 }
 
 void GamePlayScene::Finalize()
@@ -122,7 +124,6 @@ void GamePlayScene::Update(Input* input)
 	Transform spriteTransform = { {0.5f,0.5f,0.5f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 	
 	mLightList->Update();
-	mSlideFloor->Update();
 	mPlayer->Update(input,mBirdEyeCamera->GetLon());
 
 	if (mIsPlayerCamera == true) {
@@ -144,8 +145,10 @@ void GamePlayScene::Update(Input* input)
 		mGems[i]->Update();
 	}
 	mStar->Update();
+	mSlideFloor->Update();
 	mSlideSwitch->Update();
 	mUpFloor->Update();
+	mUpSwitch->Update();
 
 	CollisionResult collisionResult;
 	//壁とプレイヤーの当たり判定
@@ -200,17 +203,18 @@ void GamePlayScene::Update(Input* input)
 		mSlideFloor->SetIsMoving(true);
 	}
 
-	//movingFloorとplayerの当たり判定
+	//slideFloorとplayerの当たり判定
 	if (IsCollision(mPlayer->GetAABB(), mSlideFloor->GetAABB(), collisionResult)) {
 		mPlayer->SetIsHit(true);
-		mIsHit = true;
+		mSlideFloorIsHit = true;
 		Vector3 pos = mPlayer->GetTranslate();
 		pos.x += collisionResult.normal.x * collisionResult.depth;
 		pos.y += collisionResult.normal.y * collisionResult.depth;
 		pos.z += collisionResult.normal.z * collisionResult.depth;
 		mPlayer->SetTranslate(pos);
+		mPlayer->CalcurateAABB(mPlayer->GetTranslate());
 		if (mPlayer->GetParent() == nullptr) {
-			//playerとmoveFloorの親子関係を結ぶ
+			//playerとslideFloorの親子関係を結ぶ
 			Matrix4x4 local = Multiply(mPlayer->GetWorldMatrix(), Inverse(mSlideFloor->GetWorldMatrix()));
 			mPlayer->SetTranslate(Vector3{ local.m[3][0],local.m[3][1],local.m[3][2] });
 		}
@@ -218,9 +222,35 @@ void GamePlayScene::Update(Input* input)
 		mPlayer->SetParent(&tmp);
 	}
 	else {
+		if (mSlideFloorIsHit == true) {
 		mPlayer->SetParent(nullptr);
-		if (mIsHit == true) {
-			mIsHit = false;
+			mSlideFloorIsHit = false;
+			Matrix4x4 world = mPlayer->GetWorldMatrix();
+			mPlayer->SetTranslate(Vector3{ world.m[3][0],world.m[3][1],world.m[3][2] });
+		}
+	}
+
+	//upFloorとplayerの当たり判定
+	if (IsCollision(mPlayer->GetAABB(), mUpFloor->GetAABB(), collisionResult)) {
+		mPlayer->SetIsHit(true);
+		mUpFloorIsHit = true;
+		Vector3 pos = mPlayer->GetTranslate();
+		pos.x += collisionResult.normal.x * collisionResult.depth;
+		pos.y += collisionResult.normal.y * collisionResult.depth;
+		pos.z += collisionResult.normal.z * collisionResult.depth;
+		mPlayer->SetTranslate(pos);
+		if (mPlayer->GetParent() == nullptr) {
+			//playerとupFloorの親子関係を結ぶ
+			Matrix4x4 local = Multiply(mPlayer->GetWorldMatrix(), Inverse(mUpFloor->GetWorldMatrix()));
+			mPlayer->SetTranslate(Vector3{ local.m[3][0],local.m[3][1],local.m[3][2] });
+		}
+		auto& tmp = mUpFloor->GetTransform();
+		mPlayer->SetParent(&tmp);
+	}
+	else {
+		if (mUpFloorIsHit == true) {
+		mPlayer->SetParent(nullptr);
+			mUpFloorIsHit = false;
 			Matrix4x4 world = mPlayer->GetWorldMatrix();
 			mPlayer->SetTranslate(Vector3{ world.m[3][0],world.m[3][1],world.m[3][2] });
 		}
@@ -257,6 +287,7 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 	mSlideFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mSlideSwitch->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mUpFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
+	mUpSwitch->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mGame->GetParticleCommon()->Bind(dxCommon);
 	//mParticle->Draw(dxCommon->GetCommandList(), camera, { 0.0f,0.0f,0.0f });
 	mGame->GetModelCommon()->Bind(dxCommon);

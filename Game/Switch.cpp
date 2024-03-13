@@ -8,7 +8,7 @@
 void Switch::Initialize(DirectXCommon* dxCommon)
 {
 	mDxCommon = dxCommon;
-	mTransform = { {5.0f,5.0f,5.0f},{0.0f,0.0f,0.0f},{32.5f,0.0f,-20.0f} };
+	mTransform = { {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 
 	mMoveFloor = new MoveFloor();
 
@@ -17,7 +17,7 @@ void Switch::Initialize(DirectXCommon* dxCommon)
 	mRed->Create(mDxCommon, "resources/blocks/switch/red.png");
 	mBlue->Create(mDxCommon, "resources/blocks/switch/blue.png");
 	mModel = new Model();
-	mModel->Create(mDxCommon, "resources", "floor.obj");
+	mModel->Create(mDxCommon, "resources/blocks/switch", "switch.obj");
 	mModel->SetTexture(mRed);
 }
 

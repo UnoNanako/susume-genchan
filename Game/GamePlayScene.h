@@ -35,6 +35,8 @@ public:
 	void Draw(DirectXCommon* dxCommon);
 
 private:
+	Game* mGame;
+
 	std::unique_ptr<PlayerCamera> mPlayerCamera;
 	std::unique_ptr<BirdEyeCamera> mBirdEyeCamera;
 	std::unique_ptr<LightList> mLightList;
@@ -42,14 +44,17 @@ private:
 	std::unique_ptr<Map> mMap;
 	std::unique_ptr<Crosshair> mCrosshair;
 	std::unique_ptr<ParticleList> mParticle;
-	Game* mGame;
-
+	
 	//敵
 	const int mROTATEENEMY_MAX = 1;
 	std::vector<std::unique_ptr<RotateEnemy>> mRotateEnemies;
 	//アイテム
 	std::vector <std::unique_ptr<Gem>> mGems;
 	std::unique_ptr<Star> mStar;
+	
+	/// <summary>
+	/// ギミック
+	/// </summary>
 	//動く床
 	std::unique_ptr<SlideFloor> mSlideFloor;
 	//スイッチ
@@ -58,12 +63,11 @@ private:
 	std::unique_ptr<UpFloor> mUpFloor;
 	//upスイッチ
 	std::unique_ptr<Switch> mUpSwitch;
-	//upスイッチモデル
-	std::unique_ptr<Model> mUpSwitchModel;
 
 	//フラグ
 	bool mIsDirectionalLight = true;
 	bool mIsPlayerCamera = false;
-	bool mIsHit = false;
+	bool mSlideFloorIsHit = false;
+	bool mUpFloorIsHit = false;
 };
 

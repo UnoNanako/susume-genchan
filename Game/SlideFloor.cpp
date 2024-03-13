@@ -15,12 +15,12 @@ void SlideFloor::Initialize(DirectXCommon* dxCommon)
 	};
 	mModel = new Model();
 	mModel->Create(mDxCommon, "resources/moveFloor", "moveFloor.obj");
-	mIsMoving = false;
+	mIsMove = false;
 }
 
 void SlideFloor::Update()
 {
-	if (mIsMoving == true) {
+	if (mIsMove == true) {
 		mTransform.translate.z += mSpeed;
 		//現在の時間を取得
 		auto now = std::chrono::steady_clock::now();

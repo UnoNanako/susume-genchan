@@ -23,14 +23,13 @@ public:
 	Vector3 GetWorldPosition() { return Vector3{ mTransform.mMatWorld.m[3][0],mTransform.mMatWorld.m[3][1],mTransform.mMatWorld.m[3][2] }; }
 	Matrix4x4 GetWorldMatrix() { return mTransform.mMatWorld; }
 	AABB GetAABB() { return mAABB; }
-	bool GetIsMoving() { return mIsMoving; }
+	bool GetIsMoving() { return mIsMove; }
 	void SetTranslate(Vector3 translate) { mTransform.translate = translate; }
-	void SetIsMoving(bool isMoving) { mIsMoving = isMoving; }
+	void SetIsMoving(bool isMove) { mIsMove = isMove; }
 
 private:
 	AABB mAABB;
 	float mSpeed;
 	std::chrono::steady_clock::time_point mRoundtripTime; //往復する時間
-	bool mIsMoving; //動いているか
 };
 

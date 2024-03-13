@@ -119,10 +119,11 @@ void Player::Update(Input* input, float theta)
 	//mTransform.rotate.y += (rStick.x * mRotateSpeed);
 	mTransform.rotate.y = -theta - kPi/2.0f;
 	Vector3 worldPos = GetWorldPosition();
-	mAABBtranslate = {
+	mAABBtranslate = CalcurateAABB(worldPos);
+	/*mAABBtranslate = {
 		{worldPos.x - mTransform.scale.x,worldPos.y - mTransform.scale.y,worldPos.z - mTransform.scale.z},
 		{worldPos.x + mTransform.scale.x,worldPos.y + mTransform.scale.y,worldPos.z + mTransform.scale.z}
-	};
+	};*/
 	ImGui::Begin("Debug");
 	ImGui::DragFloat3("player Position", &mTransform.translate.x, 0.01f, 0.0f, 10.0f);
 	ImGui::DragFloat3("player Rotation", &mTransform.rotate.x, 0.01f, 0.0f, 10.0f);
@@ -144,4 +145,20 @@ void Player::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
 
 	mTexture->Bind(commandList);
 	mModel->Draw(commandList, camera, mTransform);
+}
+
+AABB Player::CalcurateAABB(const Vector3& translate)
+{
+	AABB ret;
+	ret.min = {
+		{translate.x - (mTransform.scale.x)},
+		{translate.y - (mTransform.scale.y)},
+		{translate.z - (mTransform.scale.z)}
+	};
+	ret.max = {
+		{translate.x + (mTransform.scale.x)},
+		{translate.y + (mTransform.scale.y)},
+		{translate.z + (mTransform.scale.z)}
+	};
+	return ret;
 }

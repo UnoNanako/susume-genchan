@@ -22,6 +22,10 @@ public:
 	Vector3 GetScale() { return mTransform.scale; }
 	Vector3 GetRotate() { return mTransform.rotate; }
 	Vector3 GetTranslate() { return mTransform.translate; }
+	void SetTransform(Transform transform) { mTransform = transform; }
+	void SetScale(Vector3 scale) { mTransform.scale = scale; }
+	void SetRotate(Vector3 rotate) { mTransform.rotate = rotate; }
+	void SetTranslate(Vector3 translate) { mTransform.translate = translate; }
 
 protected:
 	Model* mModel;

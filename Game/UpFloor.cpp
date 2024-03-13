@@ -7,19 +7,26 @@
 void UpFloor::Initialize(DirectXCommon* dxCommon)
 {
 	mDxCommon = dxCommon;
-	mSpeed = -0.15f;
+	mSpeed = -0.05f;
 	mTransform = {
 		{1.0f,1.0f,1.0f},
 		{0.0f,0.0f,0.0f},
-		{7.5f,1.0f,-17.5f,}
+		{7.5f,0.5f,-17.5f,}
 	};
 	mModel = new Model();
 	mModel->Create(mDxCommon, "resources/updownFloor", "updownFloor.obj");
-	mIsMoving = false;
+	mIsMove = false;
 }
 
 void UpFloor::Update()
 {
+	if (mIsMove == true) {
+		mTransform.translate.y += mSpeed;
+		if (mTransform.translate.y == 10.0f) {
+			mSpeed = 0.0f;
+		}
+	}
+	mAABB = CalcurateAABB(mTransform.translate);
 	mTransform.UpdateMatrix();
 }
 

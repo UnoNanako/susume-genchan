@@ -16,6 +16,7 @@ public:
 	void Initialize(DirectXCommon* dxCommon);
 	void Update(Input* input, float theta);
 	void Draw(ID3D12GraphicsCommandList* commandList,Camera* camera);
+	AABB CalcurateAABB(const Vector3& translate);
 	
 	/// <summary>
 	/// アクセッサ
