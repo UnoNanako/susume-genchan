@@ -35,6 +35,14 @@ void UpFloor::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
 	mModel->Draw(commandList, camera, mTransform);
 }
 
+void UpFloor::Move()
+{
+	mTransform.translate.y += mSpeed;
+	if (mTransform.translate.y == 20.0f) {
+		mSpeed = 0.0f;
+	}
+}
+
 AABB UpFloor::CalcurateAABB(const Vector3& translate)
 {
 	AABB ret;

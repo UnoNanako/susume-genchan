@@ -9,6 +9,7 @@
 #include "PlayerCamera.h"
 #include "BirdEyeCamera.h"
 #include "Light/LightList.h"
+#include "Engine/Input/Input.h"
 #include "Player.h"
 #include "Map.h"
 #include "Game/Switch.h"
@@ -161,6 +162,7 @@ void GamePlayScene::Update(Input* input)
 			pos.y += collisionResult.normal.y * collisionResult.depth;
 			pos.z += collisionResult.normal.z * collisionResult.depth;
 			mPlayer->SetTranslate(pos);
+			mPlayer->CalcurateAABB(mPlayer->GetTranslate());
 		}
 	}
 
@@ -191,15 +193,17 @@ void GamePlayScene::Update(Input* input)
 		pos.x += collisionResult.normal.x * collisionResult.depth;
 		pos.z += collisionResult.normal.z * collisionResult.depth;
 		mPlayer->SetTranslate(pos);
+		mPlayer->CalcurateAABB(mPlayer->GetTranslate());
 	}
 
-	//switchとplayerの当たり判定
+	//SlideSwitchとplayerの当たり判定
 	if (IsCollision(mPlayer->GetAABB(), mSlideSwitch->GetAABB(), collisionResult)) {
 		Vector3 pos = mPlayer->GetTranslate();
 		pos.x += collisionResult.normal.x * collisionResult.depth;
 		pos.y += collisionResult.normal.y * collisionResult.depth;
 		pos.z += collisionResult.normal.z * collisionResult.depth;
 		mPlayer->SetTranslate(pos);
+		mPlayer->CalcurateAABB(mPlayer->GetTranslate());
 		mSlideFloor->SetIsMoving(true);
 	}
 
@@ -239,6 +243,7 @@ void GamePlayScene::Update(Input* input)
 		pos.y += collisionResult.normal.y * collisionResult.depth;
 		pos.z += collisionResult.normal.z * collisionResult.depth;
 		mPlayer->SetTranslate(pos);
+		mPlayer->CalcurateAABB(mPlayer->GetTranslate());
 		if (mPlayer->GetParent() == nullptr) {
 			//playerとupFloorの親子関係を結ぶ
 			Matrix4x4 local = Multiply(mPlayer->GetWorldMatrix(), Inverse(mUpFloor->GetWorldMatrix()));
@@ -255,6 +260,23 @@ void GamePlayScene::Update(Input* input)
 			mPlayer->SetTranslate(Vector3{ world.m[3][0],world.m[3][1],world.m[3][2] });
 		}
 	}
+
+	//upSwitchとplayerの当たり判定
+	if (IsCollision(mPlayer->GetAABB(), mUpSwitch->GetAABB(), collisionResult)) {
+		Vector3 pos = mPlayer->GetTranslate();
+		pos.x += collisionResult.normal.x * collisionResult.depth;
+		pos.y += collisionResult.normal.y * collisionResult.depth;
+		pos.z += collisionResult.normal.z * collisionResult.depth;
+		mPlayer->SetTranslate(pos);
+		mPlayer->CalcurateAABB(mPlayer->GetTranslate());
+		if (input->GetButton(XINPUT_GAMEPAD_A)) {
+			ImGui::Begin("Debug");
+			ImGui::Text("push!!!");
+			ImGui::End();
+			mUpFloor->Move();
+		}
+	}
+
 	mPlayer->GetTransform().UpdateMatrix();
 }
 
