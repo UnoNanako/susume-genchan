@@ -16,8 +16,7 @@
 #include "Game/BirdEyeCamera.h"
 #include "Game/PlayerCamera.h"
 #include "Engine/Light/LightList.h"
-#include "2D/Sprite.h"
-
+	
 class DirectXCommon;
 class Sprite;
 class Model;

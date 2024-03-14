@@ -91,7 +91,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	mSlideSwitch = std::make_unique<Switch>();
 	mSlideSwitch->SetMoveFloor(mSlideFloor.get());
 	mSlideSwitch->Initialize(dxCommon);
-	mSlideSwitch->SetTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{27.5f,2.5f,-20.0f} });
+	mSlideSwitch->SetTransform({ {0.5f,0.5f,0.5f},{0.0f,0.0f,0.0f},{27.5f,2.5f,-20.0f} });
 
 	//UpFloor(スイッチを押すと上に動く床)
 	mUpFloor = std::make_unique<UpFloor>();
@@ -100,7 +100,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	mUpSwitch = std::make_unique<Switch>();
 	mUpSwitch->SetMoveFloor(mUpFloor.get());
 	mUpSwitch->Initialize(dxCommon);
-	mUpSwitch->SetTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{7.5f,2.0f,-20.0f} });
+	mUpSwitch->SetTransform({{ 0.5f,0.5f,0.5f},{0.0f,0.0f,0.0f},{7.5f,2.5f,-20.0f} });
 }
 
 void GamePlayScene::Finalize()
@@ -122,7 +122,7 @@ void GamePlayScene::Update(Input* input)
 	else {
 		mLightList->SetDirectionalLightIntensity(0.7f);
 	}
-	Transform spriteTransform = { {0.5f,0.5f,0.5f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
+	Transform spriteTransform = { {0.5f,0.5f,0.5f},{0.0f,0.0f,0.0f},{0.0f,2.0f,0.0f} };
 	
 	mLightList->Update();
 	mPlayer->Update(input,mBirdEyeCamera->GetLon());
@@ -152,7 +152,7 @@ void GamePlayScene::Update(Input* input)
 	mUpSwitch->Update();
 
 	CollisionResult collisionResult;
-	//壁とプレイヤーの当たり判定
+	//壁,床とプレイヤーの当たり判定
 	mPlayer->SetIsHit(false);
 	for (uint32_t i = 0; i < mMap->GetTerrainModel().size(); ++i) {
 		if (IsCollision(mPlayer->GetAABB(), mMap->GetTerrainAABB()[i], collisionResult)) {
@@ -162,7 +162,8 @@ void GamePlayScene::Update(Input* input)
 			pos.y += collisionResult.normal.y * collisionResult.depth;
 			pos.z += collisionResult.normal.z * collisionResult.depth;
 			mPlayer->SetTranslate(pos);
-			mPlayer->CalcurateAABB(mPlayer->GetTranslate());
+			//mPlayer->SetVelocityY(0.0f);
+			//mPlayer->CalcurateAABB(mPlayer->GetTranslate());
 		}
 	}
 
@@ -193,7 +194,7 @@ void GamePlayScene::Update(Input* input)
 		pos.x += collisionResult.normal.x * collisionResult.depth;
 		pos.z += collisionResult.normal.z * collisionResult.depth;
 		mPlayer->SetTranslate(pos);
-		mPlayer->CalcurateAABB(mPlayer->GetTranslate());
+		//mPlayer->CalcurateAABB(mPlayer->GetTranslate());
 	}
 
 	//SlideSwitchとplayerの当たり判定
@@ -203,8 +204,8 @@ void GamePlayScene::Update(Input* input)
 		pos.y += collisionResult.normal.y * collisionResult.depth;
 		pos.z += collisionResult.normal.z * collisionResult.depth;
 		mPlayer->SetTranslate(pos);
-		mPlayer->CalcurateAABB(mPlayer->GetTranslate());
-		mSlideFloor->SetIsMoving(true);
+		//mPlayer->CalcurateAABB(mPlayer->GetTranslate());
+		//mSlideFloor->SetIsMoving(true);
 	}
 
 	//slideFloorとplayerの当たり判定
@@ -216,7 +217,7 @@ void GamePlayScene::Update(Input* input)
 		pos.y += collisionResult.normal.y * collisionResult.depth;
 		pos.z += collisionResult.normal.z * collisionResult.depth;
 		mPlayer->SetTranslate(pos);
-		mPlayer->CalcurateAABB(mPlayer->GetTranslate());
+		//mPlayer->CalcurateAABB(mPlayer->GetTranslate());
 		if (mPlayer->GetParent() == nullptr) {
 			//playerとslideFloorの親子関係を結ぶ
 			Matrix4x4 local = Multiply(mPlayer->GetWorldMatrix(), Inverse(mSlideFloor->GetWorldMatrix()));
@@ -239,11 +240,12 @@ void GamePlayScene::Update(Input* input)
 		mPlayer->SetIsHit(true);
 		mUpFloorIsHit = true;
 		Vector3 pos = mPlayer->GetTranslate();
-		pos.x += collisionResult.normal.x * collisionResult.depth;
-		pos.y += collisionResult.normal.y * collisionResult.depth;
-		pos.z += collisionResult.normal.z * collisionResult.depth;
+		pos.x += collisionResult.normal.x * collisionResult.depth/2;
+		pos.y += collisionResult.normal.y * collisionResult.depth/2;
+		pos.z += collisionResult.normal.z * collisionResult.depth/2;
 		mPlayer->SetTranslate(pos);
-		mPlayer->CalcurateAABB(mPlayer->GetTranslate());
+		//mPlayer->SetVelocityY(0.0f);
+		//mPlayer->CalcurateAABB(mPlayer->GetTranslate());
 		if (mPlayer->GetParent() == nullptr) {
 			//playerとupFloorの親子関係を結ぶ
 			Matrix4x4 local = Multiply(mPlayer->GetWorldMatrix(), Inverse(mUpFloor->GetWorldMatrix()));
@@ -264,17 +266,20 @@ void GamePlayScene::Update(Input* input)
 	//upSwitchとplayerの当たり判定
 	if (IsCollision(mPlayer->GetAABB(), mUpSwitch->GetAABB(), collisionResult)) {
 		Vector3 pos = mPlayer->GetTranslate();
-		pos.x += collisionResult.normal.x * collisionResult.depth;
-		pos.y += collisionResult.normal.y * collisionResult.depth;
-		pos.z += collisionResult.normal.z * collisionResult.depth;
+		pos.x += collisionResult.normal.x * collisionResult.depth/2;
+		pos.y += collisionResult.normal.y * collisionResult.depth/2;
+		pos.z += collisionResult.normal.z * collisionResult.depth/2;
 		mPlayer->SetTranslate(pos);
-		mPlayer->CalcurateAABB(mPlayer->GetTranslate());
+		//mPlayer->CalcurateAABB(mPlayer->GetTranslate());
 		if (input->GetButton(XINPUT_GAMEPAD_A)) {
 			ImGui::Begin("Debug");
 			ImGui::Text("push!!!");
 			ImGui::End();
-			mUpFloor->Move();
+			mUpFloor->SetIsMove(true);
 		}
+	}
+	if (mUpFloor->GetIsMove() == true) {
+		mUpFloor->Move();
 	}
 
 	mPlayer->GetTransform().UpdateMatrix();

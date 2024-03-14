@@ -7,6 +7,7 @@
 #include "Input/Input.h"
 #include "Light/LightList.h"
 #include "externals/imgui/imgui.h"
+#include <format>
 
 Player::Player()
 	:mIsHit(false)
@@ -26,7 +27,7 @@ void Player::Initialize(DirectXCommon* dxCommon)
 	mTransform = {
 		{1.0f,1.0f,1.0f}, //scale
 		{0.0f,0.0f,0.0f}, //rotate
-		{-25.0f,50.0f,-25.0f} //translate
+		{-25.0f,5.0f,-25.0f} //translate
 	};
 	mAABBtranslate = {
 		{0.0f,0.0f,0.0f},
@@ -41,12 +42,15 @@ void Player::Initialize(DirectXCommon* dxCommon)
 
 void Player::Update(Input* input, float theta)
 {
-	mVelocity.y -= mGravity; //毎フレーム重力をかけている
-	mTransform.translate.y += mVelocity.y;
 	if (mIsHit == true) { //地面に当たったら
-		mTransform.translate.y = 3.0f;
+		//mTransform.translate.y = 3.0f;
 		mVelocity.y = 0.0f;
 	}
+	mVelocity.y -= mGravity; //毎フレーム重力をかけている
+	mTransform.translate.y += mVelocity.y;
+	ImGui::Begin("Debug");
+	ImGui::Text(std::format("{}", mVelocity.y).c_str());
+	ImGui::End();
 	//読む！理解する！
 	//ここから
 	//3軸の回転行列を作成
@@ -118,6 +122,7 @@ void Player::Update(Input* input, float theta)
 	Vector2 rStick = input->GetRStick();
 	//mTransform.rotate.y += (rStick.x * mRotateSpeed);
 	mTransform.rotate.y = -theta - kPi/2.0f;
+	mTransform.UpdateMatrix();
 	Vector3 worldPos = GetWorldPosition();
 	mAABBtranslate = CalcurateAABB(worldPos);
 	/*mAABBtranslate = {
@@ -128,7 +133,6 @@ void Player::Update(Input* input, float theta)
 	ImGui::DragFloat3("player Position", &mTransform.translate.x, 0.01f, 0.0f, 10.0f);
 	ImGui::DragFloat3("player Rotation", &mTransform.rotate.x, 0.01f, 0.0f, 10.0f);
 	ImGui::End();
-	mTransform.UpdateMatrix();
 }
 
 void Player::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)

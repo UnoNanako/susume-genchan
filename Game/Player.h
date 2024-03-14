@@ -36,6 +36,7 @@ public:
 	void SetMovingFloor(MovingFloor* movingFloor) { mMovingFloor = movingFloor; }
 	//親となるトランスフォームをセット
 	void SetParent(Transform* parent) { mTransform.mParent = parent; }
+	void SetVelocityY(float y) { mVelocity.y = y; }
 
 private:
 	Vector3 mVelocity;
