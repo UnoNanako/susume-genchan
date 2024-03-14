@@ -69,5 +69,9 @@ private:
 	bool mIsPlayerCamera = false;
 	bool mSlideFloorIsHit = false;
 	bool mUpFloorIsHit = false;
+	bool mSwitchIsHit = false; //UI(Aボタン)を出すために使う
+
+	//UI
+	std::unique_ptr<Sprite> mAbuttonSprite;
 };
 

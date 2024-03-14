@@ -10,6 +10,8 @@ void Gem::Initialize(DirectXCommon* dxCommon)
 	mTransform = { {1.0f,1.0f,1.0f} ,{0.0f,0.0f,0.0f},{1.0f,1.0f,1.0f} };
 	mTexture = new Texture();
 	mTexture->Create(mDxCommon, "resources/gem/gemColor.png");
+	mGetColor = new Texture();
+	mGetColor->Create(mDxCommon, "resources/gem/gemGet.png");
 	mModel = new Model();
 	mModel->Create(mDxCommon, "resources/gem", "Gem.obj");
 	mModel->SetTexture(mTexture);
@@ -21,8 +23,9 @@ void Gem::Update()
 	mTransform.UpdateMatrix();
 }
 
-void Gem::Draw(ID3D12GraphicsCommandList* commansList, Camera* camera)
+void Gem::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
 {
-	mTexture->Bind(commansList);
-	mModel->Draw(commansList, camera, mTransform);
+	mTexture->Bind(commandList);
+	mGetColor->Bind(commandList);
+	mModel->Draw(commandList, camera, mTransform);
 }

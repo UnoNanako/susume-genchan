@@ -101,6 +101,11 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	mUpSwitch->SetMoveFloor(mUpFloor.get());
 	mUpSwitch->Initialize(dxCommon);
 	mUpSwitch->SetTransform({{ 0.5f,0.5f,0.5f},{0.0f,0.0f,0.0f},{7.5f,2.5f,-20.0f} });
+
+	//Aボタン
+	mAbuttonSprite = std::make_unique<Sprite>();
+	mAbuttonSprite->Create(dxCommon, "resources/ui/buttons/xbox_button_color_a.png");
+	mAbuttonSprite->SetTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{620.0f,600.0f,0.0f} });
 }
 
 void GamePlayScene::Finalize()
@@ -115,6 +120,8 @@ void GamePlayScene::Update(Input* input)
 	ImGui::Checkbox("isDirectionalLight", &mIsDirectionalLight);
 	ImGui::Checkbox("isPlayerCamera", &mIsPlayerCamera);
 	ImGui::End();
+
+	mAbuttonSprite->Update();
 
 	if (mIsDirectionalLight == false) {
 		mLightList->SetDirectionalLightIntensity(0.0f);
@@ -199,13 +206,17 @@ void GamePlayScene::Update(Input* input)
 
 	//SlideSwitchとplayerの当たり判定
 	if (IsCollision(mPlayer->GetAABB(), mSlideSwitch->GetAABB(), collisionResult)) {
+		mSwitchIsHit = true;
 		Vector3 pos = mPlayer->GetTranslate();
 		pos.x += collisionResult.normal.x * collisionResult.depth;
 		pos.y += collisionResult.normal.y * collisionResult.depth;
 		pos.z += collisionResult.normal.z * collisionResult.depth;
-		mPlayer->SetTranslate(pos);
+		//mPlayer->SetTranslate(pos);
 		//mPlayer->CalcurateAABB(mPlayer->GetTranslate());
-		//mSlideFloor->SetIsMoving(true);
+		mSlideFloor->SetIsMoving(true);
+	}
+	else {
+		mSwitchIsHit = false;
 	}
 
 	//slideFloorとplayerの当たり判定
@@ -265,6 +276,7 @@ void GamePlayScene::Update(Input* input)
 
 	//upSwitchとplayerの当たり判定
 	if (IsCollision(mPlayer->GetAABB(), mUpSwitch->GetAABB(), collisionResult)) {
+		mSwitchIsHit = true;
 		Vector3 pos = mPlayer->GetTranslate();
 		pos.x += collisionResult.normal.x * collisionResult.depth/2;
 		pos.y += collisionResult.normal.y * collisionResult.depth/2;
@@ -278,10 +290,12 @@ void GamePlayScene::Update(Input* input)
 			mUpFloor->SetIsMove(true);
 		}
 	}
+	else {
+		mSwitchIsHit = false;
+	}
 	if (mUpFloor->GetIsMove() == true) {
 		mUpFloor->Move();
 	}
-
 	mPlayer->GetTransform().UpdateMatrix();
 }
 
@@ -319,4 +333,7 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 	//mParticle->Draw(dxCommon->GetCommandList(), camera, { 0.0f,0.0f,0.0f });
 	mGame->GetModelCommon()->Bind(dxCommon);
 	mCrosshair->Draw(dxCommon->GetCommandList());
+	if (mSwitchIsHit == true) {
+		mAbuttonSprite->Draw(dxCommon->GetCommandList());
+	}
 }
