@@ -15,6 +15,7 @@
 #include "Game/UpFloor.h"
 #include "Game/BirdEyeCamera.h"
 #include "Game/PlayerCamera.h"
+#include "Game/Skydome.h"
 #include "Engine/Light/LightList.h"
 	
 class DirectXCommon;
@@ -44,6 +45,7 @@ private:
 	std::unique_ptr<Map> mMap;
 	std::unique_ptr<Crosshair> mCrosshair;
 	std::unique_ptr<ParticleList> mParticle;
+	std::unique_ptr<Skydome> mSkydome; //天球
 	
 	//敵
 	const int mROTATEENEMY_MAX = 1;
@@ -70,8 +72,12 @@ private:
 	bool mSlideFloorIsHit = false;
 	bool mUpFloorIsHit = false;
 	bool mSwitchIsHit = false; //UI(Aボタン)を出すために使う
+	bool mIsClear = false;
 
 	//UI
 	std::unique_ptr<Sprite> mAbuttonSprite;
+	
+	//テキスト
+	std::unique_ptr<Sprite> mClearSprite;
 };
 

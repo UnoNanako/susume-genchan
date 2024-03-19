@@ -99,6 +99,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Game\Skydome.cpp" />
     <ClCompile Include="Game\ClearText.cpp" />
     <ClCompile Include="Game\BirdEyeCamera.cpp" />
     <ClCompile Include="Game\PlayerCamera.cpp" />
@@ -144,6 +145,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Game\Skydome.h" />
     <ClInclude Include="Game\ClearText.h" />
     <ClInclude Include="Game\BirdEyeCamera.h" />
     <ClInclude Include="Game\PlayerCamera.h" />

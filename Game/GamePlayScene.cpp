@@ -55,6 +55,10 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	mMap = std::make_unique<Map>();
 	mMap->Create(dxCommon);
 
+	//CelestialSphere
+	mSkydome = std::make_unique<Skydome>();
+	mSkydome->Initialize(dxCommon);
+
 	//crosshair
 	mCrosshair = std::make_unique<Crosshair>();
 	mCrosshair->Initialize(dxCommon);
@@ -106,6 +110,11 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	mAbuttonSprite = std::make_unique<Sprite>();
 	mAbuttonSprite->Create(dxCommon, "resources/ui/buttons/xbox_button_color_a.png");
 	mAbuttonSprite->SetTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{620.0f,600.0f,0.0f} });
+
+	//クリアテキスト
+	mClearSprite = std::make_unique<Sprite>();
+	mClearSprite->Create(dxCommon, "resources/text/COURSE_CLEAR.png");
+	mClearSprite->SetTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{100.0f,300.0f,0.0f} });
 }
 
 void GamePlayScene::Finalize()
@@ -122,6 +131,7 @@ void GamePlayScene::Update(Input* input)
 	ImGui::End();
 
 	mAbuttonSprite->Update();
+	mClearSprite->Update();
 
 	if (mIsDirectionalLight == false) {
 		mLightList->SetDirectionalLightIntensity(0.0f);
@@ -142,6 +152,7 @@ void GamePlayScene::Update(Input* input)
 	}
 
 	mMap->Update();
+	mSkydome->Update();
 	mCrosshair->Update();
 	mParticle->Update(mPlayerCamera.get());
 	for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
@@ -201,9 +212,19 @@ void GamePlayScene::Update(Input* input)
 		pos.x += collisionResult.normal.x * collisionResult.depth;
 		pos.z += collisionResult.normal.z * collisionResult.depth;
 		mPlayer->SetTranslate(pos);
-		//mPlayer->CalcurateAABB(mPlayer->GetTranslate());
+		mIsClear = true;
 	}
 
+	//gemとplayerの当たり判定
+	for (uint32_t i = 0; i < mGems.size(); ++i) {
+		if (IsCollision(mPlayer->GetAABB(), mGems[i]->GetAABB(), collisionResult)) {
+			Vector3 pos = mPlayer->GetTranslate();
+			pos.x += collisionResult.normal.x * collisionResult.depth;
+			pos.z += collisionResult.normal.z * collisionResult.depth;
+			mPlayer->SetTranslate(pos);
+		}
+	}
+	
 	//SlideSwitchとplayerの当たり判定
 	if (IsCollision(mPlayer->GetAABB(), mSlideSwitch->GetAABB(), collisionResult)) {
 		mSwitchIsHit = true;
@@ -329,11 +350,15 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 	mSlideSwitch->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mUpFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mUpSwitch->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
+	mSkydome->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mGame->GetParticleCommon()->Bind(dxCommon);
 	//mParticle->Draw(dxCommon->GetCommandList(), camera, { 0.0f,0.0f,0.0f });
 	mGame->GetModelCommon()->Bind(dxCommon);
 	mCrosshair->Draw(dxCommon->GetCommandList());
 	if (mSwitchIsHit == true) {
 		mAbuttonSprite->Draw(dxCommon->GetCommandList());
+	}
+	if (mIsClear == true) {
+		mClearSprite->Draw(dxCommon->GetCommandList());
 	}
 }

@@ -7,7 +7,11 @@
 void Star::Initialize(DirectXCommon* dxCommon)
 {
 	mDxCommon = dxCommon;
-	mTransform = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
+	mTransform = { 
+		{1.0f,1.0f,1.0f},
+		{0.0f,0.0f,0.0f},
+		{0.0f,0.0f,0.0f}
+	};
 	mModel = new Model();
 	mModel->Create(mDxCommon, "resources/star", "star.obj");
 }
@@ -28,14 +32,14 @@ AABB Star::CalcurateAABB(const Vector3& translate)
 {
 	AABB ret;
 	ret.min = {
-		{translate.x - (1.0f / 2.0f)},
-		{translate.y - (1.0f / 2.0f)},
-		{translate.z - (1.0f / 2.0f)}
+		{translate.x - (2.0f / 2.0f)},
+		{translate.y - (2.0f / 2.0f)},
+		{translate.z - (2.0f / 2.0f)}
 	};
 	ret.max = {
-		{translate.x + (1.0f / 2.0f)},
-		{translate.y + (1.0f / 2.0f)},
-		{translate.z + (1.0f / 2.0f)}
+		{translate.x + (2.0f / 2.0f)},
+		{translate.y + (2.0f / 2.0f)},
+		{translate.z + (2.0f / 2.0f)}
 	};
 	return ret;
 }

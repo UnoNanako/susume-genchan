@@ -20,6 +20,7 @@ void Gem::Initialize(DirectXCommon* dxCommon)
 void Gem::Update()
 {
 	mTransform.rotate.y += 0.05f;
+	mAABB = CalcurateAABB(mTransform.translate);
 	mTransform.UpdateMatrix();
 }
 
@@ -28,4 +29,20 @@ void Gem::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
 	mTexture->Bind(commandList);
 	mGetColor->Bind(commandList);
 	mModel->Draw(commandList, camera, mTransform);
+}
+
+AABB Gem::CalcurateAABB(const Vector3& translate)
+{
+	AABB ret;
+	ret.min = {
+		{translate.x - (1.0f / 2.0f)},
+		{translate.y - (1.0f / 2.0f)},
+		{translate.z - (1.0f / 2.0f)}
+	};
+	ret.max = {
+		{translate.x + (1.0f / 2.0f)},
+		{translate.y + (1.0f / 2.0f)},
+		{translate.z + (1.0f / 2.0f)}
+	};
+	return ret;
 }
