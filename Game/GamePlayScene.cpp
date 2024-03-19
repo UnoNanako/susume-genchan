@@ -67,6 +67,14 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	mParticle = std::make_unique<ParticleList>();
 	mParticle->Create(dxCommon);
 
+	//grasses
+	mGrasses.resize(mGRASS_MAX);
+	for (uint32_t i = 0; i < mGrasses.size(); ++i) {
+		mGrasses[i] = std::make_unique<Grass>();
+		mGrasses[i]->Initialize(dxCommon);
+	}
+	mGrasses[0]->SetTranslate({ -12.5f,2.0f,20.0f });
+
 	//rotateEnemy
 	mRotateEnemies.resize(mROTATEENEMY_MAX);
 	for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
@@ -115,6 +123,10 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	mClearSprite = std::make_unique<Sprite>();
 	mClearSprite->Create(dxCommon, "resources/text/COURSE_CLEAR.png");
 	mClearSprite->SetTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{100.0f,300.0f,0.0f} });
+	//ゲームオーバーテキスト
+	mGameoverSprite = std::make_unique<Sprite>();
+	mGameoverSprite->Create(dxCommon, "resources/text/GAME_OVER.png");
+	mGameoverSprite->SetTransform({ {1.0f,1.0f,1.0f,},{0.0f,0.0f,0.0f},{200.0f,300.0f,0.0f} });
 }
 
 void GamePlayScene::Finalize()
@@ -132,6 +144,7 @@ void GamePlayScene::Update(Input* input)
 
 	mAbuttonSprite->Update();
 	mClearSprite->Update();
+	mGameoverSprite->Update();
 
 	if (mIsDirectionalLight == false) {
 		mLightList->SetDirectionalLightIntensity(0.0f);
@@ -163,6 +176,9 @@ void GamePlayScene::Update(Input* input)
 	for (uint32_t i = 0; i < mGems.size(); ++i) {
 		mGems[i]->Update();
 	}
+	for (uint32_t i = 0; i < mGrasses.size(); ++i) {
+		mGrasses[i]->Update();
+	}
 	mStar->Update();
 	mSlideFloor->Update();
 	mSlideSwitch->Update();
@@ -188,9 +204,7 @@ void GamePlayScene::Update(Input* input)
 	//rotateEnemyとプレイヤーの当たり判定
 	for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
 		if (IsCollision(mPlayer->GetAABB(), mRotateEnemies[i]->GetAABB(), collisionResult)) {
-			ImGui::Begin("Debug");
-			ImGui::Text("Dead");
-			ImGui::End();
+			mIsGameover = true;
 		}
 	}
 
@@ -208,16 +222,22 @@ void GamePlayScene::Update(Input* input)
 
 	//starとplayerの当たり判定
 	if (IsCollision(mPlayer->GetAABB(), mStar->GetAABB(), collisionResult)) {
-		Vector3 pos = mPlayer->GetTranslate();
-		pos.x += collisionResult.normal.x * collisionResult.depth;
-		pos.z += collisionResult.normal.z * collisionResult.depth;
-		mPlayer->SetTranslate(pos);
 		mIsClear = true;
 	}
 
 	//gemとplayerの当たり判定
 	for (uint32_t i = 0; i < mGems.size(); ++i) {
 		if (IsCollision(mPlayer->GetAABB(), mGems[i]->GetAABB(), collisionResult)) {
+			Vector3 pos = mPlayer->GetTranslate();
+			pos.x += collisionResult.normal.x * collisionResult.depth;
+			pos.z += collisionResult.normal.z * collisionResult.depth;
+			mPlayer->SetTranslate(pos);
+		}
+	}
+
+	//grassとplayerの当たり判定
+	for (uint32_t i = 0; i < mGrasses.size(); ++i) {
+		if (IsCollision(mPlayer->GetAABB(), mGrasses[i]->GetAABB(), collisionResult)) {
 			Vector3 pos = mPlayer->GetTranslate();
 			pos.x += collisionResult.normal.x * collisionResult.depth;
 			pos.z += collisionResult.normal.z * collisionResult.depth;
@@ -345,6 +365,10 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 	for (uint32_t i = 0; i < mGems.size(); ++i) {
 		mGems[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	}
+
+	for (uint32_t i = 0; i < mGrasses.size(); ++i) {
+		mGrasses[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
+	}
 	mStar->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mSlideFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mSlideSwitch->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
@@ -360,5 +384,8 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 	}
 	if (mIsClear == true) {
 		mClearSprite->Draw(dxCommon->GetCommandList());
+	}
+	if (mIsGameover == true) {
+		mGameoverSprite->Draw(dxCommon->GetCommandList());
 	}
 }

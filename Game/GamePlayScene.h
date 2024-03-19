@@ -9,6 +9,7 @@
 #include "Game/RotateEnemy.h"
 #include "Game/Gem.h"
 #include "Game/Star.h"
+#include "Game/Grass.h"
 #include "Game/MoveFloor.h"
 #include "Game/SlideFloor.h"
 #include "Game/Switch.h"
@@ -46,13 +47,16 @@ private:
 	std::unique_ptr<Crosshair> mCrosshair;
 	std::unique_ptr<ParticleList> mParticle;
 	std::unique_ptr<Skydome> mSkydome; //天球
-	
+
 	//敵
 	const int mROTATEENEMY_MAX = 1;
 	std::vector<std::unique_ptr<RotateEnemy>> mRotateEnemies;
 	//アイテム
 	std::vector <std::unique_ptr<Gem>> mGems;
 	std::unique_ptr<Star> mStar;
+	//草
+	const int mGRASS_MAX = 1;
+	std::vector<std::unique_ptr<Grass>> mGrasses;
 	
 	/// <summary>
 	/// ギミック
@@ -73,11 +77,13 @@ private:
 	bool mUpFloorIsHit = false;
 	bool mSwitchIsHit = false; //UI(Aボタン)を出すために使う
 	bool mIsClear = false;
+	bool mIsGameover = false;
 
 	//UI
 	std::unique_ptr<Sprite> mAbuttonSprite;
 	
 	//テキスト
 	std::unique_ptr<Sprite> mClearSprite;
+	std::unique_ptr<Sprite> mGameoverSprite;
 };
 
