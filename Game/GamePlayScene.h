@@ -7,6 +7,7 @@
 #include "Engine/Particle/ParticleList.h"
 #include "Game.h"
 #include "Game/RotateEnemy.h"
+#include "Game/WalkEnemy.h"
 #include "Game/Gem.h"
 #include "Game/Star.h"
 #include "Game/Grass.h"
@@ -51,6 +52,8 @@ private:
 	//敵
 	const int mROTATEENEMY_MAX = 1;
 	std::vector<std::unique_ptr<RotateEnemy>> mRotateEnemies;
+	const int mWALKENEMY_MAX = 1;
+	std::vector<std::unique_ptr<WalkEnemy>> mWalkEnemies;
 	//アイテム
 	std::vector <std::unique_ptr<Gem>> mGems;
 	std::unique_ptr<Star> mStar;

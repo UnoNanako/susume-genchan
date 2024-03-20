@@ -19,9 +19,11 @@ RotateEnemy::RotateEnemy()
 void RotateEnemy::Initialize(DirectXCommon* dxCommon)
 {
 	mDxCommon = dxCommon;
-	mTransform.translate = { 0.0f,0.0f,0.0f };
-	mTransform.scale = { 1.0f,1.0f,1.0f };
-	mTransform.rotate = { 0.0f,0.0f,0.0f };
+	mTransform = {
+		{1.0f,1.0f,1.0f}, //scale
+		{0.0f,0.0f,0.0f}, //rotate
+		{0.0f,0.0f,0.0f} //transform
+	};
 	mTexture = new Texture();
 	mTexture->Create(mDxCommon, "resources/enemies/rotateEnemy/Atlas.png");
 	mModel = new Model();

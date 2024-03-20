@@ -2,7 +2,6 @@
 #include "GameObject.h"
 #include <d3d12.h>
 #include "Transform.h"
-#include <vector>
 #include <chrono>
 
 class DirectXCommon;
@@ -21,12 +20,16 @@ public:
 	//プレイヤーが視野角内に収まっているか判定する関数
 	bool DetectPlayer(Player* player);
 	void TrackPlayer(Player* player);
-
 	//minとmaxを求める関数
 	AABB CalcurateAABB(const Vector3& translate);
+
+	/// <summary>
+	/// アクセッサ
+	/// </summary>
 	AABB GetAABB() { return mAABB; }
 	Vector3 GetTranslate() { return mTransform.translate; }
 	void SetTranslate(const Vector3& translate) { mTransform.translate = translate; }
+
 private:
 	uint32_t mRotateTimer;
 	bool mIsRotate;

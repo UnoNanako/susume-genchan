@@ -46,28 +46,28 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	mLightList = std::make_unique<LightList>();
 	mLightList->Create(dxCommon);
 
-	//player
+	//プレイヤー
 	mPlayer = std::make_unique<Player>();
 	mPlayer->Initialize(dxCommon);
 	mPlayer->SetLightList(mLightList.get());
 
-	//Map
+	//地形
 	mMap = std::make_unique<Map>();
 	mMap->Create(dxCommon);
 
-	//CelestialSphere
+	//天球
 	mSkydome = std::make_unique<Skydome>();
 	mSkydome->Initialize(dxCommon);
 
-	//crosshair
+	//クロスヘア
 	mCrosshair = std::make_unique<Crosshair>();
 	mCrosshair->Initialize(dxCommon);
 
-	//particle
+	//パーティクル
 	mParticle = std::make_unique<ParticleList>();
 	mParticle->Create(dxCommon);
 
-	//grasses
+	//草
 	mGrasses.resize(mGRASS_MAX);
 	for (uint32_t i = 0; i < mGrasses.size(); ++i) {
 		mGrasses[i] = std::make_unique<Grass>();
@@ -75,7 +75,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	}
 	mGrasses[0]->SetTranslate({ -12.5f,2.0f,20.0f });
 
-	//rotateEnemy
+	//rotateEnemy(回転するだけの敵)
 	mRotateEnemies.resize(mROTATEENEMY_MAX);
 	for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
 		mRotateEnemies[i] = std::make_unique<RotateEnemy>();
@@ -83,7 +83,15 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	}
 	mRotateEnemies[0]->SetTranslate({ 15.0f,2.0f,12.5f });
 
-	//gem
+	//walkEnemy(歩き回る敵)
+	mWalkEnemies.resize(mWALKENEMY_MAX);
+	for (uint32_t i = 0; i < mWalkEnemies.size(); ++i) {
+		mWalkEnemies[i] = std::make_unique<WalkEnemy>();
+		mWalkEnemies[i]->Initialize(dxCommon);
+	}
+	mWalkEnemies[0]->SetTranslate({ -7.5f,2.0f,25.0f });
+
+	//ジェム
 	mGems.resize(1);
 	for (uint32_t i = 0; i < mGems.size(); ++i) {
 		mGems[i] = std::make_unique<Gem>();
@@ -91,7 +99,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	}
 	mGems[0]->SetTranslate({ 17.5f,10.0f,-15.0f });
 
-	//star
+	//スター
 	mStar = std::make_unique<Star>();
 	mStar->Initialize(dxCommon);
 	mStar->SetTranslate({17.5f,5.0f,80.0f});
@@ -99,7 +107,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	//movingFloor(スイッチを押すとスライドし始める床)
 	mSlideFloor = std::make_unique<SlideFloor>();
 	mSlideFloor->Initialize(dxCommon);
-	//switch
+	//スイッチ
 	mSlideSwitch = std::make_unique<Switch>();
 	mSlideSwitch->SetMoveFloor(mSlideFloor.get());
 	mSlideSwitch->Initialize(dxCommon);
@@ -108,7 +116,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	//UpFloor(スイッチを押すと上に動く床)
 	mUpFloor = std::make_unique<UpFloor>();
 	mUpFloor->Initialize(dxCommon);
-	//upSwitch
+	//スイッチ
 	mUpSwitch = std::make_unique<Switch>();
 	mUpSwitch->SetMoveFloor(mUpFloor.get());
 	mUpSwitch->Initialize(dxCommon);
@@ -172,6 +180,9 @@ void GamePlayScene::Update(Input* input)
 		mRotateEnemies[i]->Update();
 		mRotateEnemies[i]->DetectPlayer(mPlayer.get());
 		mRotateEnemies[i]->TrackPlayer(mPlayer.get());
+	}
+	for (uint32_t i = 0; i < mWalkEnemies.size(); ++i) {
+		mWalkEnemies[i]->Update();
 	}
 	for (uint32_t i = 0; i < mGems.size(); ++i) {
 		mGems[i]->Update();
@@ -352,6 +363,9 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 		for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
 			mRotateEnemies[i]->Draw(dxCommon->GetCommandList(), mPlayerCamera.get());
 		}
+		for (uint32_t i = 0; i < mWalkEnemies.size(); ++i) {
+			mWalkEnemies[i]->Draw(dxCommon->GetCommandList(), mPlayerCamera.get());
+		}
 	}
 	else {
 		mBirdEyeCamera->Bind(dxCommon->GetCommandList());
@@ -359,6 +373,9 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 		mMap->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 		for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
 			mRotateEnemies[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
+		}
+		for (uint32_t i = 0; i < mWalkEnemies.size(); ++i) {
+			mWalkEnemies[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 		}
 	}
 	
