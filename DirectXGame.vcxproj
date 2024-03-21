@@ -122,6 +122,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Logger.cpp" />
     <ClCompile Include="Game\Gem.cpp" />
     <ClCompile Include="Game\Grass.cpp" />
+    <ClCompile Include="Game\Ghost.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Game\Map.cpp" />
     <ClCompile Include="Engine\3D\Model.cpp" />
@@ -174,6 +175,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\3D\Model.h" />
     <ClInclude Include="Game\Gem.h" />
     <ClInclude Include="Game\Grass.h" />
+    <ClInclude Include="Game\Ghost.h" />
     <ClInclude Include="Math\MyMath.h" />
     <ClInclude Include="Engine\Particle\Particle.h" />
     <ClInclude Include="Engine\Particle\ParticleList.h" />

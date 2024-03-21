@@ -8,6 +8,7 @@
 #include "Game.h"
 #include "Game/RotateEnemy.h"
 #include "Game/WalkEnemy.h"
+#include "Game/Ghost.h"
 #include "Game/Gem.h"
 #include "Game/Star.h"
 #include "Game/Grass.h"
@@ -40,6 +41,9 @@ public:
 private:
 	Game* mGame;
 
+	/// <summary>
+	/// オブジェクト
+	/// </summary>
 	std::unique_ptr<PlayerCamera> mPlayerCamera;
 	std::unique_ptr<BirdEyeCamera> mBirdEyeCamera;
 	std::unique_ptr<LightList> mLightList;
@@ -48,16 +52,29 @@ private:
 	std::unique_ptr<Crosshair> mCrosshair;
 	std::unique_ptr<ParticleList> mParticle;
 	std::unique_ptr<Skydome> mSkydome; //天球
-
-	//敵
+	
+	/// <summary>
+	/// 敵
+	/// </summary>
+	//回転するだけの敵
 	const int mROTATEENEMY_MAX = 1;
 	std::vector<std::unique_ptr<RotateEnemy>> mRotateEnemies;
+	//歩く敵
 	const int mWALKENEMY_MAX = 1;
 	std::vector<std::unique_ptr<WalkEnemy>> mWalkEnemies;
-	//アイテム
+	//幽霊(テレサ)
+	const int mGHOST_MAX = 1;
+	std::vector<std::unique_ptr<Ghost>> mGhosts;
+
+	/// <summary>
+	/// アイテム
+	/// </summary>
 	std::vector <std::unique_ptr<Gem>> mGems;
 	std::unique_ptr<Star> mStar;
-	//草
+
+	/// <summary>
+	/// 草
+	/// </summary>
 	const int mGRASS_MAX = 1;
 	std::vector<std::unique_ptr<Grass>> mGrasses;
 	
@@ -73,7 +90,9 @@ private:
 	//upスイッチ
 	std::unique_ptr<Switch> mUpSwitch;
 
-	//フラグ
+	/// <summary>
+	/// フラグ
+	/// </summary>
 	bool mIsDirectionalLight = true;
 	bool mIsPlayerCamera = false;
 	bool mSlideFloorIsHit = false;
@@ -82,10 +101,14 @@ private:
 	bool mIsClear = false;
 	bool mIsGameover = false;
 
-	//UI
+	/// <summary>
+	/// UI
+	/// </summary>
 	std::unique_ptr<Sprite> mAbuttonSprite;
 	
-	//テキスト
+	/// <summary>
+	/// テキスト
+	/// </summary>
 	std::unique_ptr<Sprite> mClearSprite;
 	std::unique_ptr<Sprite> mGameoverSprite;
 };

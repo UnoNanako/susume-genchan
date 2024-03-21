@@ -6,12 +6,6 @@
 class AABB;
 class Player;
 
-enum Direction {
-	UP, 
-	DOWN,
-	LEFT,
-	RIGHT
-};
 
 class WalkEnemy : public GameObject
 {
@@ -29,6 +23,13 @@ private:
 	float mLength;
 	bool mIsPlayerInView; //プレイヤーが視野内にいるか
 	Vector3 mVelocity;
+
+	enum Direction {
+		UP,
+		DOWN,
+		LEFT,
+		RIGHT
+	};
 	Direction mDirection = DOWN;
 };
 

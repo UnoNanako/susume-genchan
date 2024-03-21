@@ -91,6 +91,15 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	}
 	mWalkEnemies[0]->SetTranslate({ -7.5f,2.0f,25.0f });
 
+	//ghost(テレサ)
+	mGhosts.resize(mGHOST_MAX);
+	for (uint32_t i = 0; i < mGhosts.size(); ++i) {
+		mGhosts[i] = std::make_unique<Ghost>();
+		mGhosts[i]->Initialize(dxCommon);
+	}
+	mGhosts[0]->SetTranslate({ 12.5f,5.0f,-5.0f });
+	mGhosts[0]->SetRotate({ 0.0f,-kPi/2.0f,0.0f });
+
 	//ジェム
 	mGems.resize(1);
 	for (uint32_t i = 0; i < mGems.size(); ++i) {
@@ -183,6 +192,11 @@ void GamePlayScene::Update(Input* input)
 	}
 	for (uint32_t i = 0; i < mWalkEnemies.size(); ++i) {
 		mWalkEnemies[i]->Update();
+		mGhosts[i]->DetectPlayer(mPlayer.get());
+		mGhosts[i]->TrackPlayer(mPlayer.get());
+	}
+	for (uint32_t i = 0; i < mGhosts.size(); ++i) {
+		mGhosts[i]->Update();
 	}
 	for (uint32_t i = 0; i < mGems.size(); ++i) {
 		mGems[i]->Update();
@@ -231,6 +245,13 @@ void GamePlayScene::Update(Input* input)
 		}
 	}
 
+	//ghostとplayerの当たり判定
+	for (uint32_t i = 0; i < mGhosts.size(); ++i) {
+		if (IsCollision(mPlayer->GetAABB(), mGhosts[i]->GetAABB(), collisionResult)) {
+			mIsGameover = true;
+		}
+	}
+
 	//starとplayerの当たり判定
 	if (IsCollision(mPlayer->GetAABB(), mStar->GetAABB(), collisionResult)) {
 		mIsClear = true;
@@ -259,12 +280,6 @@ void GamePlayScene::Update(Input* input)
 	//SlideSwitchとplayerの当たり判定
 	if (IsCollision(mPlayer->GetAABB(), mSlideSwitch->GetAABB(), collisionResult)) {
 		mSwitchIsHit = true;
-		Vector3 pos = mPlayer->GetTranslate();
-		pos.x += collisionResult.normal.x * collisionResult.depth;
-		pos.y += collisionResult.normal.y * collisionResult.depth;
-		pos.z += collisionResult.normal.z * collisionResult.depth;
-		//mPlayer->SetTranslate(pos);
-		//mPlayer->CalcurateAABB(mPlayer->GetTranslate());
 		mSlideFloor->SetIsMoving(true);
 	}
 	else {
@@ -366,6 +381,9 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 		for (uint32_t i = 0; i < mWalkEnemies.size(); ++i) {
 			mWalkEnemies[i]->Draw(dxCommon->GetCommandList(), mPlayerCamera.get());
 		}
+		for (uint32_t i = 0; i < mGhosts.size(); ++i) {
+			mGhosts[i]->Draw(dxCommon->GetCommandList(), mPlayerCamera.get());
+		}
 	}
 	else {
 		mBirdEyeCamera->Bind(dxCommon->GetCommandList());
@@ -376,6 +394,9 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 		}
 		for (uint32_t i = 0; i < mWalkEnemies.size(); ++i) {
 			mWalkEnemies[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
+		}
+		for (uint32_t i = 0; i < mGhosts.size(); ++i) {
+			mGhosts[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 		}
 	}
 	

@@ -47,13 +47,13 @@ void WalkEnemy::Update()
 		break;
 	case LEFT:
 		mTransform.translate.x -= mVelocity.x;
-		if (mTransform.translate.x <= 17.5f) {
+		if (mTransform.translate.x <= -17.5f) {
 			mDirection = UP;
 		}
 		break;
 	case RIGHT:
 		mTransform.translate.x += mVelocity.x;
-		if (mTransform.translate.x >= 25.0f) {
+		if (mTransform.translate.x >= -25.0f) {
 			mDirection = DOWN;
 		}
 		break;

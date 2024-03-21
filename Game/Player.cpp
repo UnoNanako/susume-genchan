@@ -34,9 +34,9 @@ void Player::Initialize(DirectXCommon* dxCommon)
 		{0.0f,0.0f,0.0f}
 	};
 	mTexture = new Texture();
-	mTexture->Create(mDxCommon, "resources/uvChecker.png");
+	mTexture->Create(mDxCommon, "resources/player/Chick/Atlas.png");
 	mModel = new Model();
-	mModel->Create(mDxCommon, "resources", "floor.obj");
+	mModel->Create(mDxCommon, "resources/player/Chick", "Chick.obj");
 	mModel->SetTexture(mTexture);
 }
 
