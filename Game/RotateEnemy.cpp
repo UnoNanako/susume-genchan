@@ -106,7 +106,8 @@ void RotateEnemy::TrackPlayer(Player* player)
 			//敵をプレイヤーの方向に移動させる
 			float moveSpeed = 0.1f;
 			Vector3 moveDirection = toPlayer * moveSpeed;
-			mTransform.translate += moveDirection;
+			mTransform.translate.x += moveDirection.x;
+			mTransform.translate.z += moveDirection.z;
 		}
 	}
 	else {

@@ -15,6 +15,8 @@
 #include "Game/MoveFloor.h"
 #include "Game/SlideFloor.h"
 #include "Game/Switch.h"
+#include "Game/Crank.h"
+#include "Game/RotateFloor.h"
 #include "Game/UpFloor.h"
 #include "Game/BirdEyeCamera.h"
 #include "Game/PlayerCamera.h"
@@ -89,6 +91,10 @@ private:
 	std::unique_ptr<UpFloor> mUpFloor;
 	//upスイッチ
 	std::unique_ptr<Switch> mUpSwitch;
+	//クランク
+	std::unique_ptr<Crank> mCrank;
+	//クランクを回すと回る床
+	std::unique_ptr<RotateFloor> mRotateFloor;
 
 	/// <summary>
 	/// フラグ

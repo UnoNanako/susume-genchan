@@ -32,22 +32,6 @@ void Ghost::Initialize(DirectXCommon* dxCommon)
 
 void Ghost::Update()
 {
-	switch (mDirection) {
-	case LEFT:
-		mTransform.rotate = { 0.0f,-kPi / 2.0f,0.0f };
-		mTransform.translate.x -= mVelocity.x;
-		if (mTransform.translate.x <= -2.5f) {
-			mDirection = RIGHT;
-		}
-		break;
-	case RIGHT:
-		mTransform.rotate = { 0.0f,kPi / 2.0f,0.0f };
-		mTransform.translate.x += mVelocity.x;
-		if (mTransform.translate.x >= 27.5f) {
-			mDirection = LEFT;
-		}
-		break;
-	}
 	mAABB = CalcurateAABB(mTransform.translate);
 	mTransform.UpdateMatrix();
 }
@@ -86,32 +70,42 @@ bool Ghost::DetectPlayer(Player* player)
 
 void Ghost::TrackPlayer(Player* player)
 {
-	//プレイヤーが視野角内にいるかどうか
-	if (DetectPlayer(player)) {
-		//プレイヤーの位置を取得
-		Vector3 playerPosition = player->GetTranslate();
-		//敵からプレイヤーへのベクトルを計算する
-		Vector3 toPlayer = playerPosition - mTransform.translate;
-		//↑のベクトルの長さがmLengthよりも短い場合、プレイヤーが敵の攻撃範囲内にいると判断される。
-		if (Length(toPlayer) <= mLength) {
-			mIsPlayerInView = true;
-			toPlayer.Normalize();
-			//敵の向きをプレイヤーの方向に向ける
-			//方向ベクトルを正規化し、敵の向きをプレイヤーの方向に向ける。
-			//Y軸方向の回転角度を計算し、Y軸回りの回転を適用する。
-			mTransform.rotate.y = toPlayer.y;
-			mTransform.rotate.x = 0.0f;
-			mTransform.rotate.y = atan2(toPlayer.x, toPlayer.z);
-			mTransform.rotate.z = 0.0f;
-
-			//敵をプレイヤーの方向に移動させる
-			float moveSpeed = 0.1f;
-			Vector3 moveDirection = toPlayer * moveSpeed;
-			mTransform.translate += moveDirection;
-		}
+	//プレイヤーの位置を取得
+	Vector3 playerPosition = player->GetTranslate();
+	//敵からプレイヤーへのベクトルを計算する
+	Vector3 toPlayer = playerPosition - mTransform.translate;
+	toPlayer.Normalize();
+	//ゴーストの前方を表すベクトルを計算
+	Vector3 forwardDirection = Multiply(Vector3(0.0f, 0.0f, 1.0f), MakeRotateYMatrix(mTransform.rotate.y));
+	//プレイヤーの前方を表すベクトルを計算
+	Vector3 playerForwardDirection = Multiply(Vector3(0.0f, 0.0f, 1.0f), MakeRotateYMatrix(player->GetTransform().rotate.y));
+	forwardDirection.Normalize();
+	playerForwardDirection.Normalize();
+	//プレイヤーとゴーストが向き合っているかどうかを判定するため、内積を計算
+	float dotProduct = Dot(forwardDirection, playerForwardDirection);
+	//プレイヤーとゴーストが向き合っている場合
+	if (dotProduct <= 0.0f) {
+		//ゴーストを停止させる
+		mIsPlayerInView = false;
 	}
 	else {
-		mIsPlayerInView = false;
+		//プレイヤーとゴーストが向き合っていない場合、プレイヤーを追尾する
+		mIsPlayerInView = true;
+	}
+
+	//敵の向きをプレイヤーの方向に向ける
+	//方向ベクトルを正規化し、敵の向きをプレイヤーの方向に向ける。
+	//Y軸方向の回転角度を計算し、Y軸回りの回転を適用する。
+	mTransform.rotate.x = 0.0f;
+	mTransform.rotate.y = atan2(toPlayer.x, toPlayer.z);
+	mTransform.rotate.z = 0.0f;
+
+	//敵をプレイヤーの方向に移動させる
+	float moveSpeed = 0.1f;
+	Vector3 moveDirection = toPlayer * moveSpeed;
+	if (mIsPlayerInView == true)
+	{
+		mTransform.translate += moveDirection;
 	}
 }
 

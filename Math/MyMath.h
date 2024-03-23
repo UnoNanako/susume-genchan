@@ -20,6 +20,66 @@ const float kInfinity = std::numeric_limits<float>::infinity(); //無限
 
 struct Vector2 {
 	float x, y;
+	Vector2() {
+		x = 0.0f;
+		y = 0.0f;
+	}
+	Vector2(float x, float y) {
+		this->x = x;
+		this->y = y;
+	}
+
+	void Normalize() {
+		float length = sqrtf((x * x) + (y * y));
+		x /= length;
+		y /= length;
+	}
+
+	//オーバーロード
+	Vector2 operator+(Vector2 v) {
+		Vector2 ret;
+		ret.x = x + v.x;
+		ret.y = y + v.y;
+		return ret;
+	}
+	Vector2 operator-(Vector2 v) {
+		Vector2 ret;
+		ret.x = x - v.x;
+		ret.y = y - v.y;
+		return ret;
+	}
+	Vector2 operator*(float scaler) {
+		Vector2 ret;
+		ret.x = x * scaler;
+		ret.y = y * scaler;
+		return ret;
+	}
+	Vector2 operator/(float scaler) {
+		Vector2 ret;
+		ret.x = x / scaler;
+		ret.y = y / scaler;
+		return ret;
+	}
+
+	void operator+=(Vector2 v) {
+		x += v.x;
+		y += v.y;
+	}
+	// -=のオーバーロード
+	void operator-=(Vector2 v) {
+		x -= v.x;
+		y -= v.y;
+	}
+	// *記号をオーバーロード
+	void operator*=(float scaler) {
+		x *= scaler;
+		y *= scaler;
+	}
+	// /記号をオーバーロード
+	void operator/=(float scaler) {
+		x /= scaler;
+		y /= scaler;
+	}
 };
 
 struct Vector3 {
@@ -188,6 +248,12 @@ struct CollisionResult {
 
 inline Vector2 Add(const Vector2& v1, const Vector2& v2) { return { v1.x + v2.x, v1.y + v2.y }; }
 inline Vector2 Subtract(const Vector2& v1, const Vector2& v2) { return { v1.x - v2.x, v1.y - v2.y }; }
+inline float Dot(const Vector2& v1, const Vector2& v2) {
+	return v1.x * v2.x + v1.y * v2.y;
+}
+inline float Length(const Vector2& v) { 
+	return std::sqrt(Dot(v, v)); 
+}
 
 inline Vector3 Negate(const Vector3& v) { return { -v.x, -v.y, -v.z }; }
 
@@ -205,7 +271,10 @@ inline Vector3 Multiply(float scalar, const Vector3& v) {
 
 inline float Dot(const Vector3& v1, const Vector3& v2) { return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z; }
 
-inline float Length(const Vector3& v) { return std::sqrt(Dot(v, v)); }
+inline float Length(const Vector3& v) { 
+	return std::sqrt(Dot(v, v)); 
+}
+
 
 //inline Vector3 Normalize(const Vector3& v) {
 //	float length = Length(v);

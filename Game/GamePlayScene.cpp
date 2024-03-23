@@ -97,7 +97,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 		mGhosts[i] = std::make_unique<Ghost>();
 		mGhosts[i]->Initialize(dxCommon);
 	}
-	mGhosts[0]->SetTranslate({ 12.5f,5.0f,-5.0f });
+	mGhosts[0]->SetTranslate({ 22.5f,5.0f,-5.0f });
 	mGhosts[0]->SetRotate({ 0.0f,-kPi/2.0f,0.0f });
 
 	//ジェム
@@ -130,6 +130,13 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	mUpSwitch->SetMoveFloor(mUpFloor.get());
 	mUpSwitch->Initialize(dxCommon);
 	mUpSwitch->SetTransform({{ 0.5f,0.5f,0.5f},{0.0f,0.0f,0.0f},{7.5f,2.5f,-20.0f} });
+
+	//クランク
+	mCrank = std::make_unique<Crank>();
+	mCrank->Initialize(dxCommon);
+	//クランクを回すと回る床
+	mRotateFloor = std::make_unique<RotateFloor>();
+	mRotateFloor->Initialize(dxCommon);
 
 	//Aボタン
 	mAbuttonSprite = std::make_unique<Sprite>();
@@ -187,12 +194,10 @@ void GamePlayScene::Update(Input* input)
 	mParticle->Update(mPlayerCamera.get());
 	for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
 		mRotateEnemies[i]->Update();
-		mRotateEnemies[i]->DetectPlayer(mPlayer.get());
 		mRotateEnemies[i]->TrackPlayer(mPlayer.get());
 	}
 	for (uint32_t i = 0; i < mWalkEnemies.size(); ++i) {
 		mWalkEnemies[i]->Update();
-		mGhosts[i]->DetectPlayer(mPlayer.get());
 		mGhosts[i]->TrackPlayer(mPlayer.get());
 	}
 	for (uint32_t i = 0; i < mGhosts.size(); ++i) {
@@ -209,6 +214,9 @@ void GamePlayScene::Update(Input* input)
 	mSlideSwitch->Update();
 	mUpFloor->Update();
 	mUpSwitch->Update();
+	mCrank->Update(input);
+	mRotateFloor->Update();
+	mRotateFloor->SetRotate(mCrank->GetRotate());
 
 	CollisionResult collisionResult;
 	//壁,床とプレイヤーの当たり判定
@@ -363,6 +371,15 @@ void GamePlayScene::Update(Input* input)
 	if (mUpFloor->GetIsMove() == true) {
 		mUpFloor->Move();
 	}
+
+	//クランクとプレイヤーの当たり判定
+	if (IsCollision(mPlayer->GetAABB(), mCrank->GetAABB(), collisionResult)) {
+		mCrank->SetIsHit(true);
+	}
+	else {
+		mCrank->SetIsHit(false);
+	}
+
 	mPlayer->GetTransform().UpdateMatrix();
 }
 
@@ -412,6 +429,8 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 	mSlideSwitch->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mUpFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mUpSwitch->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
+	mCrank->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
+	mRotateFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mSkydome->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mGame->GetParticleCommon()->Bind(dxCommon);
 	//mParticle->Draw(dxCommon->GetCommandList(), camera, { 0.0f,0.0f,0.0f });
