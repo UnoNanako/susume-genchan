@@ -14,7 +14,7 @@ void SlideFloor::Initialize(DirectXCommon* dxCommon)
 		{15.0f,0.0f,32.5f}
 	};
 	mModel = new Model();
-	mModel->Create(mDxCommon, "resources/moveFloor", "moveFloor.obj");
+	mModel->Create(mDxCommon, "resources/floor/slide", "moveFloor.obj");
 	mIsMove = false;
 }
 

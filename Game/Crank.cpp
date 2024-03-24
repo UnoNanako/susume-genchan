@@ -16,7 +16,7 @@ void Crank::Initialize(DirectXCommon* dxCommon)
 		{0.0f,7.5f,12.5f}
 	};
 	mTexture = new Texture();
-	mTexture->Create(mDxCommon, "resources/uvChecker.png");
+	mTexture->Create(mDxCommon, "resources/red.png");
 	mModel = new Model();
 	mModel->Create(mDxCommon, "resources", "floor.obj");
 	mModel->SetTexture(mTexture);
