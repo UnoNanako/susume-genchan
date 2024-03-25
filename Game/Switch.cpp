@@ -14,10 +14,10 @@ void Switch::Initialize(DirectXCommon* dxCommon)
 
 	mRed = new Texture();
 	mBlue = new Texture();
-	mRed->Create(mDxCommon, "resources/blocks/switch/red.png");
-	mBlue->Create(mDxCommon, "resources/blocks/switch/blue.png");
+	mRed->Create(mDxCommon, "resources/Model/Gimmick/Switch/red.png");
+	mBlue->Create(mDxCommon, "resources/Model/Gimmick/Switch/blue.png");
 	mModel = new Model();
-	mModel->Create(mDxCommon, "resources/blocks/switch", "switch.obj");
+	mModel->Create(mDxCommon, "resources/Model/Gimmick/Switch", "switch.obj");
 	mModel->SetTexture(mRed);
 }
 

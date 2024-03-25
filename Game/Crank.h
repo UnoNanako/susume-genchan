@@ -6,6 +6,7 @@
 
 class Input;
 class AABB;
+class Model;
 
 class Crank : public GameObject
 {
@@ -24,9 +25,11 @@ public:
 	void SetIsHit(bool isHit) { mIsHit = isHit; }
 	
 private:
-	AABB mAABB;
-	float mCalculateAngle;
-	float mCurrentAngle;
+	AABB mAABB; 
+	Model* mFoundationModel; //土台
+	Transform mFoundationTransform; //土台
+	float mCalculateAngle; //前の角度
+	float mCurrentAngle; //現在の角度
 	bool mIsHit = false;
 };
 

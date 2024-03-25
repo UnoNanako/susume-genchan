@@ -24,9 +24,9 @@ void Ghost::Initialize(DirectXCommon* dxCommon)
 		{0.0f,0.0f,0.0f} //transfrom
 	};
 	mTexture = new Texture();
-	mTexture->Create(mDxCommon, "resources/UVChecker3.png");
+	mTexture->Create(mDxCommon, "resources/uvChecker.png");
 	mModel = new Model();
-	mModel->Create(mDxCommon, "resources", "floor.obj");
+	mModel->Create(mDxCommon, "resources/Model/Floor", "floor.obj");
 	mModel->SetTexture(mTexture);
 }
 

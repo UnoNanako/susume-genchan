@@ -34,9 +34,9 @@ void Player::Initialize(DirectXCommon* dxCommon)
 		{0.0f,0.0f,0.0f}
 	};
 	mTexture = new Texture();
-	mTexture->Create(mDxCommon, "resources/player/Chick/Atlas.png");
+	mTexture->Create(mDxCommon, "resources/Model/Player/Chick/Atlas.png");
 	mModel = new Model();
-	mModel->Create(mDxCommon, "resources/player/Chick", "Chick.obj");
+	mModel->Create(mDxCommon, "resources/Model/Player/Chick", "Chick.obj");
 	mModel->SetTexture(mTexture);
 }
 
@@ -125,10 +125,11 @@ void Player::Update(Input* input, float theta)
 	mTransform.UpdateMatrix();
 	Vector3 worldPos = GetWorldPosition();
 	mAABBtranslate = CalcurateAABB(worldPos);
-	/*mAABBtranslate = {
-		{worldPos.x - mTransform.scale.x,worldPos.y - mTransform.scale.y,worldPos.z - mTransform.scale.z},
-		{worldPos.x + mTransform.scale.x,worldPos.y + mTransform.scale.y,worldPos.z + mTransform.scale.z}
-	};*/
+	//リスポーン
+	if (mTransform.translate.y <= -50.0f) {
+		Initialize(mDxCommon);
+	}
+
 	ImGui::Begin("Debug");
 	ImGui::DragFloat3("player Position", &mTransform.translate.x, 0.01f, 0.0f, 10.0f);
 	ImGui::DragFloat3("player Rotation", &mTransform.rotate.x, 0.01f, 0.0f, 10.0f);

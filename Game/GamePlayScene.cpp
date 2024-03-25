@@ -140,16 +140,16 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 
 	//Aボタン
 	mAbuttonSprite = std::make_unique<Sprite>();
-	mAbuttonSprite->Create(dxCommon, "resources/ui/buttons/xbox_button_color_a.png");
+	mAbuttonSprite->Create(dxCommon, "resources/Sprite/Ui/Buttons/xbox_button_color_a.png");
 	mAbuttonSprite->SetTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{620.0f,600.0f,0.0f} });
 
 	//クリアテキスト
 	mClearSprite = std::make_unique<Sprite>();
-	mClearSprite->Create(dxCommon, "resources/text/COURSE_CLEAR.png");
+	mClearSprite->Create(dxCommon, "resources/Sprite/Text/COURSE_CLEAR.png");
 	mClearSprite->SetTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{100.0f,300.0f,0.0f} });
 	//ゲームオーバーテキスト
 	mGameoverSprite = std::make_unique<Sprite>();
-	mGameoverSprite->Create(dxCommon, "resources/text/GAME_OVER.png");
+	mGameoverSprite->Create(dxCommon, "resources/Sprite/Text/GAME_OVER.png");
 	mGameoverSprite->SetTransform({ {1.0f,1.0f,1.0f,},{0.0f,0.0f,0.0f},{200.0f,300.0f,0.0f} });
 }
 

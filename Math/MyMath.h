@@ -158,6 +158,9 @@ struct Vector3 {
 		y /= scaler;
 		z /= scaler;
 	}
+
+	static const Vector3 kZero;
+	static const Vector3 kOne;
 };
 
 inline Vector3 Normalize(const Vector3& v) {
@@ -195,8 +198,23 @@ struct AABB {
 //OBB
 struct OBB {
 	Vector3 center; //中心点
-	Vector3 orientations[3]; //座標軸。正規化必須
+	Vector3 axis[3]; //座標軸。正規化必須
 	Vector3 size; //座標軸方向の長さの半分。中心から面までの距離
+
+	OBB()
+		:center(Vector3::kZero)
+		, size(Vector3::kZero)
+	{
+		axis[0] = Vector3(1.0f, 0.0f, 0.0f);
+		axis[1] = Vector3(0.0f, 1.0f, 0.0f);
+		axis[2] = Vector3(0.0f, 0.0f, 1.0f);
+	}
+	OBB(const Vector3& center, const Vector3& size)
+		:center(center)
+		, size(size)
+	{
+
+	}
 };
 
 //line
@@ -918,6 +936,9 @@ inline Matrix4x4 InverseMatrixFromOBB(const OBB& obb) {
 	inverseMatrix.m[3][3] = 1.0f;
 	return inverseMatrix;
 }
+
+//OBBとOBBの衝突判定
+//inline bool IsCollision(const )
 
 //カメラのビュー行列を求める関数
 inline Matrix4x4 CreateLookAt(const Vector3& eye, const Vector3& target, const Vector3& up) {

@@ -9,11 +9,11 @@ void Gem::Initialize(DirectXCommon* dxCommon)
 	mDxCommon = dxCommon;
 	mTransform = { {1.0f,1.0f,1.0f} ,{0.0f,0.0f,0.0f},{1.0f,1.0f,1.0f} };
 	mTexture = new Texture();
-	mTexture->Create(mDxCommon, "resources/gem/gemColor.png");
+	mTexture->Create(mDxCommon, "resources/Model/Gem/gemColor.png");
 	mGetColor = new Texture();
-	mGetColor->Create(mDxCommon, "resources/gem/gemGet.png");
+	mGetColor->Create(mDxCommon, "resources/Model/Gem/gemGet.png");
 	mModel = new Model();
-	mModel->Create(mDxCommon, "resources/gem", "Gem.obj");
+	mModel->Create(mDxCommon, "resources/Model/Gem", "Gem.obj");
 	mModel->SetTexture(mTexture);
 }
 

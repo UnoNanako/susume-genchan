@@ -13,7 +13,7 @@ void Star::Initialize(DirectXCommon* dxCommon)
 		{0.0f,0.0f,0.0f}
 	};
 	mModel = new Model();
-	mModel->Create(mDxCommon, "resources/star", "star.obj");
+	mModel->Create(mDxCommon, "resources/Model/Star", "star.obj");
 }
 
 void Star::Update()

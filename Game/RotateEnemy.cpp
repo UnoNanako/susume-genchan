@@ -25,9 +25,9 @@ void RotateEnemy::Initialize(DirectXCommon* dxCommon)
 		{0.0f,0.0f,0.0f} //transform
 	};
 	mTexture = new Texture();
-	mTexture->Create(mDxCommon, "resources/enemies/rotateEnemy/Atlas.png");
+	mTexture->Create(mDxCommon, "resources/Model/Enemies/RotateEnemy/Atlas.png");
 	mModel = new Model();
-	mModel->Create(mDxCommon, "resources/enemies/rotateEnemy", "Giant.obj");
+	mModel->Create(mDxCommon, "resources/Model/Enemies/RotateEnemy", "Giant.obj");
 	mModel->SetTexture(mTexture);
 }
 

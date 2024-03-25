@@ -13,9 +13,9 @@ void RotateFloor::Initialize(DirectXCommon* dxCommon)
 		{37.5f,0.0f,-15.0f}
 	};
 	mTexture = new Texture();
-	mTexture->Create(dxCommon, "resources/floor/rotate/red.png");
+	mTexture->Create(dxCommon, "resources/Model/Floor/Rotate/red.png");
 	mModel = new Model();
-	mModel->Create(mDxCommon, "resources/floor/rotate", "rotate.obj");
+	mModel->Create(mDxCommon, "resources/Model/Floor/Rotate", "rotate.obj");
 	mModel->SetTexture(mTexture);
 }
 

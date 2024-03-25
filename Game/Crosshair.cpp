@@ -5,7 +5,7 @@
 void Crosshair::Initialize(DirectXCommon* dxCommon)
 {
 	mCrossSprite = new Sprite();
-	mCrossSprite->Create(dxCommon, "resources/Cross2.png");
+	mCrossSprite->Create(dxCommon, "resources/Sprite/Crosshair/Cross.png");
 	mCrossSprite->SetTransform({ { 1.0f,1.0f,1.0f },{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} });
 }
 

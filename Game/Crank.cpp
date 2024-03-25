@@ -13,13 +13,22 @@ void Crank::Initialize(DirectXCommon* dxCommon)
 	mTransform = {
 		{1.0f,1.0f,1.0f},
 		{0.0f,0.0f,0.0f},
+		{0.0f,8.0f,12.5f}
+	};
+	mFoundationTransform = {
+		{2.0f,2.0f,2.0f},
+		{0.0f,0.0f,0.0f},
 		{0.0f,7.5f,12.5f}
 	};
 	mTexture = new Texture();
-	mTexture->Create(mDxCommon, "resources/red.png");
+	mTexture->Create(mDxCommon, "resources/Model/Gimmick/Crank/red.png");
+	//クランク本体
 	mModel = new Model();
-	mModel->Create(mDxCommon, "resources", "floor.obj");
+	mModel->Create(mDxCommon, "resources/Model/Gimmick/Crank", "Crank.obj");
 	mModel->SetTexture(mTexture);
+	//土台
+	mFoundationModel = new Model();
+	mFoundationModel->Create(mDxCommon, "resources/Model/Gimmick/Foundation", "Foundation.obj");
 }
 
 void Crank::Update(Input* input)
@@ -42,12 +51,14 @@ void Crank::Update(Input* input)
 		mTransform.rotate.y -= angle;
 	}
 	mTransform.UpdateMatrix();
+	mFoundationTransform.UpdateMatrix();
 }
 
 void Crank::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
 {
 	mTexture->Bind(commandList);
 	mModel->Draw(commandList, camera, mTransform);
+	mFoundationModel->Draw(commandList, camera, mFoundationTransform);
 }
 
 AABB Crank::CalculateAABB(const Vector3& translate)

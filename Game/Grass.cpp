@@ -13,9 +13,9 @@ void Grass::Initialize(DirectXCommon* dxCommon)
 		{0.0f,0.0f,0.0f}
 	};
 	mTexture = new Texture();
-	mTexture->Create(dxCommon, "resources/blocks/Atlas.png");
+	mTexture->Create(dxCommon, "resources/Model/Blocks/Atlas.png");
 	mModel = new Model();
-	mModel->Create(mDxCommon, "resources/blocks/bush", "Bush.obj");
+	mModel->Create(mDxCommon, "resources/Model/Blocks/Bush", "Bush.obj");
 	mModel->SetTexture(mTexture);
 }
 

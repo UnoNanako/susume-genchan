@@ -24,9 +24,9 @@ void WalkEnemy::Initialize(DirectXCommon* dxCommon)
 		{0.0f,0.0f,0.0f} //translate
 	};
 	mTexture = new Texture();
-	mTexture->Create(mDxCommon, "resources/enemies/walkEnemy/Atlas.png");
+	mTexture->Create(mDxCommon, "resources/Model/Enemies/WalkEnemy/Atlas.png");
 	mModel = new Model();
-	mModel->Create(mDxCommon, "resources/enemies/walkEnemy", "Goblin.obj");
+	mModel->Create(mDxCommon, "resources/Model/Enemies/WalkEnemy", "Goblin.obj");
 	mModel->SetTexture(mTexture);
 }
 

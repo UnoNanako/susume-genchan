@@ -11,7 +11,7 @@ void Skydome::Initialize(DirectXCommon* dxCommon)
 		{0.0f,0.0f,0.0f}
 	};
 	mModel = new Model();
-	mModel->Create(mDxCommon, "resources/celestialSphere", "sky.obj");
+	mModel->Create(mDxCommon, "resources/Model/Skydome", "sky.obj");
 }
 
 void Skydome::Update()

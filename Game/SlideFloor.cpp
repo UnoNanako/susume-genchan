@@ -11,10 +11,10 @@ void SlideFloor::Initialize(DirectXCommon* dxCommon)
 	mTransform = {
 		{1.0f,1.0f,1.0f},
 		{0.0f,0.0f,0.0f},
-		{15.0f,0.0f,32.5f}
+		{15.0f,2.0f,32.5f}
 	};
 	mModel = new Model();
-	mModel->Create(mDxCommon, "resources/floor/slide", "moveFloor.obj");
+	mModel->Create(mDxCommon, "resources/Model/Floor/Slide", "slideFloor.obj");
 	mIsMove = false;
 }
 
@@ -43,12 +43,12 @@ AABB SlideFloor::CalcurateAABB(const Vector3& translate)
 	AABB ret;
 	ret.min = {
 		{translate.x - (10.0f / 2.0f)},
-		{translate.y - (5.0f / 2.0f)},
+		{translate.y - (1.0f / 2.0f)},
 		{translate.z - (10.0f / 2.0f)}
 	};
 	ret.max = {
 		{translate.x + (10.0f / 2.0f)},
-		{translate.y + (5.0f / 2.0f)},
+		{translate.y + (1.0f / 2.0f)},
 		{translate.z + (10.0f / 2.0f)}
 	};
 	return ret;

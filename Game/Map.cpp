@@ -12,12 +12,7 @@ void Map::Create(DirectXCommon* dxCommon)
 	mDxCommon = dxCommon;
 
 	mTerrainTexture = new Texture();
-	mTerrainTexture->Create(mDxCommon, "resources/blocks/grass/Blocks_PixelArt.png");
-
-	mModel = new Model();
-	mModel->Create(mDxCommon, "resources", "terrain.obj");
-	mModel->SetTexture(mTerrainTexture);
-	mTransform = { {1.0f,1.0f,1.0f} ,{0.0f,0.0f,0.0f},{0.0f,-1.0f,0.0f} };
+	mTerrainTexture->Create(mDxCommon, "resources/Model/Blocks/Grass/Blocks_PixelArt.png");
 
 	//jsonファイル読み込み
 	//読み込むファイルの名前を作成
@@ -30,7 +25,7 @@ void Map::Create(DirectXCommon* dxCommon)
 		for (uint32_t i = 0; i < terrainCount; ++i) {
 			Model* newModel;
 			newModel = new Model();
-			newModel->Create(mDxCommon, "resources/blocks/grass", "grass.obj");
+			newModel->Create(mDxCommon, "resources/Model/Blocks/Grass", "grass.obj");
 			newModel->SetTexture(mTerrainTexture);
 			mTerrainModel.emplace_back(newModel);
 
@@ -95,7 +90,7 @@ void Map::Update()
 	if (ImGui::Button("Create")) {
 		Model* newModel;
 		newModel = new Model();
-		newModel->Create(mDxCommon, "resources/blocks/grass", "grass.obj");
+		newModel->Create(mDxCommon, "resources/Model/Blocks/Grass", "grass.obj");
 		newModel->SetTexture(mTerrainTexture);
 		mTerrainModel.emplace_back(newModel);
 		Transform newTransform;

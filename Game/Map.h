@@ -10,8 +10,8 @@ class Texture;
 class Model;
 struct AABB;
 
-const std::string pathToJSON("./resources/json/map.json");
-const std::string pathToAABBJSON("./resources/json/mapAABB.json");
+const std::string pathToJSON("./resources/Json/map.json");
+const std::string pathToAABBJSON("./resources/Json/mapAABB.json");
 
 class Map : public GameObject
 {
