@@ -162,7 +162,7 @@
     <ClCompile Include="Game\RotateFloor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="DirectXGame\MyMath.cpp">
+    <ClCompile Include="Math\MyMath.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>

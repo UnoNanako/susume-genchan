@@ -177,7 +177,44 @@ struct Matrix3x3 {
 };
 struct Matrix4x4 {
 	float m[4][4];
+	Matrix4x4() {
+
+	}
+	Matrix4x4(float m[4][4]) {
+		memcpy(this->m, m, sizeof(float) * 16);
+	}
+	static const Matrix4x4 kIdentity;
 };
+
+
+inline Vector2 Add(const Vector2& v1, const Vector2& v2) { return { v1.x + v2.x, v1.y + v2.y }; }
+inline Vector2 Subtract(const Vector2& v1, const Vector2& v2) { return { v1.x - v2.x, v1.y - v2.y }; }
+inline float Dot(const Vector2& v1, const Vector2& v2) {
+	return v1.x * v2.x + v1.y * v2.y;
+}
+inline float Length(const Vector2& v) { 
+	return std::sqrt(Dot(v, v)); 
+}
+
+inline Vector3 Negate(const Vector3& v) { return { -v.x, -v.y, -v.z }; }
+
+inline Vector3 Add(const Vector3& v1, const Vector3& v2) {
+	return { v1.x + v2.x, v1.y + v2.y, v1.z + v2.z };
+}
+
+inline Vector3 Subtract(const Vector3& v1, const Vector3& v2) {
+	return { v1.x - v2.x, v1.y - v2.y, v1.z - v2.z };
+}
+
+inline Vector3 Multiply(float scalar, const Vector3& v) {
+	return { scalar * v.x, scalar * v.y, scalar * v.z };
+}
+
+inline float Dot(const Vector3& v1, const Vector3& v2) { return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z; }
+
+inline float Length(const Vector3& v) { 
+	return std::sqrt(Dot(v, v)); 
+}
 
 //球
 struct Sphere {
@@ -213,7 +250,26 @@ struct OBB {
 		:center(center)
 		, size(size)
 	{
-
+		axis[0] = Vector3(1.0f, 0.0f, 0.0f);
+		axis[1] = Vector3(0.0f, 1.0f, 0.0f);
+		axis[2] = Vector3(0.0f, 0.0f, 1.0f);
+	}
+	Matrix4x4 CreateInverse() const
+	{
+		Matrix4x4 result = Matrix4x4::kIdentity;
+		result.m[0][0] = axis[0].x;
+		result.m[0][1] = axis[1].x;
+		result.m[0][2] = axis[2].x;
+		result.m[1][0] = axis[0].y;
+		result.m[1][1] = axis[1].y;
+		result.m[1][2] = axis[2].y;
+		result.m[2][0] = axis[0].z;
+		result.m[2][1] = axis[1].z;
+		result.m[2][2] = axis[2].z;
+		result.m[3][0] = -Dot(center, axis[0]);
+		result.m[3][1] = -Dot(center, axis[1]);
+		result.m[3][2] = -Dot(center, axis[2]);
+		return result;
 	}
 };
 
@@ -263,35 +319,6 @@ struct CollisionResult {
 	Vector3 normal;
 };
 
-
-inline Vector2 Add(const Vector2& v1, const Vector2& v2) { return { v1.x + v2.x, v1.y + v2.y }; }
-inline Vector2 Subtract(const Vector2& v1, const Vector2& v2) { return { v1.x - v2.x, v1.y - v2.y }; }
-inline float Dot(const Vector2& v1, const Vector2& v2) {
-	return v1.x * v2.x + v1.y * v2.y;
-}
-inline float Length(const Vector2& v) { 
-	return std::sqrt(Dot(v, v)); 
-}
-
-inline Vector3 Negate(const Vector3& v) { return { -v.x, -v.y, -v.z }; }
-
-inline Vector3 Add(const Vector3& v1, const Vector3& v2) {
-	return { v1.x + v2.x, v1.y + v2.y, v1.z + v2.z };
-}
-
-inline Vector3 Subtract(const Vector3& v1, const Vector3& v2) {
-	return { v1.x - v2.x, v1.y - v2.y, v1.z - v2.z };
-}
-
-inline Vector3 Multiply(float scalar, const Vector3& v) {
-	return { scalar * v.x, scalar * v.y, scalar * v.z };
-}
-
-inline float Dot(const Vector3& v1, const Vector3& v2) { return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z; }
-
-inline float Length(const Vector3& v) { 
-	return std::sqrt(Dot(v, v)); 
-}
 
 
 //inline Vector3 Normalize(const Vector3& v) {
@@ -534,15 +561,13 @@ inline Matrix4x4 InverseAffine(const Matrix4x4& m) {
 	Matrix3x3 minorInverse = Inverse(minor);
 	Vector3 translateNegate{ -m.m[3][0], -m.m[3][1], -m.m[3][2] };
 	Vector3 translateInverse = Multiply(translateNegate, minorInverse);
-	Matrix4x4 inverseAffine{
-	  {
-	   {minorInverse.m[0][0], minorInverse.m[0][1], minorInverse.m[0][2], 0.0f},
+	float tmp[4][4] = {
+		{minorInverse.m[0][0], minorInverse.m[0][1], minorInverse.m[0][2], 0.0f},
 	   {minorInverse.m[1][0], minorInverse.m[1][1], minorInverse.m[1][2], 0.0f},
 	   {minorInverse.m[2][0], minorInverse.m[2][1], minorInverse.m[2][2], 0.0f},
-	   {translateInverse.x, translateInverse.y, translateInverse.z, 1.0f},
-	   }
+	   {translateInverse.x, translateInverse.y, translateInverse.z, 1.0f}
 	};
-	return inverseAffine;
+	return Matrix4x4(tmp);
 }
 
 inline Matrix4x4 Transpose(const Matrix4x4& m) {
@@ -594,17 +619,23 @@ inline Matrix4x4 MakeIdentity4x4() {
 }
 
 inline Matrix4x4 MakeTranslateMatrix(const Vector3& translate) {
-	return {
-	  1.0f, 0.0f, 0.0f, 0.0f, 0.0f,        1.0f,        0.0f,        0.0f,
-	  0.0f, 0.0f, 1.0f, 0.0f, translate.x, translate.y, translate.z, 1.0f,
+	float tmp[4][4] = {
+		{1.0f,0.0f,0.0f,0.0f},
+		{0.0f,1.0f,0.0f,0.0f},
+		{0.0f,0.0f,1.0f,0.0f},
+		{translate.x,translate.y,translate.z,1.0f}
 	};
+	return Matrix4x4(tmp);
 }
 
 inline Matrix4x4 MakeScaleMatrix(const Vector3& scale) {
-	return {
-	  scale.x, 0.0f, 0.0f,    0.0f, 0.0f, scale.y, 0.0f, 0.0f,
-	  0.0f,    0.0f, scale.z, 0.0f, 0.0f, 0.0f,    0.0f, 1.0f,
+	float tmp[4][4] = {
+		{scale.x,0.0f,0.0f,0.0f},
+		{0.0f,scale.y,0.0f,0.0f},
+		{0.0f,0.0f,scale.z,0.0f},
+		{0.0f,0.0f,0.0f,1.0f}
 	};
+	return Matrix4x4(tmp);
 }
 
 inline Matrix4x4 MakeRotateXMatrix(float radian) {
@@ -915,24 +946,24 @@ inline bool IsCollision(const AABB& aabb, const Sphere& sphere) {
 inline Matrix4x4 InverseMatrixFromOBB(const OBB& obb) {
 	//直接逆行列にする
 	Matrix4x4 inverseMatrix;
-	inverseMatrix.m[0][0] = obb.orientations[0].x;
-	inverseMatrix.m[0][1] = obb.orientations[1].x;
-	inverseMatrix.m[0][2] = obb.orientations[2].x;
+	inverseMatrix.m[0][0] = obb.axis[0].x;
+	inverseMatrix.m[0][1] = obb.axis[1].x;
+	inverseMatrix.m[0][2] = obb.axis[2].x;
 	inverseMatrix.m[0][3] = 0.0f;
 
-	inverseMatrix.m[1][0] = obb.orientations[0].y;
-	inverseMatrix.m[1][1] = obb.orientations[1].y;
-	inverseMatrix.m[1][2] = obb.orientations[2].y;
+	inverseMatrix.m[1][0] = obb.axis[0].y;
+	inverseMatrix.m[1][1] = obb.axis[1].y;
+	inverseMatrix.m[1][2] = obb.axis[2].y;
 	inverseMatrix.m[1][3] = 0.0f;
 
-	inverseMatrix.m[2][0] = obb.orientations[0].z;
-	inverseMatrix.m[2][1] = obb.orientations[1].z;
-	inverseMatrix.m[2][2] = obb.orientations[2].z;
+	inverseMatrix.m[2][0] = obb.axis[0].z;
+	inverseMatrix.m[2][1] = obb.axis[1].z;
+	inverseMatrix.m[2][2] = obb.axis[2].z;
 	inverseMatrix.m[2][3] = 0.0f;
 
-	inverseMatrix.m[3][0] = -Dot(obb.center, obb.orientations[0]);
-	inverseMatrix.m[3][1] = -Dot(obb.center, obb.orientations[1]);
-	inverseMatrix.m[3][2] = -Dot(obb.center, obb.orientations[2]);
+	inverseMatrix.m[3][0] = -Dot(obb.center, obb.axis[0]);
+	inverseMatrix.m[3][1] = -Dot(obb.center, obb.axis[1]);
+	inverseMatrix.m[3][2] = -Dot(obb.center, obb.axis[2]);
 	inverseMatrix.m[3][3] = 1.0f;
 	return inverseMatrix;
 }
