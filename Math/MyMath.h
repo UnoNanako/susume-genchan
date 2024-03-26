@@ -5,7 +5,6 @@
 #include <numbers>
 #include <limits>
 
-
 template <class T>
 inline T Max(const T& a, const T& b) {
 	return a > b ? a : b;
@@ -17,6 +16,7 @@ inline T Min(const T& a, const T& b) {
 
 const float kPi = std::numbers::pi_v<float>;
 const float kInfinity = std::numeric_limits<float>::infinity(); //無限
+const float kEpsilon = std::numeric_limits<float>::epsilon();
 
 struct Vector2 {
 	float x, y;
@@ -24,6 +24,7 @@ struct Vector2 {
 		x = 0.0f;
 		y = 0.0f;
 	}
+
 	Vector2(float x, float y) {
 		this->x = x;
 		this->y = y;
@@ -65,17 +66,14 @@ struct Vector2 {
 		x += v.x;
 		y += v.y;
 	}
-	// -=のオーバーロード
 	void operator-=(Vector2 v) {
 		x -= v.x;
 		y -= v.y;
 	}
-	// *記号をオーバーロード
 	void operator*=(float scaler) {
 		x *= scaler;
 		y *= scaler;
 	}
-	// /記号をオーバーロード
 	void operator/=(float scaler) {
 		x /= scaler;
 		y /= scaler;
@@ -89,6 +87,7 @@ struct Vector3 {
 		y = 0.0f;
 		z = 0.0f;
 	}
+
 	Vector3(float x, float y, float z) {
 		this->x = x;
 		this->y = y;
@@ -102,66 +101,91 @@ struct Vector3 {
 		z /= length;
 	}
 
-	// +記号オーバーロード
-	Vector3 operator+(Vector3 v) {
-		Vector3 ret;
-		ret.x = x + v.x;
-		ret.y = y + v.y;
-		ret.z = z + v.z;
-		return ret;
-	}
-	// -記号をオーバーロード
-	Vector3 operator-(Vector3 v) {
-		Vector3 ret;
-		ret.x = x - v.x;
-		ret.y = y - v.y;
-		ret.z = z - v.z;
-		return ret;
-	}
-	// *記号をオーバーロード
-	Vector3 operator*(float scaler) {
-		Vector3 ret;
-		ret.x = x * scaler;
-		ret.y = y * scaler;
-		ret.z = z * scaler;
-		return ret;
-	}
-	// /記号をオーバーロード
-	Vector3 operator/(float scaler) {
-		Vector3 ret;
-		ret.x = x / scaler;
-		ret.y = y / scaler;
-		ret.z = z / scaler;
-		return ret;
-	}
-	// +=のオーバーロード
-	void operator+=(Vector3 v) {
-		x += v.x;
-		y += v.y;
-		z += v.z;
-	}
-	// -=のオーバーロード
-	void operator-=(Vector3 v) {
-		x -= v.x;
-		y -= v.y;
-		z -= v.z;
-	}
-	// *記号をオーバーロード
-	void operator*=(float scaler) {
-		x *= scaler;
-		y *= scaler;
-		z *= scaler;
-	}
-	// /記号をオーバーロード
-	void operator/=(float scaler) {
-		x /= scaler;
-		y /= scaler;
-		z /= scaler;
-	}
-
 	static const Vector3 kZero;
 	static const Vector3 kOne;
 };
+
+inline bool operator==(const Vector3& v1, const Vector3& v2) {
+	return v1.x == v2.x && v1.y == v2.y && v1.z == v2.z;
+}
+
+inline bool operator!=(const Vector3& v1, const Vector3& v2) {
+	return v1.x != v2.x || v1.y != v2.y || v1.z != v2.z;
+}
+
+inline Vector3 operator-(const Vector3& v) {
+	return Vector3(-v.x, -v.y, -v.z);
+}
+
+inline Vector3 operator+(const Vector3& v1, const Vector3& v2) {
+	return Vector3(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
+}
+
+inline Vector3 operator-(const Vector3& v1, const Vector3& v2) {
+	return Vector3(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
+}
+
+inline Vector3 operator*(const Vector3& v1, const Vector3& v2) {
+	return Vector3(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z);
+}
+
+inline Vector3 operator*(const Vector3& v, float a) {
+	return Vector3(v.x * a, v.y * a, v.z * a);
+}
+
+inline Vector3 operator*(float a, const Vector3& v) {
+	return Vector3(a * v.x, a * v.y, a * v.z);
+}
+
+inline Vector3 operator/(const Vector3& v, float a) {
+	float oneOverA = 1.0f / a;
+	return Vector3(v.x * oneOverA, v.y * oneOverA, v.z * oneOverA);
+}
+
+inline Vector3& operator+=(Vector3& v1, const Vector3& v2) {
+	v1 = v1 + v2;
+	return v1;
+}
+
+inline Vector3& operator-=(Vector3& v1, const Vector3& v2) {
+	v1 = v1 - v2;
+	return v1;
+}
+
+inline Vector3& operator*=(Vector3& v1, const Vector3& v2) {
+	v1 = v1 * v2;
+	return v1;
+}
+
+inline Vector3& operator*=(Vector3& v, float a) {
+	v = v * a;
+	return v;
+}
+
+inline Vector3& operator/=(Vector3& v, float a) {
+	float oneOverA = 1.0f / a;
+	v = v * oneOverA;
+	return v;
+}
+
+inline Vector3 Cross(const Vector3& v1, const Vector3& v2) {
+	return Vector3(
+		v1.y * v2.z - v1.z * v2.y,
+		v1.z * v2.x - v1.x * v2.z,
+		v1.x * v2.y - v1.y * v2.x);
+}
+
+inline float Dot(const Vector3& v1, const Vector3& v2) {
+	return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+}
+
+inline float Length(const Vector3& v) {
+	return sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+}
+
+inline float LengthSq(const Vector3& v) {
+	return v.x * v.x + v.y * v.y + v.z * v.z;
+}
 
 inline Vector3 Normalize(const Vector3& v) {
 	Vector3 ret = v;
@@ -169,12 +193,28 @@ inline Vector3 Normalize(const Vector3& v) {
 	return ret;
 }
 
+Vector2 ToVector2(const Vector3 v);
+Vector3 ToVector3(const Vector2 v);
+
+
+inline Vector3 Add(const Vector3& v1, const Vector3& v2) {
+	return { v1.x + v2.x, v1.y + v2.y, v1.z + v2.z };
+}
+inline Vector3 Subtract(const Vector3& v1, const Vector3& v2) {
+	return { v1.x - v2.x, v1.y - v2.y, v1.z - v2.z };
+}
+inline Vector3 Multiply(float scalar, const Vector3& v) {
+	return { scalar * v.x, scalar * v.y, scalar * v.z };
+}
+
 struct Vector4 {
 	float x, y, z, w;
 };
+
 struct Matrix3x3 {
 	float m[3][3];
 };
+
 struct Matrix4x4 {
 	float m[4][4];
 	Matrix4x4() {
@@ -186,35 +226,17 @@ struct Matrix4x4 {
 	static const Matrix4x4 kIdentity;
 };
 
-
 inline Vector2 Add(const Vector2& v1, const Vector2& v2) { return { v1.x + v2.x, v1.y + v2.y }; }
 inline Vector2 Subtract(const Vector2& v1, const Vector2& v2) { return { v1.x - v2.x, v1.y - v2.y }; }
+
 inline float Dot(const Vector2& v1, const Vector2& v2) {
 	return v1.x * v2.x + v1.y * v2.y;
 }
-inline float Length(const Vector2& v) { 
-	return std::sqrt(Dot(v, v)); 
+inline float Length(const Vector2& v) {
+	return std::sqrt(Dot(v, v));
 }
 
 inline Vector3 Negate(const Vector3& v) { return { -v.x, -v.y, -v.z }; }
-
-inline Vector3 Add(const Vector3& v1, const Vector3& v2) {
-	return { v1.x + v2.x, v1.y + v2.y, v1.z + v2.z };
-}
-
-inline Vector3 Subtract(const Vector3& v1, const Vector3& v2) {
-	return { v1.x - v2.x, v1.y - v2.y, v1.z - v2.z };
-}
-
-inline Vector3 Multiply(float scalar, const Vector3& v) {
-	return { scalar * v.x, scalar * v.y, scalar * v.z };
-}
-
-inline float Dot(const Vector3& v1, const Vector3& v2) { return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z; }
-
-inline float Length(const Vector3& v) { 
-	return std::sqrt(Dot(v, v)); 
-}
 
 //球
 struct Sphere {
@@ -273,6 +295,11 @@ struct OBB {
 	}
 };
 
+struct CollisionInfo {
+	Vector3 normal;
+	float depth;
+};
+
 //line
 struct Line {
 	Vector3 origin; //始点
@@ -326,11 +353,6 @@ struct CollisionResult {
 //	assert(length != 0.0f);
 //	return { v.x / length, v.y / length, v.z / length };
 //}
-
-// クロス積
-inline Vector3 Cross(const Vector3& v1, const Vector3& v2) {
-	return { v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, v1.x * v2.y - v1.y * v2.x };
-}
 
 // ベクトル射影 v1をv2に射影する
 inline Vector3 Project(const Vector3& v1, const Vector3& v2) {
@@ -943,37 +965,120 @@ inline bool IsCollision(const AABB& aabb, const Sphere& sphere) {
 }
 
 //OBB
-inline Matrix4x4 InverseMatrixFromOBB(const OBB& obb) {
-	//直接逆行列にする
-	Matrix4x4 inverseMatrix;
-	inverseMatrix.m[0][0] = obb.axis[0].x;
-	inverseMatrix.m[0][1] = obb.axis[1].x;
-	inverseMatrix.m[0][2] = obb.axis[2].x;
-	inverseMatrix.m[0][3] = 0.0f;
-
-	inverseMatrix.m[1][0] = obb.axis[0].y;
-	inverseMatrix.m[1][1] = obb.axis[1].y;
-	inverseMatrix.m[1][2] = obb.axis[2].y;
-	inverseMatrix.m[1][3] = 0.0f;
-
-	inverseMatrix.m[2][0] = obb.axis[0].z;
-	inverseMatrix.m[2][1] = obb.axis[1].z;
-	inverseMatrix.m[2][2] = obb.axis[2].z;
-	inverseMatrix.m[2][3] = 0.0f;
-
-	inverseMatrix.m[3][0] = -Dot(obb.center, obb.axis[0]);
-	inverseMatrix.m[3][1] = -Dot(obb.center, obb.axis[1]);
-	inverseMatrix.m[3][2] = -Dot(obb.center, obb.axis[2]);
-	inverseMatrix.m[3][3] = 1.0f;
-	return inverseMatrix;
-}
+//inline Matrix4x4 InverseMatrixFromOBB(const OBB& obb) {
+//	//直接逆行列にする
+//	Matrix4x4 inverseMatrix;
+//	inverseMatrix.m[0][0] = obb.axis[0].x;
+//	inverseMatrix.m[0][1] = obb.axis[1].x;
+//	inverseMatrix.m[0][2] = obb.axis[2].x;
+//	inverseMatrix.m[0][3] = 0.0f;
+//
+//	inverseMatrix.m[1][0] = obb.axis[0].y;
+//	inverseMatrix.m[1][1] = obb.axis[1].y;
+//	inverseMatrix.m[1][2] = obb.axis[2].y;
+//	inverseMatrix.m[1][3] = 0.0f;
+//
+//	inverseMatrix.m[2][0] = obb.axis[0].z;
+//	inverseMatrix.m[2][1] = obb.axis[1].z;
+//	inverseMatrix.m[2][2] = obb.axis[2].z;
+//	inverseMatrix.m[2][3] = 0.0f;
+//
+//	inverseMatrix.m[3][0] = -Dot(obb.center, obb.axis[0]);
+//	inverseMatrix.m[3][1] = -Dot(obb.center, obb.axis[1]);
+//	inverseMatrix.m[3][2] = -Dot(obb.center, obb.axis[2]);
+//	inverseMatrix.m[3][3] = 1.0f;
+//	return inverseMatrix;
+//}
 
 //OBBとOBBの衝突判定
-//inline bool IsCollision(const )
+inline bool IsCollision(const OBB& a, const OBB& b, CollisionInfo& info) {
+	//分離軸
+	Vector3 axes[15];
+	axes[0] = a.axis[0];
+	axes[1] = a.axis[1];
+	axes[2] = a.axis[2];
+	axes[3] = b.axis[0];
+	axes[4] = b.axis[1];
+	axes[5] = b.axis[2];
+	axes[6] = Normalize(Cross(a.axis[0], b.axis[0]));
+	axes[7] = Normalize(Cross(a.axis[0], b.axis[1]));
+	axes[8] = Normalize(Cross(a.axis[0], b.axis[2]));
+	axes[9] = Normalize(Cross(a.axis[1], b.axis[0]));
+	axes[10] = Normalize(Cross(a.axis[1], b.axis[1]));
+	axes[11] = Normalize(Cross(a.axis[1], b.axis[2]));
+	axes[12] = Normalize(Cross(a.axis[2], b.axis[0]));
+	axes[13] = Normalize(Cross(a.axis[2], b.axis[1]));
+	axes[14] = Normalize(Cross(a.axis[2], b.axis[2]));
+	Vector3 d1[3] = {
+		a.axis[0] * a.size.x,
+		a.axis[1] * a.size.y,
+		a.axis[2] * a.size.z
+	};
+	Vector3 d2[3] = {
+		b.axis[0] * b.size.x,
+		b.axis[1] * b.size.y,
+		b.axis[2] * b.size.z
+	};
+	Vector3 c1[8] = {
+		a.center + d1[0] + d1[1] + d1[2],
+		a.center + d1[0] + d1[1] - d1[2],
+		a.center + d1[0] - d1[1] + d1[2],
+		a.center + d1[0] - d1[1] - d1[2],
+		a.center - d1[0] + d1[1] + d1[2],
+		a.center - d1[0] + d1[1] - d1[2],
+		a.center - d1[0] - d1[1] + d1[2],
+		a.center - d1[0] - d1[1] - d1[2]
+	};
+	Vector3 c2[8] = {
+		b.center + d2[0] + d2[1] + d2[2],
+		b.center + d2[0] + d2[1] - d2[2],
+		b.center + d2[0] - d2[1] + d2[2],
+		b.center + d2[0] - d2[1] - d2[2],
+		b.center - d2[0] + d2[1] + d2[2],
+		b.center - d2[0] + d2[1] - d2[2],
+		b.center - d2[0] - d2[1] + d2[2],
+		b.center - d2[0] - d2[1] - d2[2]
+	};
+	float minOverlap = kInfinity;
+	Vector3 minAxis;
+	for (const auto& axis : axes) {
+		if (axis.x > -kEpsilon && axis.x < kEpsilon &&
+			axis.y > kEpsilon && axis.y < kEpsilon &&
+			axis.z > kEpsilon && axis.z < kEpsilon) {
+			continue;
+		}
+		float min1 = (std::numeric_limits<float>::max)();
+		float max1 = std::numeric_limits<float>::lowest();
+		float min2 = min1;
+		float max2 = max1;
+		for (uint32_t i = 0; i < 8; ++i) {
+			float dist1 = Dot(c1[i], axis);
+			min1 = Min(dist1, min1);
+			max1 = Max(dist1, max1);
+			float dist2 = Dot(c2[i], axis);
+			min2 = Min(dist2, min2);
+			max2 = Max(dist2, max2);
+		}
+		float overlap = (max1 - min1) + (max2 - min2) - (Max(max1, max2) - Min(min1, min2));
+		if (overlap < 0.0f) {
+			return false;
+		}
+		if (overlap < minOverlap) {
+			minOverlap = overlap;
+			minAxis = axis;
+		}
+	}
+	info.normal = Normalize(minAxis);
+	if (Dot(a.center - b.center, info.normal) < 0.0f) {
+		info.normal = -info.normal;
+	}
+	info.depth = minOverlap;
+	return true;
+}
 
 //カメラのビュー行列を求める関数
 inline Matrix4x4 CreateLookAt(const Vector3& eye, const Vector3& target, const Vector3& up) {
-	Vector3 axisZ = Normalize(Subtract(target , eye));
+	Vector3 axisZ = Normalize(Subtract(target, eye));
 	Vector3 axisX = Normalize(Cross(up, axisZ));
 	Vector3 axisY = Normalize(Cross(axisZ, axisX));
 	Vector3 trans = Vector3(-Dot(axisX, eye), -Dot(axisY, eye), -Dot(axisZ, eye));
