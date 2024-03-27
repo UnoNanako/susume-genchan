@@ -18,24 +18,24 @@ const float kPi = std::numbers::pi_v<float>;
 const float kInfinity = std::numeric_limits<float>::infinity(); //無限
 const float kEpsilon = std::numeric_limits<float>::epsilon();
 
+/// <summary>
+/// Vector2
+/// </summary>
 struct Vector2 {
 	float x, y;
 	Vector2() {
 		x = 0.0f;
 		y = 0.0f;
 	}
-
 	Vector2(float x, float y) {
 		this->x = x;
 		this->y = y;
 	}
-
 	void Normalize() {
 		float length = sqrtf((x * x) + (y * y));
 		x /= length;
 		y /= length;
 	}
-
 	//オーバーロード
 	Vector2 operator+(Vector2 v) {
 		Vector2 ret;
@@ -80,6 +80,22 @@ struct Vector2 {
 	}
 };
 
+inline Vector2 Add(const Vector2& v1, const Vector2& v2) {
+	return { v1.x + v2.x, v1.y + v2.y };
+}
+inline Vector2 Subtract(const Vector2& v1, const Vector2& v2) {
+	return { v1.x - v2.x, v1.y - v2.y };
+}
+inline float Dot(const Vector2& v1, const Vector2& v2) {
+	return v1.x * v2.x + v1.y * v2.y;
+}
+inline float Length(const Vector2& v) {
+	return std::sqrt(Dot(v, v));
+}
+
+/// <summary>
+/// Vector3
+/// </summary>
 struct Vector3 {
 	float x, y, z;
 	Vector3() {
@@ -87,20 +103,17 @@ struct Vector3 {
 		y = 0.0f;
 		z = 0.0f;
 	}
-
 	Vector3(float x, float y, float z) {
 		this->x = x;
 		this->y = y;
 		this->z = z;
 	}
-
 	void Normalize() {
 		float length = sqrtf((x * x) + (y * y) + (z * z));
 		x /= length;
 		y /= length;
 		z /= length;
 	}
-
 	static const Vector3 kZero;
 	static const Vector3 kOne;
 };
@@ -196,7 +209,6 @@ inline Vector3 Normalize(const Vector3& v) {
 Vector2 ToVector2(const Vector3 v);
 Vector3 ToVector3(const Vector2 v);
 
-
 inline Vector3 Add(const Vector3& v1, const Vector3& v2) {
 	return { v1.x + v2.x, v1.y + v2.y, v1.z + v2.z };
 }
@@ -207,14 +219,27 @@ inline Vector3 Multiply(float scalar, const Vector3& v) {
 	return { scalar * v.x, scalar * v.y, scalar * v.z };
 }
 
+inline Vector3 Negate(const Vector3& v) {
+	return { -v.x, -v.y, -v.z };
+}
+
+/// <summary>
+/// Vector4
+/// </summary>
 struct Vector4 {
 	float x, y, z, w;
 };
 
+/// <summary>
+/// Matrix3x3
+/// </summary>
 struct Matrix3x3 {
 	float m[3][3];
 };
 
+/// <summary>
+/// Matrix4x4
+/// </summary>
 struct Matrix4x4 {
 	float m[4][4];
 	Matrix4x4() {
@@ -225,18 +250,6 @@ struct Matrix4x4 {
 	}
 	static const Matrix4x4 kIdentity;
 };
-
-inline Vector2 Add(const Vector2& v1, const Vector2& v2) { return { v1.x + v2.x, v1.y + v2.y }; }
-inline Vector2 Subtract(const Vector2& v1, const Vector2& v2) { return { v1.x - v2.x, v1.y - v2.y }; }
-
-inline float Dot(const Vector2& v1, const Vector2& v2) {
-	return v1.x * v2.x + v1.y * v2.y;
-}
-inline float Length(const Vector2& v) {
-	return std::sqrt(Dot(v, v));
-}
-
-inline Vector3 Negate(const Vector3& v) { return { -v.x, -v.y, -v.z }; }
 
 //球
 struct Sphere {
@@ -278,20 +291,20 @@ struct OBB {
 	}
 	Matrix4x4 CreateInverse() const
 	{
-		Matrix4x4 result = Matrix4x4::kIdentity;
-		result.m[0][0] = axis[0].x;
-		result.m[0][1] = axis[1].x;
-		result.m[0][2] = axis[2].x;
-		result.m[1][0] = axis[0].y;
-		result.m[1][1] = axis[1].y;
-		result.m[1][2] = axis[2].y;
-		result.m[2][0] = axis[0].z;
-		result.m[2][1] = axis[1].z;
-		result.m[2][2] = axis[2].z;
-		result.m[3][0] = -Dot(center, axis[0]);
-		result.m[3][1] = -Dot(center, axis[1]);
-		result.m[3][2] = -Dot(center, axis[2]);
-		return result;
+		Matrix4x4 ret = Matrix4x4::kIdentity;
+		ret.m[0][0] = axis[0].x;
+		ret.m[0][1] = axis[1].x;
+		ret.m[0][2] = axis[2].x;
+		ret.m[1][0] = axis[0].y;
+		ret.m[1][1] = axis[1].y;
+		ret.m[1][2] = axis[2].y;
+		ret.m[2][0] = axis[0].z;
+		ret.m[2][1] = axis[1].z;
+		ret.m[2][2] = axis[2].z;
+		ret.m[3][0] = -Dot(center, axis[0]);
+		ret.m[3][1] = -Dot(center, axis[1]);
+		ret.m[3][2] = -Dot(center, axis[2]);
+		return ret;
 	}
 };
 
@@ -346,14 +359,6 @@ struct CollisionResult {
 	Vector3 normal;
 };
 
-
-
-//inline Vector3 Normalize(const Vector3& v) {
-//	float length = Length(v);
-//	assert(length != 0.0f);
-//	return { v.x / length, v.y / length, v.z / length };
-//}
-
 // ベクトル射影 v1をv2に射影する
 inline Vector3 Project(const Vector3& v1, const Vector3& v2) {
 	float v2SqLength = Dot(v2, v2);
@@ -362,37 +367,37 @@ inline Vector3 Project(const Vector3& v1, const Vector3& v2) {
 }
 
 inline Vector3 Multiply(const Vector3& v, const Matrix3x3& m) {
-	Vector3 result;
-	result.x = v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0];
-	result.y = v.x * m.m[0][1] + v.y * m.m[1][1] + v.z * m.m[2][1];
-	result.z = v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2];
-	return result;
+	Vector3 ret;
+	ret.x = v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0];
+	ret.y = v.x * m.m[0][1] + v.y * m.m[1][1] + v.z * m.m[2][1];
+	ret.z = v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2];
+	return ret;
 }
 
 inline Vector3 Multiply(const Vector3& v, const Matrix4x4& m) {
-	Vector3 result;
-	result.x = v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0] + 1.0f * m.m[3][0];
-	result.y = v.x * m.m[0][1] + v.y * m.m[1][1] + v.z * m.m[2][1] + 1.0f * m.m[3][1];
-	result.z = v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2] + 1.0f * m.m[3][2];
-	return result;
+	Vector3 ret;
+	ret.x = v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0] + 1.0f * m.m[3][0];
+	ret.y = v.x * m.m[0][1] + v.y * m.m[1][1] + v.z * m.m[2][1] + 1.0f * m.m[3][1];
+	ret.z = v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2] + 1.0f * m.m[3][2];
+	return ret;
 }
 
 inline Matrix3x3 Transpose(const Matrix3x3& mMatrix) {
-	Matrix3x3 result;
-	result.m[0][0] = mMatrix.m[0][0];
-	result.m[0][1] = mMatrix.m[1][0];
-	result.m[0][2] = mMatrix.m[2][0];
-	result.m[1][0] = mMatrix.m[0][1];
-	result.m[1][1] = mMatrix.m[1][1];
-	result.m[1][2] = mMatrix.m[2][1];
-	result.m[2][0] = mMatrix.m[0][2];
-	result.m[2][1] = mMatrix.m[1][2];
-	result.m[2][2] = mMatrix.m[2][2];
-	return result;
+	Matrix3x3 ret;
+	ret.m[0][0] = mMatrix.m[0][0];
+	ret.m[0][1] = mMatrix.m[1][0];
+	ret.m[0][2] = mMatrix.m[2][0];
+	ret.m[1][0] = mMatrix.m[0][1];
+	ret.m[1][1] = mMatrix.m[1][1];
+	ret.m[1][2] = mMatrix.m[2][1];
+	ret.m[2][0] = mMatrix.m[0][2];
+	ret.m[2][1] = mMatrix.m[1][2];
+	ret.m[2][2] = mMatrix.m[2][2];
+	return ret;
 }
 
 inline Matrix3x3 Inverse(const Matrix3x3& mMatrix) {
-	Matrix3x3 result;
+	Matrix3x3 ret;
 	float determinant = mMatrix.m[0][0] * mMatrix.m[1][1] * mMatrix.m[2][2] +
 		mMatrix.m[0][1] * mMatrix.m[1][2] * mMatrix.m[2][0] +
 		mMatrix.m[0][2] * mMatrix.m[1][0] * mMatrix.m[2][1] -
@@ -402,77 +407,77 @@ inline Matrix3x3 Inverse(const Matrix3x3& mMatrix) {
 	assert(determinant != 0.0f);
 	float determinantRecp = 1.0f / determinant;
 
-	result.m[0][0] =
+	ret.m[0][0] =
 		(mMatrix.m[1][1] * mMatrix.m[2][2] - mMatrix.m[1][2] * mMatrix.m[2][1]) * determinantRecp;
-	result.m[0][1] =
+	ret.m[0][1] =
 		-(mMatrix.m[0][1] * mMatrix.m[2][2] - mMatrix.m[0][2] * mMatrix.m[2][1]) * determinantRecp;
-	result.m[0][2] =
+	ret.m[0][2] =
 		(mMatrix.m[0][1] * mMatrix.m[1][2] - mMatrix.m[0][2] * mMatrix.m[1][1]) * determinantRecp;
 
-	result.m[1][0] =
+	ret.m[1][0] =
 		-(mMatrix.m[1][0] * mMatrix.m[2][2] - mMatrix.m[1][2] * mMatrix.m[2][0]) * determinantRecp;
-	result.m[1][1] =
+	ret.m[1][1] =
 		(mMatrix.m[0][0] * mMatrix.m[2][2] - mMatrix.m[0][2] * mMatrix.m[2][0]) * determinantRecp;
-	result.m[1][2] =
+	ret.m[1][2] =
 		-(mMatrix.m[0][0] * mMatrix.m[1][2] - mMatrix.m[0][2] * mMatrix.m[1][0]) * determinantRecp;
 
-	result.m[2][0] =
+	ret.m[2][0] =
 		(mMatrix.m[1][0] * mMatrix.m[2][1] - mMatrix.m[1][1] * mMatrix.m[2][0]) * determinantRecp;
-	result.m[2][1] =
+	ret.m[2][1] =
 		-(mMatrix.m[0][0] * mMatrix.m[2][1] - mMatrix.m[0][1] * mMatrix.m[2][0]) * determinantRecp;
-	result.m[2][2] =
+	ret.m[2][2] =
 		(mMatrix.m[0][0] * mMatrix.m[1][1] - mMatrix.m[0][1] * mMatrix.m[1][0]) * determinantRecp;
 
-	return result;
+	return ret;
 }
 
 inline Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2) {
-	Matrix4x4 result;
-	result.m[0][0] = m1.m[0][0] + m2.m[0][0];
-	result.m[0][1] = m1.m[0][1] + m2.m[0][1];
-	result.m[0][2] = m1.m[0][2] + m2.m[0][2];
-	result.m[0][3] = m1.m[0][3] + m2.m[0][3];
-
-	result.m[1][0] = m1.m[1][0] + m2.m[1][0];
-	result.m[1][1] = m1.m[1][1] + m2.m[1][1];
-	result.m[1][2] = m1.m[1][2] + m2.m[1][2];
-	result.m[1][3] = m1.m[1][3] + m2.m[1][3];
-
-	result.m[2][0] = m1.m[2][0] + m2.m[2][0];
-	result.m[2][1] = m1.m[2][1] + m2.m[2][1];
-	result.m[2][2] = m1.m[2][2] + m2.m[2][2];
-	result.m[2][3] = m1.m[2][3] + m2.m[2][3];
-
-	result.m[3][0] = m1.m[3][0] + m2.m[3][0];
-	result.m[3][1] = m1.m[3][1] + m2.m[3][1];
-	result.m[3][2] = m1.m[3][2] + m2.m[3][2];
-	result.m[3][3] = m1.m[3][3] + m2.m[3][3];
-	return result;
+	Matrix4x4 ret;
+	ret.m[0][0] = m1.m[0][0] + m2.m[0][0];
+	ret.m[0][1] = m1.m[0][1] + m2.m[0][1];
+	ret.m[0][2] = m1.m[0][2] + m2.m[0][2];
+	ret.m[0][3] = m1.m[0][3] + m2.m[0][3];
+	 
+	ret.m[1][0] = m1.m[1][0] + m2.m[1][0];
+	ret.m[1][1] = m1.m[1][1] + m2.m[1][1];
+	ret.m[1][2] = m1.m[1][2] + m2.m[1][2];
+	ret.m[1][3] = m1.m[1][3] + m2.m[1][3];
+	 
+	ret.m[2][0] = m1.m[2][0] + m2.m[2][0];
+	ret.m[2][1] = m1.m[2][1] + m2.m[2][1];
+	ret.m[2][2] = m1.m[2][2] + m2.m[2][2];
+	ret.m[2][3] = m1.m[2][3] + m2.m[2][3];
+	
+	ret.m[3][0] = m1.m[3][0] + m2.m[3][0];
+	ret.m[3][1] = m1.m[3][1] + m2.m[3][1];
+	ret.m[3][2] = m1.m[3][2] + m2.m[3][2];
+	ret.m[3][3] = m1.m[3][3] + m2.m[3][3];
+	return ret;
 }
 
 // 2. 行列の減法
 inline Matrix4x4 Subtract(const Matrix4x4& m1, const Matrix4x4& m2) {
-	Matrix4x4 result;
-	result.m[0][0] = m1.m[0][0] - m2.m[0][0];
-	result.m[0][1] = m1.m[0][1] - m2.m[0][1];
-	result.m[0][2] = m1.m[0][2] - m2.m[0][2];
-	result.m[0][3] = m1.m[0][3] - m2.m[0][3];
-
-	result.m[1][0] = m1.m[1][0] - m2.m[1][0];
-	result.m[1][1] = m1.m[1][1] - m2.m[1][1];
-	result.m[1][2] = m1.m[1][2] - m2.m[1][2];
-	result.m[1][3] = m1.m[1][3] - m2.m[1][3];
-
-	result.m[2][0] = m1.m[2][0] - m2.m[2][0];
-	result.m[2][1] = m1.m[2][1] - m2.m[2][1];
-	result.m[2][2] = m1.m[2][2] - m2.m[2][2];
-	result.m[2][3] = m1.m[2][3] - m2.m[2][3];
-
-	result.m[3][0] = m1.m[3][0] - m2.m[3][0];
-	result.m[3][1] = m1.m[3][1] - m2.m[3][1];
-	result.m[3][2] = m1.m[3][2] - m2.m[3][2];
-	result.m[3][3] = m1.m[3][3] - m2.m[3][3];
-	return result;
+	Matrix4x4 ret;
+	ret.m[0][0] = m1.m[0][0] - m2.m[0][0];
+	ret.m[0][1] = m1.m[0][1] - m2.m[0][1];
+	ret.m[0][2] = m1.m[0][2] - m2.m[0][2];
+	ret.m[0][3] = m1.m[0][3] - m2.m[0][3];
+	 
+	ret.m[1][0] = m1.m[1][0] - m2.m[1][0];
+	ret.m[1][1] = m1.m[1][1] - m2.m[1][1];
+	ret.m[1][2] = m1.m[1][2] - m2.m[1][2];
+	ret.m[1][3] = m1.m[1][3] - m2.m[1][3];
+	  
+	ret.m[2][0] = m1.m[2][0] - m2.m[2][0];
+	ret.m[2][1] = m1.m[2][1] - m2.m[2][1];
+	ret.m[2][2] = m1.m[2][2] - m2.m[2][2];
+	ret.m[2][3] = m1.m[2][3] - m2.m[2][3];
+	  
+	ret.m[3][0] = m1.m[3][0] - m2.m[3][0];
+	ret.m[3][1] = m1.m[3][1] - m2.m[3][1];
+	ret.m[3][2] = m1.m[3][2] - m2.m[3][2];
+	ret.m[3][3] = m1.m[3][3] - m2.m[3][3];
+	return ret;
 }
 
 inline Matrix4x4 Inverse(const Matrix4x4& m) {
@@ -509,61 +514,61 @@ inline Matrix4x4 Inverse(const Matrix4x4& m) {
 		+ m.m[0][2] * m.m[1][1] * m.m[2][3] * m.m[3][0]
 		+ m.m[0][1] * m.m[1][3] * m.m[2][2] * m.m[3][0];
 
-	Matrix4x4 result;
+	Matrix4x4 ret;
 	float recpDeterminant = 1.0f / determinant;
-	result.m[0][0] = (m.m[1][1] * m.m[2][2] * m.m[3][3] + m.m[1][2] * m.m[2][3] * m.m[3][1] +
+	ret.m[0][0] = (m.m[1][1] * m.m[2][2] * m.m[3][3] + m.m[1][2] * m.m[2][3] * m.m[3][1] +
 		m.m[1][3] * m.m[2][1] * m.m[3][2] - m.m[1][3] * m.m[2][2] * m.m[3][1] -
 		m.m[1][2] * m.m[2][1] * m.m[3][3] - m.m[1][1] * m.m[2][3] * m.m[3][2]) * recpDeterminant;
-	result.m[0][1] = (-m.m[0][1] * m.m[2][2] * m.m[3][3] - m.m[0][2] * m.m[2][3] * m.m[3][1] -
+	ret.m[0][1] = (-m.m[0][1] * m.m[2][2] * m.m[3][3] - m.m[0][2] * m.m[2][3] * m.m[3][1] -
 		m.m[0][3] * m.m[2][1] * m.m[3][2] + m.m[0][3] * m.m[2][2] * m.m[3][1] +
 		m.m[0][2] * m.m[2][1] * m.m[3][3] + m.m[0][1] * m.m[2][3] * m.m[3][2]) * recpDeterminant;
-	result.m[0][2] = (m.m[0][1] * m.m[1][2] * m.m[3][3] + m.m[0][2] * m.m[1][3] * m.m[3][1] +
+	ret.m[0][2] = (m.m[0][1] * m.m[1][2] * m.m[3][3] + m.m[0][2] * m.m[1][3] * m.m[3][1] +
 		m.m[0][3] * m.m[1][1] * m.m[3][2] - m.m[0][3] * m.m[1][2] * m.m[3][1] -
 		m.m[0][2] * m.m[1][1] * m.m[3][3] - m.m[0][1] * m.m[1][3] * m.m[3][2]) * recpDeterminant;
-	result.m[0][3] = (-m.m[0][1] * m.m[1][2] * m.m[2][3] - m.m[0][2] * m.m[1][3] * m.m[2][1] -
+	ret.m[0][3] = (-m.m[0][1] * m.m[1][2] * m.m[2][3] - m.m[0][2] * m.m[1][3] * m.m[2][1] -
 		m.m[0][3] * m.m[1][1] * m.m[2][2] + m.m[0][3] * m.m[1][2] * m.m[2][1] +
 		m.m[0][2] * m.m[1][1] * m.m[2][3] + m.m[0][1] * m.m[1][3] * m.m[2][2]) * recpDeterminant;
 
-	result.m[1][0] = (-m.m[1][0] * m.m[2][2] * m.m[3][3] - m.m[1][2] * m.m[2][3] * m.m[3][0] -
+	ret.m[1][0] = (-m.m[1][0] * m.m[2][2] * m.m[3][3] - m.m[1][2] * m.m[2][3] * m.m[3][0] -
 		m.m[1][3] * m.m[2][0] * m.m[3][2] + m.m[1][3] * m.m[2][2] * m.m[3][0] +
 		m.m[1][2] * m.m[2][0] * m.m[3][3] + m.m[1][0] * m.m[2][3] * m.m[3][2]) * recpDeterminant;
-	result.m[1][1] = (m.m[0][0] * m.m[2][2] * m.m[3][3] + m.m[0][2] * m.m[2][3] * m.m[3][0] +
+	ret.m[1][1] = (m.m[0][0] * m.m[2][2] * m.m[3][3] + m.m[0][2] * m.m[2][3] * m.m[3][0] +
 		m.m[0][3] * m.m[2][0] * m.m[3][2] - m.m[0][3] * m.m[2][2] * m.m[3][0] -
 		m.m[0][2] * m.m[2][0] * m.m[3][3] - m.m[0][0] * m.m[2][3] * m.m[3][2]) * recpDeterminant;
-	result.m[1][2] = (-m.m[0][0] * m.m[1][2] * m.m[3][3] - m.m[0][2] * m.m[1][3] * m.m[3][0] -
+	ret.m[1][2] = (-m.m[0][0] * m.m[1][2] * m.m[3][3] - m.m[0][2] * m.m[1][3] * m.m[3][0] -
 		m.m[0][3] * m.m[1][0] * m.m[3][2] + m.m[0][3] * m.m[1][2] * m.m[3][0] +
 		m.m[0][2] * m.m[1][0] * m.m[3][3] + m.m[0][0] * m.m[1][3] * m.m[3][2]) * recpDeterminant;
-	result.m[1][3] = (m.m[0][0] * m.m[1][2] * m.m[2][3] + m.m[0][2] * m.m[1][3] * m.m[2][0] +
+	ret.m[1][3] = (m.m[0][0] * m.m[1][2] * m.m[2][3] + m.m[0][2] * m.m[1][3] * m.m[2][0] +
 		m.m[0][3] * m.m[1][0] * m.m[2][2] - m.m[0][3] * m.m[1][2] * m.m[2][0] -
 		m.m[0][2] * m.m[1][0] * m.m[2][3] - m.m[0][0] * m.m[1][3] * m.m[2][2]) * recpDeterminant;
 
-	result.m[2][0] = (m.m[1][0] * m.m[2][1] * m.m[3][3] + m.m[1][1] * m.m[2][3] * m.m[3][0] +
+	ret.m[2][0] = (m.m[1][0] * m.m[2][1] * m.m[3][3] + m.m[1][1] * m.m[2][3] * m.m[3][0] +
 		m.m[1][3] * m.m[2][0] * m.m[3][1] - m.m[1][3] * m.m[2][1] * m.m[3][0] -
 		m.m[1][1] * m.m[2][0] * m.m[3][3] - m.m[1][0] * m.m[2][3] * m.m[3][1]) * recpDeterminant;
-	result.m[2][1] = (-m.m[0][0] * m.m[2][1] * m.m[3][3] - m.m[0][1] * m.m[2][3] * m.m[3][0] -
+	ret.m[2][1] = (-m.m[0][0] * m.m[2][1] * m.m[3][3] - m.m[0][1] * m.m[2][3] * m.m[3][0] -
 		m.m[0][3] * m.m[2][0] * m.m[3][1] + m.m[0][3] * m.m[2][1] * m.m[3][0] +
 		m.m[0][1] * m.m[2][0] * m.m[3][3] + m.m[0][0] * m.m[2][3] * m.m[3][1]) * recpDeterminant;
-	result.m[2][2] = (m.m[0][0] * m.m[1][1] * m.m[3][3] + m.m[0][1] * m.m[1][3] * m.m[3][0] +
+	ret.m[2][2] = (m.m[0][0] * m.m[1][1] * m.m[3][3] + m.m[0][1] * m.m[1][3] * m.m[3][0] +
 		m.m[0][3] * m.m[1][0] * m.m[3][1] - m.m[0][3] * m.m[1][1] * m.m[3][0] -
 		m.m[0][1] * m.m[1][0] * m.m[3][3] - m.m[0][0] * m.m[1][3] * m.m[3][1]) * recpDeterminant;
-	result.m[2][3] = (-m.m[0][0] * m.m[1][1] * m.m[2][3] - m.m[0][1] * m.m[1][3] * m.m[2][0] -
+	ret.m[2][3] = (-m.m[0][0] * m.m[1][1] * m.m[2][3] - m.m[0][1] * m.m[1][3] * m.m[2][0] -
 		m.m[0][3] * m.m[1][0] * m.m[2][1] + m.m[0][3] * m.m[1][1] * m.m[2][0] +
 		m.m[0][1] * m.m[1][0] * m.m[2][3] + m.m[0][0] * m.m[1][3] * m.m[2][1]) * recpDeterminant;
 
-	result.m[3][0] = (-m.m[1][0] * m.m[2][1] * m.m[3][2] - m.m[1][1] * m.m[2][2] * m.m[3][0] -
+	ret.m[3][0] = (-m.m[1][0] * m.m[2][1] * m.m[3][2] - m.m[1][1] * m.m[2][2] * m.m[3][0] -
 		m.m[1][2] * m.m[2][0] * m.m[3][1] + m.m[1][2] * m.m[2][1] * m.m[3][0] +
 		m.m[1][1] * m.m[2][0] * m.m[3][2] + m.m[1][0] * m.m[2][2] * m.m[3][1]) * recpDeterminant;
-	result.m[3][1] = (m.m[0][0] * m.m[2][1] * m.m[3][2] + m.m[0][1] * m.m[2][2] * m.m[3][0] +
+	ret.m[3][1] = (m.m[0][0] * m.m[2][1] * m.m[3][2] + m.m[0][1] * m.m[2][2] * m.m[3][0] +
 		m.m[0][2] * m.m[2][0] * m.m[3][1] - m.m[0][2] * m.m[2][1] * m.m[3][0] -
 		m.m[0][1] * m.m[2][0] * m.m[3][2] - m.m[0][0] * m.m[2][2] * m.m[3][1]) * recpDeterminant;
-	result.m[3][2] = (-m.m[0][0] * m.m[1][1] * m.m[3][2] - m.m[0][1] * m.m[1][2] * m.m[3][0] -
+	ret.m[3][2] = (-m.m[0][0] * m.m[1][1] * m.m[3][2] - m.m[0][1] * m.m[1][2] * m.m[3][0] -
 		m.m[0][2] * m.m[1][0] * m.m[3][1] + m.m[0][2] * m.m[1][1] * m.m[3][0] +
 		m.m[0][1] * m.m[1][0] * m.m[3][2] + m.m[0][0] * m.m[1][2] * m.m[3][1]) * recpDeterminant;
-	result.m[3][3] = (m.m[0][0] * m.m[1][1] * m.m[2][2] + m.m[0][1] * m.m[1][2] * m.m[2][0] +
+	ret.m[3][3] = (m.m[0][0] * m.m[1][1] * m.m[2][2] + m.m[0][1] * m.m[1][2] * m.m[2][0] +
 		m.m[0][2] * m.m[1][0] * m.m[2][1] - m.m[0][2] * m.m[1][1] * m.m[2][0] -
 		m.m[0][1] * m.m[1][0] * m.m[2][2] - m.m[0][0] * m.m[1][2] * m.m[2][1]) * recpDeterminant;
 
-	return result;
+	return ret;
 	// clang-format on
 }
 
@@ -593,28 +598,28 @@ inline Matrix4x4 InverseAffine(const Matrix4x4& m) {
 }
 
 inline Matrix4x4 Transpose(const Matrix4x4& m) {
-	Matrix4x4 result;
-	result.m[0][0] = m.m[0][0];
-	result.m[0][1] = m.m[1][0];
-	result.m[0][2] = m.m[2][0];
-	result.m[0][3] = m.m[3][0];
+	Matrix4x4 ret;
+	ret.m[0][0] = m.m[0][0];
+	ret.m[0][1] = m.m[1][0];
+	ret.m[0][2] = m.m[2][0];
+	ret.m[0][3] = m.m[3][0];
+	
+	ret.m[1][0] = m.m[0][1];
+	ret.m[1][1] = m.m[1][1];
+	ret.m[1][2] = m.m[2][1];
+	ret.m[1][3] = m.m[3][1];
+	
+	ret.m[2][0] = m.m[0][2];
+	ret.m[2][1] = m.m[1][2];
+	ret.m[2][2] = m.m[2][2];
+	ret.m[2][3] = m.m[3][2];
+	
+	ret.m[3][0] = m.m[0][3];
+	ret.m[3][1] = m.m[1][3];
+	ret.m[3][2] = m.m[2][3];
+	ret.m[3][3] = m.m[3][3];
 
-	result.m[1][0] = m.m[0][1];
-	result.m[1][1] = m.m[1][1];
-	result.m[1][2] = m.m[2][1];
-	result.m[1][3] = m.m[3][1];
-
-	result.m[2][0] = m.m[0][2];
-	result.m[2][1] = m.m[1][2];
-	result.m[2][2] = m.m[2][2];
-	result.m[2][3] = m.m[3][2];
-
-	result.m[3][0] = m.m[0][3];
-	result.m[3][1] = m.m[1][3];
-	result.m[3][2] = m.m[2][3];
-	result.m[3][3] = m.m[3][3];
-
-	return result;
+	return ret;
 }
 
 inline Matrix4x4 MakeIdentity4x4() {
@@ -724,66 +729,66 @@ inline Matrix4x4 MakeRotateZMatrix(float radian) {
 }
 
 inline Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
-	Matrix4x4 result;
-	result.m[0][0] = m1.m[0][0] * m2.m[0][0] + m1.m[0][1] * m2.m[1][0] + m1.m[0][2] * m2.m[2][0] +
+	Matrix4x4 ret;
+	ret.m[0][0] = m1.m[0][0] * m2.m[0][0] + m1.m[0][1] * m2.m[1][0] + m1.m[0][2] * m2.m[2][0] +
 		m1.m[0][3] * m2.m[3][0];
-	result.m[0][1] = m1.m[0][0] * m2.m[0][1] + m1.m[0][1] * m2.m[1][1] + m1.m[0][2] * m2.m[2][1] +
+	ret.m[0][1] = m1.m[0][0] * m2.m[0][1] + m1.m[0][1] * m2.m[1][1] + m1.m[0][2] * m2.m[2][1] +
 		m1.m[0][3] * m2.m[3][1];
-	result.m[0][2] = m1.m[0][0] * m2.m[0][2] + m1.m[0][1] * m2.m[1][2] + m1.m[0][2] * m2.m[2][2] +
+	ret.m[0][2] = m1.m[0][0] * m2.m[0][2] + m1.m[0][1] * m2.m[1][2] + m1.m[0][2] * m2.m[2][2] +
 		m1.m[0][3] * m2.m[3][2];
-	result.m[0][3] = m1.m[0][0] * m2.m[0][3] + m1.m[0][1] * m2.m[1][3] + m1.m[0][2] * m2.m[2][3] +
+	ret.m[0][3] = m1.m[0][0] * m2.m[0][3] + m1.m[0][1] * m2.m[1][3] + m1.m[0][2] * m2.m[2][3] +
 		m1.m[0][3] * m2.m[3][3];
 
-	result.m[1][0] = m1.m[1][0] * m2.m[0][0] + m1.m[1][1] * m2.m[1][0] + m1.m[1][2] * m2.m[2][0] +
+	ret.m[1][0] = m1.m[1][0] * m2.m[0][0] + m1.m[1][1] * m2.m[1][0] + m1.m[1][2] * m2.m[2][0] +
 		m1.m[1][3] * m2.m[3][0];
-	result.m[1][1] = m1.m[1][0] * m2.m[0][1] + m1.m[1][1] * m2.m[1][1] + m1.m[1][2] * m2.m[2][1] +
+	ret.m[1][1] = m1.m[1][0] * m2.m[0][1] + m1.m[1][1] * m2.m[1][1] + m1.m[1][2] * m2.m[2][1] +
 		m1.m[1][3] * m2.m[3][1];
-	result.m[1][2] = m1.m[1][0] * m2.m[0][2] + m1.m[1][1] * m2.m[1][2] + m1.m[1][2] * m2.m[2][2] +
+	ret.m[1][2] = m1.m[1][0] * m2.m[0][2] + m1.m[1][1] * m2.m[1][2] + m1.m[1][2] * m2.m[2][2] +
 		m1.m[1][3] * m2.m[3][2];
-	result.m[1][3] = m1.m[1][0] * m2.m[0][3] + m1.m[1][1] * m2.m[1][3] + m1.m[1][2] * m2.m[2][3] +
+	ret.m[1][3] = m1.m[1][0] * m2.m[0][3] + m1.m[1][1] * m2.m[1][3] + m1.m[1][2] * m2.m[2][3] +
 		m1.m[1][3] * m2.m[3][3];
 
-	result.m[2][0] = m1.m[2][0] * m2.m[0][0] + m1.m[2][1] * m2.m[1][0] + m1.m[2][2] * m2.m[2][0] +
+	ret.m[2][0] = m1.m[2][0] * m2.m[0][0] + m1.m[2][1] * m2.m[1][0] + m1.m[2][2] * m2.m[2][0] +
 		m1.m[2][3] * m2.m[3][0];
-	result.m[2][1] = m1.m[2][0] * m2.m[0][1] + m1.m[2][1] * m2.m[1][1] + m1.m[2][2] * m2.m[2][1] +
+	ret.m[2][1] = m1.m[2][0] * m2.m[0][1] + m1.m[2][1] * m2.m[1][1] + m1.m[2][2] * m2.m[2][1] +
 		m1.m[2][3] * m2.m[3][1];
-	result.m[2][2] = m1.m[2][0] * m2.m[0][2] + m1.m[2][1] * m2.m[1][2] + m1.m[2][2] * m2.m[2][2] +
+	ret.m[2][2] = m1.m[2][0] * m2.m[0][2] + m1.m[2][1] * m2.m[1][2] + m1.m[2][2] * m2.m[2][2] +
 		m1.m[2][3] * m2.m[3][2];
-	result.m[2][3] = m1.m[2][0] * m2.m[0][3] + m1.m[2][1] * m2.m[1][3] + m1.m[2][2] * m2.m[2][3] +
+	ret.m[2][3] = m1.m[2][0] * m2.m[0][3] + m1.m[2][1] * m2.m[1][3] + m1.m[2][2] * m2.m[2][3] +
 		m1.m[2][3] * m2.m[3][3];
 
-	result.m[3][0] = m1.m[3][0] * m2.m[0][0] + m1.m[3][1] * m2.m[1][0] + m1.m[3][2] * m2.m[2][0] +
+	ret.m[3][0] = m1.m[3][0] * m2.m[0][0] + m1.m[3][1] * m2.m[1][0] + m1.m[3][2] * m2.m[2][0] +
 		m1.m[3][3] * m2.m[3][0];
-	result.m[3][1] = m1.m[3][0] * m2.m[0][1] + m1.m[3][1] * m2.m[1][1] + m1.m[3][2] * m2.m[2][1] +
+	ret.m[3][1] = m1.m[3][0] * m2.m[0][1] + m1.m[3][1] * m2.m[1][1] + m1.m[3][2] * m2.m[2][1] +
 		m1.m[3][3] * m2.m[3][1];
-	result.m[3][2] = m1.m[3][0] * m2.m[0][2] + m1.m[3][1] * m2.m[1][2] + m1.m[3][2] * m2.m[2][2] +
+	ret.m[3][2] = m1.m[3][0] * m2.m[0][2] + m1.m[3][1] * m2.m[1][2] + m1.m[3][2] * m2.m[2][2] +
 		m1.m[3][3] * m2.m[3][2];
-	result.m[3][3] = m1.m[3][0] * m2.m[0][3] + m1.m[3][1] * m2.m[1][3] + m1.m[3][2] * m2.m[2][3] +
+	ret.m[3][3] = m1.m[3][0] * m2.m[0][3] + m1.m[3][1] * m2.m[1][3] + m1.m[3][2] * m2.m[2][3] +
 		m1.m[3][3] * m2.m[3][3];
 
-	return result;
+	return ret;
 }
 
 inline Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate) {
-	Matrix4x4 result = Multiply(
+	Matrix4x4 ret = Multiply(
 		Multiply(MakeRotateXMatrix(rotate.x), MakeRotateYMatrix(rotate.y)),
 		MakeRotateZMatrix(rotate.z));
-	result.m[0][0] *= scale.x;
-	result.m[0][1] *= scale.x;
-	result.m[0][2] *= scale.x;
+	ret.m[0][0] *= scale.x;
+	ret.m[0][1] *= scale.x;
+	ret.m[0][2] *= scale.x;
 
-	result.m[1][0] *= scale.y;
-	result.m[1][1] *= scale.y;
-	result.m[1][2] *= scale.y;
-
-	result.m[2][0] *= scale.z;
-	result.m[2][1] *= scale.z;
-	result.m[2][2] *= scale.z;
-
-	result.m[3][0] = translate.x;
-	result.m[3][1] = translate.y;
-	result.m[3][2] = translate.z;
-	return result;
+	ret.m[1][0] *= scale.y;
+	ret.m[1][1] *= scale.y;
+	ret.m[1][2] *= scale.y;
+	
+	ret.m[2][0] *= scale.z;
+	ret.m[2][1] *= scale.z;
+	ret.m[2][2] *= scale.z;
+	
+	ret.m[3][0] = translate.x;
+	ret.m[3][1] = translate.y;
+	ret.m[3][2] = translate.z;
+	return ret;
 }
 
 //透視投影行列
@@ -963,32 +968,6 @@ inline bool IsCollision(const AABB& aabb, const Sphere& sphere) {
 	//距離が半径よりも小さければ衝突
 	return distance <= sphere.radius;
 }
-
-//OBB
-//inline Matrix4x4 InverseMatrixFromOBB(const OBB& obb) {
-//	//直接逆行列にする
-//	Matrix4x4 inverseMatrix;
-//	inverseMatrix.m[0][0] = obb.axis[0].x;
-//	inverseMatrix.m[0][1] = obb.axis[1].x;
-//	inverseMatrix.m[0][2] = obb.axis[2].x;
-//	inverseMatrix.m[0][3] = 0.0f;
-//
-//	inverseMatrix.m[1][0] = obb.axis[0].y;
-//	inverseMatrix.m[1][1] = obb.axis[1].y;
-//	inverseMatrix.m[1][2] = obb.axis[2].y;
-//	inverseMatrix.m[1][3] = 0.0f;
-//
-//	inverseMatrix.m[2][0] = obb.axis[0].z;
-//	inverseMatrix.m[2][1] = obb.axis[1].z;
-//	inverseMatrix.m[2][2] = obb.axis[2].z;
-//	inverseMatrix.m[2][3] = 0.0f;
-//
-//	inverseMatrix.m[3][0] = -Dot(obb.center, obb.axis[0]);
-//	inverseMatrix.m[3][1] = -Dot(obb.center, obb.axis[1]);
-//	inverseMatrix.m[3][2] = -Dot(obb.center, obb.axis[2]);
-//	inverseMatrix.m[3][3] = 1.0f;
-//	return inverseMatrix;
-//}
 
 //OBBとOBBの衝突判定
 inline bool IsCollision(const OBB& a, const OBB& b, CollisionInfo& info) {
