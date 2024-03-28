@@ -32,33 +32,38 @@ public:
 	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle();
 	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle();
 	//deviceゲッター
-	ID3D12Device* GetDevice() { return device.Get(); }
+	ID3D12Device* GetDevice() { return mDevice.Get(); }
 	IDxcUtils* GetUtils() { return dxcUtils.Get(); }
 	IDxcCompiler3* GetCompiler() { return dxcCompiler.Get(); }
 	IDxcIncludeHandler* GetHandler() {return includeHandler.Get(); }
-	ID3D12DescriptorHeap* GetRtvDescriptorHeap() { return rtvDescriptorHeap.Get(); }
-	ID3D12DescriptorHeap* GetSrvDescriptorHeap() { return srvDescriptorHeap.Get(); }
-	ID3D12DescriptorHeap* GetDsvDescriptorHeap() { return dsvDescriptorHeap.Get(); }
-	ID3D12GraphicsCommandList* GetCommandList() { return commandList.Get(); }
+	ID3D12DescriptorHeap* GetRtvDescriptorHeap() { return mRtvDescriptorHeap.Get(); }
+	ID3D12DescriptorHeap* GetSrvDescriptorHeap() { return mSrvDescriptorHeap.Get(); }
+	ID3D12DescriptorHeap* GetDsvDescriptorHeap() { return mDsvDescriptorHeap.Get(); }
+	ID3D12GraphicsCommandList* GetCommandList() { return mCommandList.Get(); }
 	//バックバッファの数を取得
 	size_t GetBackBufferCount() const { return swapChainResource.size(); }
 private:
 	//メンバ変数
 	//DXGIファクトリー
-	Microsoft::WRL::ComPtr<IDXGIFactory7> dxgiFactory;
+	Microsoft::WRL::ComPtr<IDXGIFactory7> mDxgiFactory;
 	//DirectX12デバイス
-	Microsoft::WRL::ComPtr<ID3D12Device> device;
-	Microsoft::WRL::ComPtr<ID3D12CommandQueue> commandQueue;
+	Microsoft::WRL::ComPtr<ID3D12Device> mDevice;
+	Microsoft::WRL::ComPtr<ID3D12CommandQueue> mCommandQueue;
 	//コマンドアロケータを生成する
-	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> commandAllocator;
-	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList;
-	Microsoft::WRL::ComPtr<IDXGISwapChain4> swapChain;
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> rtvDescriptorHeap;
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> srvDescriptorHeap;
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> dsvDescriptorHeap;
-	uint32_t descriptorSizeSRV;
-	uint32_t descriptorSizeRTV;
-	uint32_t descriptorSizeDSV;
+	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> mCommandAllocator;
+	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> mCommandList;
+	Microsoft::WRL::ComPtr<IDXGISwapChain4> mSwapChain;
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mRtvDescriptorHeap;
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mSrvDescriptorHeap;
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mDsvDescriptorHeap;
+	uint32_t mDescriptorSizeSRV;
+	uint32_t mDescriptorSizeRTV;
+	uint32_t mDescriptorSizeDSV;
+
+
+	///
+	/// ここから
+	///
 	//スワップチェーンリソース
 	std::array<Microsoft::WRL::ComPtr<ID3D12Resource>, 2> swapChainResource;
 	Microsoft::WRL::ComPtr<ID3D12Resource> depthBuffer;

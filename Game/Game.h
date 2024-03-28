@@ -21,17 +21,17 @@ public:
 	void Finalize() override;
 	void Update() override;
 	void Draw() override;
-	DirectXCommon* GetDxCommon() { return dxCommon; }
-	ModelCommon* GetModelCommon() { return modelCommon; }
-	ParticleCommon* GetParticleCommon() { return particleCommon; }
+	DirectXCommon* GetDxCommon() { return mDxCommon; }
+	ModelCommon* GetModelCommon() { return mModelCommon; }
+	ParticleCommon* GetParticleCommon() { return mParticleCommon; }
 private:
-	WinApiManager* winApiManager;
-	Input* input;
-	DirectXCommon* dxCommon;
-	SpriteCommon* spriteCommon;
-	ImGuiManager* imgui;
-	GamePlayScene* scene_ = nullptr;
-	ModelCommon* modelCommon;
-	ParticleCommon* particleCommon;
+	WinApiManager* mWinApiManager;
+	Input* mInput;
+	DirectXCommon* mDxCommon;
+	SpriteCommon* mSpriteCommon;
+	ImGuiManager* mImgui;
+	GamePlayScene* mScene = nullptr;
+	ModelCommon* mModelCommon;
+	ParticleCommon* mParticleCommon;
 };
 

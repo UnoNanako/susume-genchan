@@ -17,76 +17,76 @@
 void Game::Initialize()
 {
 	//ポインタ
-	winApiManager = nullptr;
+	mWinApiManager = nullptr;
 	//WindowsAPIの初期化
-	winApiManager = new WinApiManager();
-	winApiManager->Initialize();
+	mWinApiManager = new WinApiManager();
+	mWinApiManager->Initialize();
 
 	//入力の初期化
-	input = nullptr;
-	input = new Input();
-	input->Initialize(winApiManager);
-	dxCommon = new DirectXCommon();
-	dxCommon->Initialize(winApiManager);
+	mInput = nullptr;
+	mInput = new Input();
+	mInput->Initialize(mWinApiManager);
+	mDxCommon = new DirectXCommon();
+	mDxCommon->Initialize(mWinApiManager);
 
 	//スプライト共通部分の初期化
-	spriteCommon = new SpriteCommon;
-	spriteCommon->Initialize();
+	mSpriteCommon = new SpriteCommon;
+	mSpriteCommon->Initialize();
 
 	//Imgui
-	imgui = new ImGuiManager;
-	imgui->Initialize(winApiManager, dxCommon);
+	mImgui = new ImGuiManager;
+	mImgui->Initialize(mWinApiManager, mDxCommon);
 
 	//ゲームプレイシーンの生成
-	scene_ = new GamePlayScene(this);
+	mScene = new GamePlayScene(this);
 	//ゲームプレイシーンの初期化
-	scene_->Initialize(dxCommon);
+	mScene->Initialize(mDxCommon);
 
-	modelCommon = new ModelCommon();
-	particleCommon = new ParticleCommon();
-	modelCommon->Initialize(dxCommon);
-	particleCommon->Initialize(dxCommon);
+	mModelCommon = new ModelCommon();
+	mParticleCommon = new ParticleCommon();
+	mModelCommon->Initialize(mDxCommon);
+	mParticleCommon->Initialize(mDxCommon);
 }
 
 void Game::Finalize()
 {
 	//解放処理
 	//WindowsAPIの終了処理
-	winApiManager->Finalize();
+	mWinApiManager->Finalize();
 	//ImGuiの終了処理
-	imgui->Finalize();
+	mImgui->Finalize();
 	//ゲームプレイシーンの終了処理
-	scene_->Finalize();
+	mScene->Finalize();
 	//シーンの解放
-	delete scene_;
-	delete input;
-	delete winApiManager;
-	delete dxCommon;
-	delete spriteCommon;
-	delete imgui;
+	delete mScene;
+	delete mInput;
+	delete mWinApiManager;
+	delete mDxCommon;
+	delete mSpriteCommon;
+	delete mImgui;
 }
 
 void Game::Update()
 {
-	imgui->Begin();
+	mImgui->Begin();
 	//入力の更新
-	input->Update();
+	mInput->Update();
 	//キーが押されているときの処理例
 			//数字の0キーが押されていたら
-	if (input->PushKey(DIK_0)) {
+	if (mInput->PushKey(DIK_0)) {
 		OutputDebugStringA("Hit 0\n");
 	}
 	//シーンの更新処理
-	scene_->Update(input);
+	mScene->Update(mInput);
 }
 
 void Game::Draw()
 {
-	dxCommon->PreDraw(); //描画前コマンド
-	imgui->End();
+	mDxCommon->PreDraw(); //描画前コマンド
+	mImgui->End();
 	//シーン描画
-	scene_->Draw(dxCommon);
+	mScene->Draw(mDxCommon);
 	//実際のcommandListのImGuiの描画コマンドを積む
-	imgui->Draw(dxCommon);
-	dxCommon->PostDraw(); //描画後コマンド
+	mImgui->Draw(mDxCommon);
+	mDxCommon->PostDraw(); //描画後コマンド
 }
