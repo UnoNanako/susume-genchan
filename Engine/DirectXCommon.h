@@ -33,15 +33,15 @@ public:
 	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle();
 	//deviceゲッター
 	ID3D12Device* GetDevice() { return mDevice.Get(); }
-	IDxcUtils* GetUtils() { return dxcUtils.Get(); }
-	IDxcCompiler3* GetCompiler() { return dxcCompiler.Get(); }
-	IDxcIncludeHandler* GetHandler() {return includeHandler.Get(); }
+	IDxcUtils* GetUtils() { return mDxcUtils.Get(); }
+	IDxcCompiler3* GetCompiler() { return mDxcCompiler.Get(); }
+	IDxcIncludeHandler* GetHandler() {return mIncludeHandler.Get(); }
 	ID3D12DescriptorHeap* GetRtvDescriptorHeap() { return mRtvDescriptorHeap.Get(); }
 	ID3D12DescriptorHeap* GetSrvDescriptorHeap() { return mSrvDescriptorHeap.Get(); }
 	ID3D12DescriptorHeap* GetDsvDescriptorHeap() { return mDsvDescriptorHeap.Get(); }
 	ID3D12GraphicsCommandList* GetCommandList() { return mCommandList.Get(); }
 	//バックバッファの数を取得
-	size_t GetBackBufferCount() const { return swapChainResource.size(); }
+	size_t GetBackBufferCount() const { return mSwapChainResource.size(); }
 private:
 	//メンバ変数
 	//DXGIファクトリー
@@ -65,24 +65,24 @@ private:
 	/// ここから
 	///
 	//スワップチェーンリソース
-	std::array<Microsoft::WRL::ComPtr<ID3D12Resource>, 2> swapChainResource;
-	Microsoft::WRL::ComPtr<ID3D12Resource> depthBuffer;
-	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
-	Microsoft::WRL::ComPtr<IDxcUtils> dxcUtils;
-	Microsoft::WRL::ComPtr<IDxcCompiler3> dxcCompiler;
-	Microsoft::WRL::ComPtr<IDxcIncludeHandler> includeHandler;
+	std::array<Microsoft::WRL::ComPtr<ID3D12Resource>, 2> mSwapChainResource;
+	Microsoft::WRL::ComPtr<ID3D12Resource> mDepthBuffer;
+	D3D12_RENDER_TARGET_VIEW_DESC mRtvDesc{};
+	Microsoft::WRL::ComPtr<IDxcUtils> mDxcUtils;
+	Microsoft::WRL::ComPtr<IDxcCompiler3> mDxcCompiler;
+	Microsoft::WRL::ComPtr<IDxcIncludeHandler> mIncludeHandler;
 	// RTVを2つ作るのでディスクリプタを2つ用意
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[2];
+	D3D12_CPU_DESCRIPTOR_HANDLE mRtvHandles[2];
 	// ビューポート
-	D3D12_VIEWPORT viewport{};
+	D3D12_VIEWPORT mViewport{};
 	// シザー矩形
-	D3D12_RECT scissorRect{};
-	Microsoft::WRL::ComPtr<ID3D12Fence> fence;
-	uint64_t fenceValue;
-	HANDLE fenceEvent;
-	UINT backBufferIndex;
+	D3D12_RECT mScissorRect{};
+	Microsoft::WRL::ComPtr<ID3D12Fence> mFence;
+	uint64_t mFenceValue;
+	HANDLE mFenceEvent;
+	UINT mBackBufferIndex;
 	//WindowsAPI
-	WinApiManager* winApiManager = nullptr;
+	WinApiManager* mWinApiManager = nullptr;
 
 	//メンバ関数
 	//デバイスの初期化
@@ -112,7 +112,7 @@ private:
 	//指定番号のGPUデスクリプタハンドルを取得する
 	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(const Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>& descriptorHeap, uint32_t descriptorSize, uint32_t index);
 	//index
-	uint32_t index;
+	uint32_t mIndex;
 
 	//FPS固定初期化
 	void InitializeFixFPS();
