@@ -1055,6 +1055,18 @@ inline bool IsCollision(const OBB& a, const OBB& b, CollisionInfo& info) {
 	return true;
 }
 
+//OBBとAABBの衝突判定
+inline bool IsCollision(const AABB& a, const OBB& b, CollisionInfo& info) {
+	Vector3 size = (a.max - a.min) / 2.0f;
+	OBB obb;
+	obb.center = a.min + size;
+	obb.size = size;
+	if (IsCollision(obb, b, info)) {
+		return true;
+	}
+	return false;
+}
+
 //カメラのビュー行列を求める関数
 inline Matrix4x4 CreateLookAt(const Vector3& eye, const Vector3& target, const Vector3& up) {
 	Vector3 axisZ = Normalize(Subtract(target, eye));

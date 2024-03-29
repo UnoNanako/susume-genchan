@@ -253,19 +253,19 @@ void GamePlayScene::Update(Input* input)
 		}
 	}
 
-	//ghostとplayerの当たり判定
+	//ghostとプレイヤーrの当たり判定
 	for (uint32_t i = 0; i < mGhosts.size(); ++i) {
 		if (IsCollision(mPlayer->GetAABB(), mGhosts[i]->GetAABB(), collisionResult)) {
 			mIsGameover = true;
 		}
 	}
 
-	//starとplayerの当たり判定
+	//starとプレイヤーの当たり判定
 	if (IsCollision(mPlayer->GetAABB(), mStar->GetAABB(), collisionResult)) {
 		mIsClear = true;
 	}
 
-	//gemとplayerの当たり判定
+	//gemとプレイヤーの当たり判定
 	for (uint32_t i = 0; i < mGems.size(); ++i) {
 		if (IsCollision(mPlayer->GetAABB(), mGems[i]->GetAABB(), collisionResult)) {
 			Vector3 pos = mPlayer->GetTranslate();
@@ -275,7 +275,7 @@ void GamePlayScene::Update(Input* input)
 		}
 	}
 
-	//grassとplayerの当たり判定
+	//grassとプレイヤーの当たり判定
 	for (uint32_t i = 0; i < mGrasses.size(); ++i) {
 		if (IsCollision(mPlayer->GetAABB(), mGrasses[i]->GetAABB(), collisionResult)) {
 			Vector3 pos = mPlayer->GetTranslate();
@@ -285,7 +285,7 @@ void GamePlayScene::Update(Input* input)
 		}
 	}
 	
-	//SlideSwitchとplayerの当たり判定
+	//SlideSwitchとプレイヤーの当たり判定
 	if (IsCollision(mPlayer->GetAABB(), mSlideSwitch->GetAABB(), collisionResult)) {
 		mSwitchIsHit = true;
 		mSlideFloor->SetIsMoving(true);
@@ -294,7 +294,7 @@ void GamePlayScene::Update(Input* input)
 		mSwitchIsHit = false;
 	}
 
-	//slideFloorとplayerの当たり判定
+	//slideFloorとプレイヤーの当たり判定
 	if (IsCollision(mPlayer->GetAABB(), mSlideFloor->GetAABB(), collisionResult)) {
 		mPlayer->SetIsHit(true);
 		mSlideFloorIsHit = true;
@@ -305,7 +305,7 @@ void GamePlayScene::Update(Input* input)
 		mPlayer->SetTranslate(pos);
 		//mPlayer->CalcurateAABB(mPlayer->GetTranslate());
 		if (mPlayer->GetParent() == nullptr) {
-			//playerとslideFloorの親子関係を結ぶ
+			//プレイヤーとslideFloorの親子関係を結ぶ
 			Matrix4x4 local = Multiply(mPlayer->GetWorldMatrix(), Inverse(mSlideFloor->GetWorldMatrix()));
 			mPlayer->SetTranslate(Vector3{ local.m[3][0],local.m[3][1],local.m[3][2] });
 		}
@@ -321,7 +321,7 @@ void GamePlayScene::Update(Input* input)
 		}
 	}
 
-	//upFloorとplayerの当たり判定
+	//upFloorとプレイヤーの当たり判定
 	if (IsCollision(mPlayer->GetAABB(), mUpFloor->GetAABB(), collisionResult)) {
 		mPlayer->SetIsHit(true);
 		mUpFloorIsHit = true;
@@ -333,7 +333,7 @@ void GamePlayScene::Update(Input* input)
 		//mPlayer->SetVelocityY(0.0f);
 		//mPlayer->CalcurateAABB(mPlayer->GetTranslate());
 		if (mPlayer->GetParent() == nullptr) {
-			//playerとupFloorの親子関係を結ぶ
+			//プレイヤーとupFloorの親子関係を結ぶ
 			Matrix4x4 local = Multiply(mPlayer->GetWorldMatrix(), Inverse(mUpFloor->GetWorldMatrix()));
 			mPlayer->SetTranslate(Vector3{ local.m[3][0],local.m[3][1],local.m[3][2] });
 		}
@@ -349,7 +349,7 @@ void GamePlayScene::Update(Input* input)
 		}
 	}
 
-	//upSwitchとplayerの当たり判定
+	//upSwitchとプレイヤーの当たり判定
 	if (IsCollision(mPlayer->GetAABB(), mUpSwitch->GetAABB(), collisionResult)) {
 		mSwitchIsHit = true;
 		Vector3 pos = mPlayer->GetTranslate();
@@ -379,6 +379,9 @@ void GamePlayScene::Update(Input* input)
 	else {
 		mCrank->SetIsHit(false);
 	}
+
+	//回転する床とプレイヤーの当たり判定
+
 
 	mPlayer->GetTransform().UpdateMatrix();
 }
