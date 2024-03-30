@@ -970,7 +970,7 @@ inline bool IsCollision(const AABB& aabb, const Sphere& sphere) {
 }
 
 //OBBとOBBの衝突判定
-inline bool IsCollision(const OBB& a, const OBB& b, CollisionInfo& info) {
+inline bool IsCollision(const OBB& a, const OBB& b, CollisionResult& result) {
 	//分離軸
 	Vector3 axes[15];
 	axes[0] = a.axis[0];
@@ -1047,21 +1047,21 @@ inline bool IsCollision(const OBB& a, const OBB& b, CollisionInfo& info) {
 			minAxis = axis;
 		}
 	}
-	info.normal = Normalize(minAxis);
-	if (Dot(a.center - b.center, info.normal) < 0.0f) {
-		info.normal = -info.normal;
+	result.normal = Normalize(minAxis);
+	if (Dot(a.center - b.center, result.normal) < 0.0f) {
+		result.normal = -result.normal;
 	}
-	info.depth = minOverlap;
+	result.depth = minOverlap;
 	return true;
 }
 
 //OBBとAABBの衝突判定
-inline bool IsCollision(const AABB& a, const OBB& b, CollisionInfo& info) {
+inline bool IsCollision(const AABB& a, const OBB& b, CollisionResult& result) {
 	Vector3 size = (a.max - a.min) / 2.0f;
 	OBB obb;
 	obb.center = a.min + size;
 	obb.size = size;
-	if (IsCollision(obb, b, info)) {
+	if (IsCollision(obb, b, result)) {
 		return true;
 	}
 	return false;

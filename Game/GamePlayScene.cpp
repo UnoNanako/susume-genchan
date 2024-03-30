@@ -381,7 +381,14 @@ void GamePlayScene::Update(Input* input)
 	}
 
 	//回転する床とプレイヤーの当たり判定
-
+	if (IsCollision(mPlayer->GetAABB(), mRotateFloor->GetOBB(), collisionResult)) {
+		mPlayer->SetIsHit(true);
+		Vector3 pos = mPlayer->GetTranslate();
+		pos.x += collisionResult.normal.x * collisionResult.depth / 2;
+		pos.y += collisionResult.normal.y * collisionResult.depth / 2;
+		pos.z += collisionResult.normal.z * collisionResult.depth / 2;
+		mPlayer->SetTranslate(pos);
+	}
 
 	mPlayer->GetTransform().UpdateMatrix();
 }

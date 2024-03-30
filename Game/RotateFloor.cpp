@@ -11,7 +11,7 @@ void RotateFloor::Initialize(DirectXCommon* dxCommon)
 	mTransform = {
 		{1.0f,1.0f,1.0f},
 		{0.0f,0.0f,0.0f},
-		{37.5f,0.0f,-15.0f}
+		{36.0f,0.0f,-15.0f}
 	};
 	mTexture = new Texture();
 	mTexture->Create(dxCommon, "resources/Model/Floor/Rotate/red.png");
@@ -35,7 +35,7 @@ void RotateFloor::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
 void RotateFloor::CalcurateOBB(const Vector3& translate)
 {
 	mOBB.center = translate;
-	mOBB.size = mTransform.scale;
+	mOBB.size = { 2.5f,2.5f,5.0f };
 	Matrix4x4 rotateX = MakeRotateXMatrix(mTransform.rotate.x);
 	Matrix4x4 rotateY = MakeRotateYMatrix(mTransform.rotate.y);
 	Matrix4x4 rotateZ = MakeRotateZMatrix(mTransform.rotate.z);
