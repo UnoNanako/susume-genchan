@@ -32,8 +32,14 @@ public:
 	void LoadObjFile(const std::string& filePath);
 	//glTFを読む関数
 	void Load(const std::string& derectoryPath,const std::string& filename);
+
+	/// <summary>
+	/// アクセッサ
+	/// </summary>
 	void SetScale(Vector3 scale) { mTransform.scale = scale; }
 	void SetTexture(Texture* texture) { this->texture = texture; }
+	unsigned int GetModelIndex() { return mModelIndex; }
+	void SetModelIndex(unsigned int modelIndex) { mModelIndex = modelIndex; }
 private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
@@ -44,4 +50,5 @@ private:
 	Transform mTransform;
 	ModelData modelData;
 	Texture *texture;
+	unsigned int mModelIndex;
 };

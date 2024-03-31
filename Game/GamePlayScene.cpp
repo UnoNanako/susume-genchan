@@ -98,7 +98,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 		mGhosts[i]->Initialize(dxCommon);
 	}
 	mGhosts[0]->SetTranslate({ 22.5f,5.0f,-5.0f });
-	mGhosts[0]->SetRotate({ 0.0f,-kPi/2.0f,0.0f });
+	mGhosts[0]->SetRotate({ 0.0f,-kPi / 2.0f,0.0f });
 
 	//ジェム
 	mGems.resize(1);
@@ -111,7 +111,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	//スター
 	mStar = std::make_unique<Star>();
 	mStar->Initialize(dxCommon);
-	mStar->SetTranslate({17.5f,5.0f,80.0f});
+	mStar->SetTranslate({ 17.5f,5.0f,80.0f });
 
 	//movingFloor(スイッチを押すとスライドし始める床)
 	mSlideFloor = std::make_unique<SlideFloor>();
@@ -129,7 +129,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	mUpSwitch = std::make_unique<Switch>();
 	mUpSwitch->SetMoveFloor(mUpFloor.get());
 	mUpSwitch->Initialize(dxCommon);
-	mUpSwitch->SetTransform({{ 0.5f,0.5f,0.5f},{0.0f,0.0f,0.0f},{7.5f,2.5f,-20.0f} });
+	mUpSwitch->SetTransform({ { 0.5f,0.5f,0.5f},{0.0f,0.0f,0.0f},{7.5f,2.5f,-20.0f} });
 
 	//クランク
 	mCrank = std::make_unique<Crank>();
@@ -177,15 +177,15 @@ void GamePlayScene::Update(Input* input)
 		mLightList->SetDirectionalLightIntensity(0.7f);
 	}
 	Transform spriteTransform = { {0.5f,0.5f,0.5f},{0.0f,0.0f,0.0f},{0.0f,2.0f,0.0f} };
-	
+
 	mLightList->Update();
-	mPlayer->Update(input,mBirdEyeCamera->GetLon());
+	mPlayer->Update(input, mBirdEyeCamera->GetLon());
 
 	if (mIsPlayerCamera == true) {
 		mPlayerCamera->Update();
 	}
 	else {
-		mBirdEyeCamera->Update(input,mPlayer->GetWorldPosition());
+		mBirdEyeCamera->Update(input, mPlayer->GetWorldPosition());
 	}
 
 	mMap->Update();
@@ -284,7 +284,7 @@ void GamePlayScene::Update(Input* input)
 			mPlayer->SetTranslate(pos);
 		}
 	}
-	
+
 	//SlideSwitchとプレイヤーの当たり判定
 	if (IsCollision(mPlayer->GetAABB(), mSlideSwitch->GetAABB(), collisionResult)) {
 		mSwitchIsHit = true;
@@ -314,7 +314,7 @@ void GamePlayScene::Update(Input* input)
 	}
 	else {
 		if (mSlideFloorIsHit == true) {
-		mPlayer->SetParent(nullptr);
+			mPlayer->SetParent(nullptr);
 			mSlideFloorIsHit = false;
 			Matrix4x4 world = mPlayer->GetWorldMatrix();
 			mPlayer->SetTranslate(Vector3{ world.m[3][0],world.m[3][1],world.m[3][2] });
@@ -326,9 +326,9 @@ void GamePlayScene::Update(Input* input)
 		mPlayer->SetIsHit(true);
 		mUpFloorIsHit = true;
 		Vector3 pos = mPlayer->GetTranslate();
-		pos.x += collisionResult.normal.x * collisionResult.depth/2;
-		pos.y += collisionResult.normal.y * collisionResult.depth/2;
-		pos.z += collisionResult.normal.z * collisionResult.depth/2;
+		pos.x += collisionResult.normal.x * collisionResult.depth / 2;
+		pos.y += collisionResult.normal.y * collisionResult.depth / 2;
+		pos.z += collisionResult.normal.z * collisionResult.depth / 2;
 		mPlayer->SetTranslate(pos);
 		//mPlayer->SetVelocityY(0.0f);
 		//mPlayer->CalcurateAABB(mPlayer->GetTranslate());
@@ -342,7 +342,7 @@ void GamePlayScene::Update(Input* input)
 	}
 	else {
 		if (mUpFloorIsHit == true) {
-		mPlayer->SetParent(nullptr);
+			mPlayer->SetParent(nullptr);
 			mUpFloorIsHit = false;
 			Matrix4x4 world = mPlayer->GetWorldMatrix();
 			mPlayer->SetTranslate(Vector3{ world.m[3][0],world.m[3][1],world.m[3][2] });
@@ -353,9 +353,9 @@ void GamePlayScene::Update(Input* input)
 	if (IsCollision(mPlayer->GetAABB(), mUpSwitch->GetAABB(), collisionResult)) {
 		mSwitchIsHit = true;
 		Vector3 pos = mPlayer->GetTranslate();
-		pos.x += collisionResult.normal.x * collisionResult.depth/2;
-		pos.y += collisionResult.normal.y * collisionResult.depth/2;
-		pos.z += collisionResult.normal.z * collisionResult.depth/2;
+		pos.x += collisionResult.normal.x * collisionResult.depth / 2;
+		pos.y += collisionResult.normal.y * collisionResult.depth / 2;
+		pos.z += collisionResult.normal.z * collisionResult.depth / 2;
 		mPlayer->SetTranslate(pos);
 		//mPlayer->CalcurateAABB(mPlayer->GetTranslate());
 		if (input->GetButton(XINPUT_GAMEPAD_A)) {
@@ -374,7 +374,9 @@ void GamePlayScene::Update(Input* input)
 
 	//クランクとプレイヤーの当たり判定
 	if (IsCollision(mPlayer->GetAABB(), mCrank->GetAABB(), collisionResult)) {
-		mCrank->SetIsHit(true);
+		if (input->GetButton(XINPUT_GAMEPAD_A)) {
+			mCrank->SetIsHit(true);
+		}
 	}
 	else {
 		mCrank->SetIsHit(false);
@@ -426,7 +428,7 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 			mGhosts[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 		}
 	}
-	
+
 	for (uint32_t i = 0; i < mGems.size(); ++i) {
 		mGems[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	}

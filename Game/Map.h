@@ -39,5 +39,11 @@ private:
 	std::vector<Model*> mInvisibleAABBModel; //見えない壁のvector
 	std::vector<Transform> mInvisibleAABBTransform;
 	std::vector<AABB> mInvisibleAABB; 
+
+	//モデル、テクスチャの種類を管理するenum(マップチップのアレ)
+	enum ModelIndex : unsigned int {
+		FLOOR, //0
+		GRASS  //1
+	};
 };
 

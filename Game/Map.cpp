@@ -23,15 +23,42 @@ void Map::Create(DirectXCommon* dxCommon)
 		int terrainCount = mJson["TerrainCount"].get<int>();
 		//読み込んだデータをそれぞれの変数に代入する
 		for (uint32_t i = 0; i < terrainCount; ++i) {
+			nlohmann::json& terrainData = mJson[std::format("Terrain{}", i)]; //これあとで理解
 			Model* newModel;
-			newModel = new Model();
+
+			//モデルの番号を読み取る
+			ModelIndex modelIndex = terrainData["ModelIndex"].get<ModelIndex>();
+
+			//特定の番号に対応するモデルとテクスチャを設定する
+			switch (modelIndex) {
+			case FLOOR:
+				//床のモデルを読み込む
+				newModel = new Model();
+				newModel->SetModelIndex(0);
+				newModel->Create(mDxCommon, "resources/Model/Blocks/Grass", "grass.obj");
+				newModel->SetTexture(mTerrainTexture);
+				mTerrainModel.emplace_back(newModel);
+				break;
+
+			case GRASS:
+				//草のモデルを読み込む
+				newModel = new Model();
+				newModel->SetModelIndex(1);
+				newModel->Create(mDxCommon, "resources/Model/Blocks/Grass", "grass.obj");
+				newModel->SetTexture(mTerrainTexture);
+				mTerrainModel.emplace_back(newModel);
+				break;
+			}
+
+			///jsonの初期化に使用
+			/*newModel = new Model();
+			newModel->SetModelIndex(0);
 			newModel->Create(mDxCommon, "resources/Model/Blocks/Grass", "grass.obj");
 			newModel->SetTexture(mTerrainTexture);
-			mTerrainModel.emplace_back(newModel);
+			mTerrainModel.emplace_back(newModel);*/
 
 			Transform newTransform;
 
-			nlohmann::json& terrainData = mJson[std::format("Terrain{}", i)]; //これあとで理解
 			//各地形のTransformをベクターに追加。これにより、あとで地形の位置、スケール、回転などを取得できるようになる
 			newTransform.translate.x = terrainData["Position"][0].get<float>();
 			newTransform.translate.y = terrainData["Position"][1].get<float>();
@@ -136,6 +163,7 @@ void Map::Finalize()
 		terrainData["Scale"].push_back(mTerrainTransform[i].scale.x);
 		terrainData["Scale"].push_back(mTerrainTransform[i].scale.y);
 		terrainData["Scale"].push_back(mTerrainTransform[i].scale.z);
+		terrainData["ModelIndex"]=(mTerrainModel[i]->GetModelIndex());
 	}
 	file << data.dump(4) << std::endl;
 

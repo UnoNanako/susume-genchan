@@ -23,6 +23,7 @@ public:
 	AABB GetAABB() { return mAABB; }
 	bool GetIsHit() { return mIsHit; }
 	void SetIsHit(bool isHit) { mIsHit = isHit; }
+	void SetIsOperation(bool isPushA) { mIsPushA = isPushA; }
 	
 private:
 	AABB mAABB; 
@@ -30,6 +31,7 @@ private:
 	Transform mFoundationTransform; //土台
 	float mCalculateAngle; //前の角度
 	float mCurrentAngle; //現在の角度
-	bool mIsHit = false;
+	bool mIsHit = false; //プレイヤーと当たっているか
+	bool mIsPushA = false; //Aボタンが押されたか
 };
 
