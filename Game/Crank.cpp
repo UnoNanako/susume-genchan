@@ -37,7 +37,7 @@ void Crank::Update(Input* input)
 	//Lスティック
 	Vector2 lStick = input->GetLStick();
 	float length = Length(lStick);
-	if (length > 0.0f && mIsHit == true) {
+	if (length > 0.0f && mIsPushA == true) {
 		lStick.Normalize();
 		mCalculateAngle = mCurrentAngle; //前のフレームの角度
 		mCurrentAngle = atan2(lStick.y, lStick.x); //ラジアンが求まる

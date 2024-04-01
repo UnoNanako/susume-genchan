@@ -374,12 +374,14 @@ void GamePlayScene::Update(Input* input)
 
 	//クランクとプレイヤーの当たり判定
 	if (IsCollision(mPlayer->GetAABB(), mCrank->GetAABB(), collisionResult)) {
-		if (input->GetButton(XINPUT_GAMEPAD_A)) {
-			mCrank->SetIsHit(true);
+		mCrank->SetIsHit(true);
+		if (input->GetButton(XINPUT_GAMEPAD_A) && mCrank->GetIsHit() == true) {
+			mCrank->SetIsPushA(true);
 		}
 	}
 	else {
 		mCrank->SetIsHit(false);
+		mCrank->SetIsPushA(false);
 	}
 
 	//回転する床とプレイヤーの当たり判定
@@ -392,6 +394,7 @@ void GamePlayScene::Update(Input* input)
 		mPlayer->SetTranslate(pos);
 	}
 
+	//プレイヤーの行列を更新
 	mPlayer->GetTransform().UpdateMatrix();
 }
 
@@ -449,6 +452,9 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 	mGame->GetModelCommon()->Bind(dxCommon);
 	mCrosshair->Draw(dxCommon->GetCommandList());
 	if (mSwitchIsHit == true) {
+		mAbuttonSprite->Draw(dxCommon->GetCommandList());
+	}
+	if (mCrank->GetIsHit() == true) {
 		mAbuttonSprite->Draw(dxCommon->GetCommandList());
 	}
 	if (mIsClear == true) {

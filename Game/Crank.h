@@ -23,7 +23,8 @@ public:
 	AABB GetAABB() { return mAABB; }
 	bool GetIsHit() { return mIsHit; }
 	void SetIsHit(bool isHit) { mIsHit = isHit; }
-	void SetIsOperation(bool isPushA) { mIsPushA = isPushA; }
+	bool GetIsPushA() { return mIsPushA; }
+	void SetIsPushA(bool isPushA) { mIsPushA = isPushA; }
 	
 private:
 	AABB mAABB; 
