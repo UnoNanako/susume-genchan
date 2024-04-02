@@ -5,6 +5,12 @@
 #include "2D/Texture.h"
 #include "VertexData.h"
 
+Crank::Crank()
+	:mCalculateAngle(0.0f)
+	,mCurrentAngle(0.0f)
+{
+}
+
 void Crank::Initialize(DirectXCommon* dxCommon)
 {
 	mCalculateAngle = 0.0f;

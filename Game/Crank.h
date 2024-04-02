@@ -11,6 +11,7 @@ class Model;
 class Crank : public GameObject
 {
 public:
+	Crank();
 	void Initialize(DirectXCommon* dxCommon);
 	void Update(Input* input);
 	void Draw(ID3D12GraphicsCommandList* commandList, Camera* camera);
