@@ -11,7 +11,7 @@ void SlideFloor::Initialize(DirectXCommon* dxCommon)
 	mTransform = {
 		{1.0f,1.0f,1.0f},
 		{0.0f,0.0f,0.0f},
-		{15.0f,2.0f,32.5f}
+		{30.0f,2.0f,32.5f}
 	};
 	mModel = new Model();
 	mModel->Create(mDxCommon, "resources/Model/Floor/Slide", "slideFloor.obj");

@@ -49,6 +49,7 @@ void Player::Update(Input* input, float theta)
 	mVelocity.y -= mGravity; //毎フレーム重力をかけている
 	mTransform.translate.y += mVelocity.y;
 	ImGui::Begin("Debug");
+	ImGui::DragFloat3("pos", &mTransform.translate.x);
 	ImGui::Text(std::format("{}", mVelocity.y).c_str());
 	ImGui::End();
 	//読む！理解する！
