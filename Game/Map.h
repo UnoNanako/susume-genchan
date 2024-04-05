@@ -9,6 +9,7 @@
 class Texture;
 class Model;
 struct AABB;
+struct Block;
 
 const std::string pathToJSON("./resources/Json/map.json");
 const std::string pathToAABBJSON("./resources/Json/mapAABB.json");
@@ -23,17 +24,17 @@ public:
 	//translateとscaleを渡すとmin,maxを求めてくれる関数
 	AABB CalcurateAABB(const Vector3& translate, const Vector3& scale);
 	
-	std::vector<Model*> GetTerrainModel() { return mTerrainModel; }
-	std::vector<Transform> GetTerrainTransform() { return mTerrainTransform; }
-	std::vector<AABB> GetTerrainAABB() { return mTerrainAABB; }
+	std::vector<Block*> GetBlock() { return mBlock; }
 	std::vector<AABB> GetInvisibleAABB() { return mInvisibleAABB; }
 
 private:
 	//地形
 	Texture* mTerrainTexture;
-	std::vector<Model*> mTerrainModel; //壁や床など
-	std::vector<Transform> mTerrainTransform;
-	std::vector<AABB> mTerrainAABB;
+	//std::vector<Model*> mTerrainModel; //壁や床など
+	//std::vector<Transform> mTerrainTransform;
+	//std::vector<AABB> mTerrainAABB;
+
+	std::vector<Block*> mBlock;
 
 	//見えない壁(当たり判定用)
 	std::vector<Model*> mInvisibleAABBModel; //見えない壁のvector

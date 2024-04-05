@@ -26,6 +26,7 @@
 #include "Game/RotateEnemy.h"
 #include "Particle/ParticleCommon.h"
 #include "externals/imgui/imgui.h"
+#include "Block.h"
 
 GamePlayScene::GamePlayScene(Game* game)
 {
@@ -221,8 +222,8 @@ void GamePlayScene::Update(Input* input)
 	CollisionResult collisionResult;
 	//壁,床とプレイヤーの当たり判定
 	mPlayer->SetIsHit(false);
-	for (uint32_t i = 0; i < mMap->GetTerrainModel().size(); ++i) {
-		if (IsCollision(mPlayer->GetAABB(), mMap->GetTerrainAABB()[i], collisionResult)) {
+	for (uint32_t i = 0; i < mMap->GetBlock().size(); ++i) {
+		if (IsCollision(mPlayer->GetAABB(), mMap->GetBlock()[i]->mAABB, collisionResult)) {
 			mPlayer->SetIsHit(true);
 			Vector3 pos = mPlayer->GetTranslate();
 			pos.x += collisionResult.normal.x * collisionResult.depth;
@@ -242,9 +243,9 @@ void GamePlayScene::Update(Input* input)
 	}
 
 	//壁とrotateEnemyの当たり判定
-	for (uint32_t i = 0; i < mMap->GetTerrainModel().size(); ++i) {
+	for (uint32_t i = 0; i < mMap->GetBlock().size(); ++i) {
 		for (uint32_t j = 0; j < mRotateEnemies.size(); ++j) {
-			if (IsCollision(mRotateEnemies[j]->GetAABB(), mMap->GetTerrainAABB()[i], collisionResult)) {
+			if (IsCollision(mRotateEnemies[j]->GetAABB(), mMap->GetBlock()[i]->mAABB, collisionResult)) {
 				Vector3 pos = mRotateEnemies[j]->GetTranslate();
 				pos.x += collisionResult.normal.x * collisionResult.depth;
 				pos.z += collisionResult.normal.z * collisionResult.depth;

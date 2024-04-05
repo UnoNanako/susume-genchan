@@ -6,6 +6,8 @@
 #include "2D/Texture.h"
 #include "Math/MyMath.h"
 #include "externals/imgui/imgui.h"
+#include "Block.h"
+#include <format>
 
 void Map::Create(DirectXCommon* dxCommon)
 {
@@ -29,24 +31,26 @@ void Map::Create(DirectXCommon* dxCommon)
 			//モデルの番号を読み取る
 			ModelIndex modelIndex = terrainData["ModelIndex"].get<ModelIndex>();
 
+			Block* block = new Block();
+
 			//特定の番号に対応するモデルとテクスチャを設定する
 			switch (modelIndex) {
 			case FLOOR:
 				//床のモデルを読み込む
-				newModel = new Model();
-				newModel->SetModelIndex(0);
-				newModel->Create(mDxCommon, "resources/Model/Blocks/Grass", "grass.obj");
-				newModel->SetTexture(mTerrainTexture);
-				mTerrainModel.emplace_back(newModel);
+				block->mModel = new Model();
+				block->mModel->SetModelIndex(0);
+				block->mModel->Create(mDxCommon, "resources/Model/Blocks/Grass", "grass.obj");
+				block->mModel->SetTexture(mTerrainTexture);
+				mBlock.emplace_back(block);
 				break;
 
 			case GRASS:
 				//草のモデルを読み込む
-				newModel = new Model();
-				newModel->SetModelIndex(1);
-				newModel->Create(mDxCommon, "resources/Model/Blocks/Grass", "grass.obj");
-				newModel->SetTexture(mTerrainTexture);
-				mTerrainModel.emplace_back(newModel);
+				block->mModel = new Model();
+				block->mModel->SetModelIndex(1);
+				block->mModel->Create(mDxCommon, "resources/Model/Blocks/Grass", "grass.obj");
+				block->mModel->SetTexture(mTerrainTexture);
+				mBlock.emplace_back(block);
 				break;
 			}
 
@@ -57,23 +61,18 @@ void Map::Create(DirectXCommon* dxCommon)
 			newModel->SetTexture(mTerrainTexture);
 			mTerrainModel.emplace_back(newModel);*/
 
-			Transform newTransform;
-
 			//各地形のTransformをベクターに追加。これにより、あとで地形の位置、スケール、回転などを取得できるようになる
-			newTransform.translate.x = terrainData["Position"][0].get<float>();
-			newTransform.translate.y = terrainData["Position"][1].get<float>();
-			newTransform.translate.z = terrainData["Position"][2].get<float>();
-			newTransform.scale.x = terrainData["Scale"][0].get<float>();
-			newTransform.scale.y = terrainData["Scale"][1].get<float>();
-			newTransform.scale.z = terrainData["Scale"][2].get<float>();
-			newTransform.rotate.x = 0.0f;
-			newTransform.rotate.y = 0.0f;
-			newTransform.rotate.z = 0.0f;
-			mTerrainTransform.emplace_back(newTransform);
+			block->mTransform.translate.x = terrainData["Position"][0].get<float>();
+			block->mTransform.translate.y = terrainData["Position"][1].get<float>();
+			block->mTransform.translate.z = terrainData["Position"][2].get<float>();
+			block->mTransform.scale.x = terrainData["Scale"][0].get<float>();
+			block->mTransform.scale.y = terrainData["Scale"][1].get<float>();
+			block->mTransform.scale.z = terrainData["Scale"][2].get<float>();
+			block->mTransform.rotate.x = 0.0f;
+			block->mTransform.rotate.y = 0.0f;
+			block->mTransform.rotate.z = 0.0f;
 
-			AABB newAABB;
-			newAABB = CalcurateAABB(newTransform.translate, newTransform.scale);
-			mTerrainAABB.emplace_back(newAABB);
+			block->mAABB = CalcurateAABB(block->mTransform.translate, block->mTransform.scale);
 		}
 	}
 	//AABBjsonファイル読み込み
@@ -113,13 +112,13 @@ void Map::Create(DirectXCommon* dxCommon)
 
 void Map::Update()
 {
+	Block* block = new Block();
 	ImGui::Begin("Map");
 	if (ImGui::Button("Create")) {
-		Model* newModel;
-		newModel = new Model();
-		newModel->Create(mDxCommon, "resources/Model/Blocks/Grass", "grass.obj");
-		newModel->SetTexture(mTerrainTexture);
-		mTerrainModel.emplace_back(newModel);
+		block->mModel = new Model();
+		block->mModel->Create(mDxCommon, "resources/Model/Blocks/Grass", "grass.obj");
+		block->mModel->SetTexture(mTerrainTexture);
+		mBlock.emplace_back(block);
 		Transform newTransform;
 		newTransform.scale.x = 5.0f;
 		newTransform.scale.y = 5.0f;
@@ -127,25 +126,33 @@ void Map::Update()
 		newTransform.rotate.x = 0.0f;
 		newTransform.rotate.y = 0.0f;
 		newTransform.rotate.z = 0.0f;
-		mTerrainTransform.emplace_back(newTransform);
+		//mTerrainTransform.emplace_back(newTransform);
 		AABB newAABB;
 		newAABB = CalcurateAABB(newTransform.translate, newTransform.scale);
-		mTerrainAABB.emplace_back(newAABB);
+		//mTerrainAABB.emplace_back(newAABB);
 	}
-	for (uint32_t i = 0; i < mTerrainModel.size(); ++i) {
-		ImGui::DragFloat3(std::format("terrainTransform{}", i).c_str(), &mTerrainTransform[i].translate.x, 0.01f);
+	int i = 0;
+	for (auto iter = mBlock.begin(); iter != mBlock.end();) {
+		ImGui::DragFloat3(std::format("terrainTransform{}", i).c_str(), &(*iter)->mTransform.translate.x, 0.01f);
+		if (ImGui::Button(std::format("Erase##{}",i).c_str())) {
+			iter = mBlock.erase(iter);
+		}
+		else {
+			++iter;
+		}
+		++i;
 	}
-	ImGui::DragFloat3("floorScale", &mTerrainTransform[0].scale.x, 0.01f);
+	ImGui::DragFloat3("floorScale", &mBlock[0]->mTransform.scale.x, 0.01f);
 	ImGui::End();
-	for (uint32_t i = 0; i < mTerrainModel.size(); ++i) {
-		mTerrainTransform[i].UpdateMatrix();
+	for (uint32_t i = 0; i < mBlock.size(); ++i) {
+		mBlock[i]->mTransform.UpdateMatrix();
 	}
 }
 
 void Map::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
 {
-	for (uint32_t i = 0; i < mTerrainModel.size(); ++i) {
-		mTerrainModel[i]->Draw(commandList, camera, mTerrainTransform[i]);
+	for (uint32_t i = 0; i < mBlock.size(); ++i) {
+		mBlock[i]->mModel->Draw(commandList, camera, mBlock[i]->mTransform);
 	}
 }
 
@@ -154,16 +161,16 @@ void Map::Finalize()
 	//mapJson書き込み
 	std::ofstream file(pathToJSON.c_str());
 	nlohmann::json data;
-	data["TerrainCount"] = mTerrainModel.size();
-	for (uint32_t i = 0; i < mTerrainModel.size(); ++i) {
+	data["TerrainCount"] = mBlock.size();
+	for (uint32_t i = 0; i < mBlock.size(); ++i) {
 		nlohmann::json& terrainData = data[std::format("Terrain{}", i)]; //これあとで理解
-		terrainData["Position"].push_back(mTerrainTransform[i].translate.x);
-		terrainData["Position"].push_back(mTerrainTransform[i].translate.y);
-		terrainData["Position"].push_back(mTerrainTransform[i].translate.z);
-		terrainData["Scale"].push_back(mTerrainTransform[i].scale.x);
-		terrainData["Scale"].push_back(mTerrainTransform[i].scale.y);
-		terrainData["Scale"].push_back(mTerrainTransform[i].scale.z);
-		terrainData["ModelIndex"]=(mTerrainModel[i]->GetModelIndex());
+		terrainData["Position"].push_back(mBlock[i]->mTransform.translate.x);
+		terrainData["Position"].push_back(mBlock[i]->mTransform.translate.y);
+		terrainData["Position"].push_back(mBlock[i]->mTransform.translate.z);
+		terrainData["Scale"].push_back(mBlock[i]->mTransform.scale.x);
+		terrainData["Scale"].push_back(mBlock[i]->mTransform.scale.y);
+		terrainData["Scale"].push_back(mBlock[i]->mTransform.scale.z);
+		terrainData["ModelIndex"]=(mBlock[i]->mModel->GetModelIndex());
 	}
 	file << data.dump(4) << std::endl;
 
