@@ -132,8 +132,8 @@ void Player::Update(Input* input, float theta)
 	}
 
 	ImGui::Begin("Debug");
-	ImGui::DragFloat3("player Position", &mTransform.translate.x, 0.01f, 0.0f, 10.0f);
-	ImGui::DragFloat3("player Rotation", &mTransform.rotate.x, 0.01f, 0.0f, 10.0f);
+	ImGui::DragFloat3("player Position", &mTransform.translate.x, 0.01f);
+	ImGui::DragFloat3("player Rotation", &mTransform.rotate.x, 0.01f);
 	ImGui::End();
 }
 

@@ -21,6 +21,7 @@
 #include "Game/BirdEyeCamera.h"
 #include "Game/PlayerCamera.h"
 #include "Game/Skydome.h"
+#include "Game/Ladder.h"
 #include "Engine/Light/LightList.h"
 	
 class DirectXCommon;
@@ -54,6 +55,9 @@ private:
 	std::unique_ptr<Crosshair> mCrosshair;
 	std::unique_ptr<ParticleList> mParticle;
 	std::unique_ptr<Skydome> mSkydome; //天球
+	//はしご
+	const int mLADDER_MAX = 1;
+	std::vector<std::unique_ptr<Ladder>> mLadders; 
 	
 	/// <summary>
 	/// 敵
@@ -106,6 +110,7 @@ private:
 	bool mSwitchIsHit = false; //UI(Aボタン)を出すために使う
 	bool mIsClear = false;
 	bool mIsGameover = false;
+	bool mLadderIsHit = false; //はしごに当たっているか
 
 	/// <summary>
 	/// UI

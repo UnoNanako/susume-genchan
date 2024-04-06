@@ -126,14 +126,14 @@ void Map::Update()
 		newTransform.rotate.x = 0.0f;
 		newTransform.rotate.y = 0.0f;
 		newTransform.rotate.z = 0.0f;
-		//mTerrainTransform.emplace_back(newTransform);
+	
 		AABB newAABB;
 		newAABB = CalcurateAABB(newTransform.translate, newTransform.scale);
-		//mTerrainAABB.emplace_back(newAABB);
 	}
 	int i = 0;
 	for (auto iter = mBlock.begin(); iter != mBlock.end();) {
 		ImGui::DragFloat3(std::format("terrainTransform{}", i).c_str(), &(*iter)->mTransform.translate.x, 0.01f);
+		ImGui::DragFloat3(std::format("terrainScale{}", i).c_str(), &(*iter)->mTransform.scale.x, 0.01f);
 		if (ImGui::Button(std::format("Erase##{}",i).c_str())) {
 			iter = mBlock.erase(iter);
 		}
@@ -141,6 +141,7 @@ void Map::Update()
 			++iter;
 		}
 		++i;
+		ImGui::Separator();
 	}
 	ImGui::DragFloat3("floorScale", &mBlock[0]->mTransform.scale.x, 0.01f);
 	ImGui::End();

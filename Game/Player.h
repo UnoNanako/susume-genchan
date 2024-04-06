@@ -33,6 +33,7 @@ public:
 	//親となるトランスフォームをセット
 	void SetParent(Transform* parent) { mTransform.mParent = parent; }
 	void SetVelocityY(float y) { mVelocity.y = y; }
+	void SetGravity(float gravity) { mGravity = gravity; }
 
 private:
 	Vector3 mVelocity;
