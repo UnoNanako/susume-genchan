@@ -17,6 +17,8 @@ public:
 	/// アクセッサ
 	/// </summary>
 	AABB GetAABB() { return mAABB; }
+	void SetModel(Model* model) { mModel = model; }
+	void SetTexture(Texture* texture) { mTexture = texture; }
 private:
 	AABB mAABB;
 };

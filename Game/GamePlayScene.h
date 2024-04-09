@@ -58,6 +58,9 @@ private:
 	//はしご
 	const int mLADDER_MAX = 1;
 	std::vector<std::unique_ptr<Ladder>> mLadders; 
+	//はしご用のモデル、テクスチャ
+	Model* mLadderModel0; //スタート地点から1番近いはしご
+	Model* mLadderModel1; //離島に渡る直前のはしご
 	
 	/// <summary>
 	/// 敵
