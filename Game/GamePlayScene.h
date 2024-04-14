@@ -22,6 +22,7 @@
 #include "Game/PlayerCamera.h"
 #include "Game/Skydome.h"
 #include "Game/Ladder.h"
+#include "Game/Wall.h"
 #include "Engine/Light/LightList.h"
 	
 class DirectXCommon;
@@ -61,7 +62,16 @@ private:
 	//はしご用のモデル、テクスチャ
 	Model* mLadderModel0; //スタート地点から1番近いはしご
 	Model* mLadderModel1; //離島に渡る直前のはしご
-	
+
+	//壁
+	const int mWALL_MAX = 2;
+	std::vector<std::unique_ptr<Wall>> mWalls;
+	//壁のテクスチャ
+	Texture* mWallTexture;
+	//壁のモデル
+	Model* mWallModel0; //リス地の後ろの壁
+	Model* mWallModel1; //リス地正面の壁
+
 	/// <summary>
 	/// 敵
 	/// </summary>

@@ -27,6 +27,7 @@
 #include "Particle/ParticleCommon.h"
 #include "externals/imgui/imgui.h"
 #include "Block.h"
+#include "Engine//3D/Model.h"
 
 GamePlayScene::GamePlayScene(Game* game)
 {
@@ -67,6 +68,24 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	//パーティクル
 	mParticle = std::make_unique<ParticleList>();
 	mParticle->Create(dxCommon);
+
+	//壁
+	mWalls.resize(mWALL_MAX);
+	for (uint32_t i = 0; i < mWalls.size(); ++i) {
+		mWalls[i] = std::make_unique<Wall>();
+		mWalls[i]->Initialize(dxCommon);
+	}
+	//mWallTexture = new Texture();
+	//mWallTexture->Create(dxCommon, "resources/Model/Blocks/Grass/Blocks_PixelArt.png");
+	mWallModel0 = new Model();
+	mWallModel0->Create(dxCommon, "resources/Model/Wall", "wall01.obj");
+	mWallModel1 = new Model();
+	mWallModel1->Create(dxCommon, "resources/Model/Wall", "wall02.obj");
+	//mWallModel0->SetTexture(mWallTexture);
+	mWalls[0]->SetModel(mWallModel0);
+	mWalls[0]->SetTranslate({ -15.0f,3.0f,-27.5f });
+	mWalls[1]->SetModel(mWallModel1);
+	mWalls[1]->SetTranslate({ -30.0f,3.0f,-7.5f });
 
 	//草
 	mGrasses.resize(mGRASS_MAX);
@@ -221,6 +240,9 @@ void GamePlayScene::Update(Input* input)
 	}
 	for (uint32_t i = 0; i < mGrasses.size(); ++i) {
 		mGrasses[i]->Update();
+	}
+	for (uint32_t i = 0; i < mWalls.size(); ++i) {
+		mWalls[i]->Update();
 	}
 	mStar->Update();
 	mSlideFloor->Update();
@@ -490,6 +512,10 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 
 	for (uint32_t i = 0; i < mGrasses.size(); ++i) {
 		mGrasses[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
+	}
+
+	for (uint32_t i = 0; i < mWalls.size(); ++i) {
+		mWalls[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	}
 	mStar->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mSlideFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
