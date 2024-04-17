@@ -23,11 +23,11 @@ void Ghost::Initialize(DirectXCommon* dxCommon)
 		{0.0f,0.0f,0.0f}, //rotate
 		{0.0f,0.0f,0.0f} //transfrom
 	};
-	mTexture = new Texture();
-	mTexture->Create(mDxCommon, "resources/uvChecker.png");
+	/*mTexture = new Texture();
+	mTexture->Create(mDxCommon, "resources/uvChecker.png");*/
 	mModel = new Model();
-	mModel->Create(mDxCommon, "resources/Model/Floor", "floor.obj");
-	mModel->SetTexture(mTexture);
+	mModel->Create(mDxCommon, "resources/Model/Enemies/Ghost", "ghost.obj");
+	//mModel->SetTexture(mTexture);
 }
 
 void Ghost::Update()
@@ -38,7 +38,6 @@ void Ghost::Update()
 
 void Ghost::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
 {
-	mTexture->Bind(commandList);
 	mModel->Draw(commandList, camera, mTransform);
 }
 
@@ -47,11 +46,11 @@ bool Ghost::DetectPlayer(Player* player)
 {
 	//プレイヤーの位置を取得
 	Vector3 position = mTransform.translate;
-	Vector3 playerPosition = player->GetTranslate();
+	Vector3 playerPosition = player->GetWorldPosition();
 	//敵からプレイヤーへのベクトルを計算する(正規化も)
 	Vector3 toPlayer = playerPosition - position;
-	toPlayer.Normalize();
 	toPlayer.y = 0.0f;
+	toPlayer.Normalize();
 	//敵の前方を表すベクトルを計算する
 	//敵の向きはY軸回りに回転していると考え、Z軸が正面を向いていると仮定して回転行列を使って計算
 	Vector3 forwardDirection = Multiply(Vector3(0.0f, 0.0f, 1.0f), MakeRotateYMatrix(mTransform.rotate.y)); //仮にZ軸が正面を向いていると仮定
@@ -71,9 +70,10 @@ bool Ghost::DetectPlayer(Player* player)
 void Ghost::TrackPlayer(Player* player)
 {
 	//プレイヤーの位置を取得
-	Vector3 playerPosition = player->GetTranslate();
+	Vector3 playerPosition = player->GetWorldPosition();
 	//敵からプレイヤーへのベクトルを計算する
 	Vector3 toPlayer = playerPosition - mTransform.translate;
+	toPlayer.y = 0.0f;
 	toPlayer.Normalize();
 	//ゴーストの前方を表すベクトルを計算
 	Vector3 forwardDirection = Multiply(Vector3(0.0f, 0.0f, 1.0f), MakeRotateYMatrix(mTransform.rotate.y));

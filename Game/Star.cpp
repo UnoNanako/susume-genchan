@@ -3,6 +3,7 @@
 #include "3D/Model.h"
 #include "2D/Texture.h"
 #include "VertexData.h"
+#include "externals/imgui/imgui.h"
 
 void Star::Initialize(DirectXCommon* dxCommon)
 {
@@ -20,6 +21,9 @@ void Star::Update()
 {
 	mTransform.rotate.y += 0.05f;
 	mAABB = CalcurateAABB(mTransform.translate);
+	ImGui::Begin("Debug");
+	ImGui::DragFloat3("Star", &mTransform.translate.x, 0.01f);
+	ImGui::End();
 	mTransform.UpdateMatrix();
 }
 

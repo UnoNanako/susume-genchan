@@ -21,6 +21,8 @@
 #include "Game/BirdEyeCamera.h"
 #include "Game/PlayerCamera.h"
 #include "Game/Skydome.h"
+#include "Game/Ladder.h"
+#include "Game/Wall.h"
 #include "Engine/Light/LightList.h"
 	
 class DirectXCommon;
@@ -54,7 +56,22 @@ private:
 	std::unique_ptr<Crosshair> mCrosshair;
 	std::unique_ptr<ParticleList> mParticle;
 	std::unique_ptr<Skydome> mSkydome; //天球
-	
+	//はしご
+	const int mLADDER_MAX = 1;
+	std::vector<std::unique_ptr<Ladder>> mLadders; 
+	//はしご用のモデル、テクスチャ
+	Model* mLadderModel0; //スタート地点から1番近いはしご
+	Model* mLadderModel1; //離島に渡る直前のはしご
+
+	//壁
+	const int mWALL_MAX = 2;
+	std::vector<std::unique_ptr<Wall>> mWalls;
+	//壁のテクスチャ
+	Texture* mWallTexture;
+	//壁のモデル
+	Model* mWallModel0; //リス地の後ろの壁
+	Model* mWallModel1; //リス地正面の壁
+
 	/// <summary>
 	/// 敵
 	/// </summary>
@@ -106,6 +123,7 @@ private:
 	bool mSwitchIsHit = false; //UI(Aボタン)を出すために使う
 	bool mIsClear = false;
 	bool mIsGameover = false;
+	bool mLadderIsHit = false; //はしごに当たっているか
 
 	/// <summary>
 	/// UI

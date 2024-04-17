@@ -11,7 +11,7 @@ void UpFloor::Initialize(DirectXCommon* dxCommon)
 	mTransform = {
 		{1.0f,1.0f,1.0f},
 		{0.0f,0.0f,0.0f},
-		{7.5f,0.0f,-17.5f,}
+		{7.5f,-3.5f,-17.5f,}
 	};
 	mModel = new Model();
 	mModel->Create(mDxCommon, "resources/Model/Floor/Up", "updownFloor.obj");
@@ -32,7 +32,7 @@ void UpFloor::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
 void UpFloor::Move()
 {
 	mTransform.translate.y += mSpeed;
-	if (mTransform.translate.y >= 10.5f) {
+	if (mTransform.translate.y >= 7.5f) {
 		mSpeed = 0.0f;
 		mIsMove = false;
 	}
@@ -44,12 +44,12 @@ AABB UpFloor::CalcurateAABB(const Vector3& translate)
 	AABB ret;
 	ret.min = {
 		{translate.x - (5.0f / 2.0f)},
-		{translate.y - (5.0f / 2.0f)},
+		{translate.y - (10.0f / 2.0f)},
 		{translate.z - (10.0f / 2.0f)}
 	};
 	ret.max = {
 		{translate.x + (5.0f / 2.0f)},
-		{translate.y + (5.0f / 2.0f)},
+		{translate.y + (10.0f / 2.0f)},
 		{translate.z + (10.0f / 2.0f)}
 	};
 	return ret;

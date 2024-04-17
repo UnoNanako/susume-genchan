@@ -26,6 +26,8 @@
 #include "Game/RotateEnemy.h"
 #include "Particle/ParticleCommon.h"
 #include "externals/imgui/imgui.h"
+#include "Block.h"
+#include "Engine//3D/Model.h"
 
 GamePlayScene::GamePlayScene(Game* game)
 {
@@ -66,6 +68,24 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	//パーティクル
 	mParticle = std::make_unique<ParticleList>();
 	mParticle->Create(dxCommon);
+
+	//壁
+	mWalls.resize(mWALL_MAX);
+	for (uint32_t i = 0; i < mWalls.size(); ++i) {
+		mWalls[i] = std::make_unique<Wall>();
+		mWalls[i]->Initialize(dxCommon);
+	}
+	//mWallTexture = new Texture();
+	//mWallTexture->Create(dxCommon, "resources/Model/Blocks/Grass/Blocks_PixelArt.png");
+	mWallModel0 = new Model();
+	mWallModel0->Create(dxCommon, "resources/Model/Wall", "wall01.obj");
+	mWallModel1 = new Model();
+	mWallModel1->Create(dxCommon, "resources/Model/Wall", "wall02.obj");
+	//mWallModel0->SetTexture(mWallTexture);
+	mWalls[0]->SetModel(mWallModel0);
+	mWalls[0]->SetTranslate({ -15.0f,3.0f,-27.5f });
+	mWalls[1]->SetModel(mWallModel1);
+	mWalls[1]->SetTranslate({ -30.0f,3.0f,-7.5f });
 
 	//草
 	mGrasses.resize(mGRASS_MAX);
@@ -111,7 +131,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	//スター
 	mStar = std::make_unique<Star>();
 	mStar->Initialize(dxCommon);
-	mStar->SetTranslate({ 17.5f,5.0f,80.0f });
+	mStar->SetTranslate({ -5.0f,30.0f,85.0f });
 
 	//movingFloor(スイッチを押すとスライドし始める床)
 	mSlideFloor = std::make_unique<SlideFloor>();
@@ -137,6 +157,15 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	//クランクを回すと回る床
 	mRotateFloor = std::make_unique<RotateFloor>();
 	mRotateFloor->Initialize(dxCommon);
+
+	//はしご
+	mLadders.resize(mLADDER_MAX);
+	for (uint32_t i = 0; i < mLadders.size(); ++i) {
+		mLadders[i] = std::make_unique<Ladder>();
+		mLadders[i]->Initialize(dxCommon);
+	}
+	mLadders[0]->SetScale({ 0.5f,0.5f,0.5f });
+	mLadders[0]->SetTranslate({ -3.0f,13.0f,87.5f });
 
 	//Aボタン
 	mAbuttonSprite = std::make_unique<Sprite>();
@@ -164,6 +193,9 @@ void GamePlayScene::Update(Input* input)
 	//DirectionalLightのintensity切り替え
 	ImGui::Checkbox("isDirectionalLight", &mIsDirectionalLight);
 	ImGui::Checkbox("isPlayerCamera", &mIsPlayerCamera);
+	Vector3 pos = mLadders[0]->GetTranslate();
+	ImGui::DragFloat3("ladderPos", &pos.x);
+	mLadders[0]->SetTranslate(pos);
 	ImGui::End();
 
 	mAbuttonSprite->Update();
@@ -209,6 +241,9 @@ void GamePlayScene::Update(Input* input)
 	for (uint32_t i = 0; i < mGrasses.size(); ++i) {
 		mGrasses[i]->Update();
 	}
+	for (uint32_t i = 0; i < mWalls.size(); ++i) {
+		mWalls[i]->Update();
+	}
 	mStar->Update();
 	mSlideFloor->Update();
 	mSlideSwitch->Update();
@@ -217,12 +252,15 @@ void GamePlayScene::Update(Input* input)
 	mCrank->Update(input);
 	mRotateFloor->Update();
 	mRotateFloor->SetRotate(mCrank->GetRotate());
+	for (uint32_t i = 0; i < mLadders.size(); ++i) {
+		mLadders[i]->Update();
+	}
 
 	CollisionResult collisionResult;
 	//壁,床とプレイヤーの当たり判定
 	mPlayer->SetIsHit(false);
-	for (uint32_t i = 0; i < mMap->GetTerrainModel().size(); ++i) {
-		if (IsCollision(mPlayer->GetAABB(), mMap->GetTerrainAABB()[i], collisionResult)) {
+	for (uint32_t i = 0; i < mMap->GetBlock().size(); ++i) {
+		if (IsCollision(mPlayer->GetAABB(), mMap->GetBlock()[i]->mAABB, collisionResult)) {
 			mPlayer->SetIsHit(true);
 			Vector3 pos = mPlayer->GetTranslate();
 			pos.x += collisionResult.normal.x * collisionResult.depth;
@@ -242,9 +280,9 @@ void GamePlayScene::Update(Input* input)
 	}
 
 	//壁とrotateEnemyの当たり判定
-	for (uint32_t i = 0; i < mMap->GetTerrainModel().size(); ++i) {
+	for (uint32_t i = 0; i < mMap->GetBlock().size(); ++i) {
 		for (uint32_t j = 0; j < mRotateEnemies.size(); ++j) {
-			if (IsCollision(mRotateEnemies[j]->GetAABB(), mMap->GetTerrainAABB()[i], collisionResult)) {
+			if (IsCollision(mRotateEnemies[j]->GetAABB(), mMap->GetBlock()[i]->mAABB, collisionResult)) {
 				Vector3 pos = mRotateEnemies[j]->GetTranslate();
 				pos.x += collisionResult.normal.x * collisionResult.depth;
 				pos.z += collisionResult.normal.z * collisionResult.depth;
@@ -356,7 +394,7 @@ void GamePlayScene::Update(Input* input)
 		pos.x += collisionResult.normal.x * collisionResult.depth / 2;
 		pos.y += collisionResult.normal.y * collisionResult.depth / 2;
 		pos.z += collisionResult.normal.z * collisionResult.depth / 2;
-		mPlayer->SetTranslate(pos);
+		//mPlayer->SetTranslate(pos);
 		//mPlayer->CalcurateAABB(mPlayer->GetTranslate());
 		if (input->GetButton(XINPUT_GAMEPAD_A)) {
 			ImGui::Begin("Debug");
@@ -394,6 +432,41 @@ void GamePlayScene::Update(Input* input)
 		mPlayer->SetTranslate(pos);
 	}
 
+	//プレイヤーとはしごの当たり判定
+	for (uint32_t i = 0; i < mLadders.size(); ++i) {
+		if (IsCollision(mPlayer->GetAABB(), mLadders[i]->GetAABB(), collisionResult)) {
+			mLadderIsHit = true;
+			Vector3 pos = mPlayer->GetTranslate();
+			pos.x += collisionResult.normal.x * collisionResult.depth / 2;
+			pos.y += collisionResult.normal.y * collisionResult.depth / 2;
+			pos.z += collisionResult.normal.z * collisionResult.depth / 2;
+			mPlayer->SetTranslate(pos);
+		}
+		else {
+			mLadderIsHit = false;
+		}
+	}
+	//プレイヤーとはしごが当たっているとき
+	if (mLadderIsHit == true) {
+		//はしごの向き(ベクトル)
+		Vector3 ladderVec = { -1.0f,0.0f,0.0f };
+		//プレイヤーの向き
+		Vector3 forwardVec = Multiply(Vector3(0.0f, 0.0f, 1.0f), MakeRotateYMatrix(mPlayer->GetRotate().y));
+		//内積を計算
+		float dotProduct = Dot(forwardVec, ladderVec);
+		if (dotProduct >= 0.9f && input->PushKey(DIK_W)) {
+			mPlayer->SetTranslate(
+				{ mLadders[0]->GetTranslate().x + 1.5f,
+				mPlayer->GetTranslate().y,
+				mLadders[0]->GetTranslate().z }
+			);
+			mPlayer->SetGravity(0.0f);
+			Vector3 pos = mPlayer->GetTranslate();
+			pos.y += 0.2f;
+			mPlayer->SetTranslate(pos);
+		}
+	}
+
 	//プレイヤーの行列を更新
 	mPlayer->GetTransform().UpdateMatrix();
 }
@@ -402,6 +475,7 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 {
 	mGame->GetModelCommon()->Bind(dxCommon);
 	mLightList->Bind(dxCommon->GetCommandList());
+	//----------モデルここから----------
 	if (mIsPlayerCamera == true) {
 		mPlayerCamera->Bind(dxCommon->GetCommandList());
 		mPlayerCamera->SetTransform(mPlayer->GetTransform());
@@ -439,6 +513,10 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 	for (uint32_t i = 0; i < mGrasses.size(); ++i) {
 		mGrasses[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	}
+
+	for (uint32_t i = 0; i < mWalls.size(); ++i) {
+		mWalls[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
+	}
 	mStar->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mSlideFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mSlideSwitch->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
@@ -447,10 +525,16 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 	mCrank->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mRotateFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mSkydome->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
+	for (uint32_t i = 0; i < mLadders.size(); ++i) {
+		mLadders[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
+	}
+	//----------モデルここまで----------
+
 	mGame->GetParticleCommon()->Bind(dxCommon);
 	//mParticle->Draw(dxCommon->GetCommandList(), camera, { 0.0f,0.0f,0.0f });
 	mGame->GetModelCommon()->Bind(dxCommon);
 	mCrosshair->Draw(dxCommon->GetCommandList());
+	
 	if (mSwitchIsHit == true) {
 		mAbuttonSprite->Draw(dxCommon->GetCommandList());
 	}

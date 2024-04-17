@@ -18,7 +18,7 @@ void Crank::Initialize(DirectXCommon* dxCommon)
 	mDxCommon = dxCommon;
 	mTransform = {
 		{1.0f,1.0f,1.0f},
-		{0.0f,0.0f,0.0f},
+		{0.0f,kPi/2.0f,0.0f},
 		{0.0f,8.0f,12.5f}
 	};
 	mFoundationTransform = {
