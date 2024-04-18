@@ -81,11 +81,15 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	mWallModel0->Create(dxCommon, "resources/Model/Wall", "wall01.obj");
 	mWallModel1 = new Model();
 	mWallModel1->Create(dxCommon, "resources/Model/Wall", "wall02.obj");
+	mWallModel2 = new Model();
+	mWallModel2->Create(dxCommon, "resources/Model/Wall", "wall03.obj");
 	//mWallModel0->SetTexture(mWallTexture);
 	mWalls[0]->SetModel(mWallModel0);
 	mWalls[0]->SetTranslate({ -15.0f,3.0f,-27.5f });
 	mWalls[1]->SetModel(mWallModel1);
 	mWalls[1]->SetTranslate({ -30.0f,3.0f,-7.5f });
+	mWalls[2]->SetModel(mWallModel2);
+	mWalls[2]->SetTranslate({ -30.0f,5.0f,15.0f });
 
 	//草
 	mGrasses.resize(mGRASS_MAX);
