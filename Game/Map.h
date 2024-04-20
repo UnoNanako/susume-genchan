@@ -17,6 +17,13 @@ const std::string pathToAABBJSON("./resources/Json/mapAABB.json");
 class Map : public GameObject
 {
 public:
+	//モデル、テクスチャの種類を管理するenum(マップチップのアレ)
+	enum ModelIndex : unsigned int {
+		FLOOR, //0
+		GRASS  //1
+	};
+
+
 	void Create(DirectXCommon* dxCommon);
 	void Update();
 	void Draw(ID3D12GraphicsCommandList* commandList,Camera* camera);
@@ -40,11 +47,5 @@ private:
 	std::vector<Model*> mInvisibleAABBModel; //見えない壁のvector
 	std::vector<Transform> mInvisibleAABBTransform;
 	std::vector<AABB> mInvisibleAABB; 
-
-	//モデル、テクスチャの種類を管理するenum(マップチップのアレ)
-	enum ModelIndex : unsigned int {
-		FLOOR, //0
-		GRASS  //1
-	};
 };
 

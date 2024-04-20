@@ -5,7 +5,7 @@
 #include "VertexData.h"
 #include "2D/Texture.h"
 #include "Math/MyMath.h"
-#include "externals/imgui/imgui.h"
+#include "Engine/ImGuiManager.h"
 #include "Block.h"
 #include <format>
 
@@ -32,6 +32,7 @@ void Map::Create(DirectXCommon* dxCommon)
 			ModelIndex modelIndex = terrainData["ModelIndex"].get<ModelIndex>();
 
 			Block* block = new Block();
+			block->mName = terrainData["Name"].get<std::string>();
 
 			//特定の番号に対応するモデルとテクスチャを設定する
 			switch (modelIndex) {
@@ -39,9 +40,7 @@ void Map::Create(DirectXCommon* dxCommon)
 				//床のモデルを読み込む
 				block->mModel = new Model();
 				block->mModel->SetModelIndex(0);
-				block->mModel->Create(mDxCommon, "resources/Model/Blocks/Grass", "grass.obj");
-				block->mModel->SetTexture(mTerrainTexture);
-				mBlock.emplace_back(block);
+				block->mModel->Create(mDxCommon, "resources/Model/Floor/Floor", "floor.obj");
 				break;
 
 			case GRASS:
@@ -50,7 +49,6 @@ void Map::Create(DirectXCommon* dxCommon)
 				block->mModel->SetModelIndex(1);
 				block->mModel->Create(mDxCommon, "resources/Model/Blocks/Grass", "grass.obj");
 				block->mModel->SetTexture(mTerrainTexture);
-				mBlock.emplace_back(block);
 				break;
 			}
 
@@ -71,43 +69,15 @@ void Map::Create(DirectXCommon* dxCommon)
 			block->mTransform.rotate.x = 0.0f;
 			block->mTransform.rotate.y = 0.0f;
 			block->mTransform.rotate.z = 0.0f;
-
-			block->mAABB = CalcurateAABB(block->mTransform.translate, block->mTransform.scale);
+			block->mAABB.max.x = terrainData["Max"][0].get<float>();
+			block->mAABB.max.y = terrainData["Max"][1].get<float>();
+			block->mAABB.max.z = terrainData["Max"][2].get<float>();
+			block->mAABB.min.x = terrainData["Min"][0].get<float>();
+			block->mAABB.min.y = terrainData["Min"][1].get<float>();
+			block->mAABB.min.z = terrainData["Min"][2].get<float>();
+			mBlock.emplace_back(block);
 		}
 	}
-	//AABBjsonファイル読み込み
-	//読み込むファイルの名前を作成
-	//std::ifstream ifstream(pathToAABBJSON.c_str());
-	//if (ifstream.good()) {
-	//	nlohmann::json aabbJson;
-	//	ifstream >> aabbJson;
-	//	int invisibleModelCount = aabbJson["invisibleModelCount"].get<int>();
-	//	//読み込んだデータをそれぞれの変数に代入する
-	//	for (uint32_t i = 0; i < invisibleModelCount; ++i) {
-	//		Model* newModel;
-	//		newModel = new Model();
-	//		newModel->Create(mDxCommon, "resources", "floor.obj");
-	//		mInvisibleAABBModel.emplace_back(newModel);
-
-	//		Transform newTransform;
-
-	//		nlohmann::json& invisibleData = aabbJson[std::format("invisible{}", i)];
-	//		newTransform.translate.x = invisibleData["Position"][0].get<float>();
-	//		newTransform.translate.y = invisibleData["Position"][1].get<float>();
-	//		newTransform.translate.z = invisibleData["Position"][2].get<float>();
-	//		newTransform.scale.x = invisibleData["Scale"][0].get<float>();
-	//		newTransform.scale.y = invisibleData["Scale"][1].get<float>();
-	//		newTransform.scale.z = invisibleData["Scale"][2].get<float>();
-	//		newTransform.rotate.x = 0.0f;
-	//		newTransform.rotate.y = 0.0f;
-	//		newTransform.rotate.z = 0.0f;
-	//		mInvisibleAABBTransform.emplace_back(newTransform);
-
-	//		AABB newAABB;
-	//		newAABB = CalcurateAABB(newTransform.translate, newTransform.scale);
-	//		mInvisibleAABB.emplace_back(newAABB);
-	//	}
-	//}
 }
 
 void Map::Update()
@@ -132,8 +102,29 @@ void Map::Update()
 	}
 	int i = 0;
 	for (auto iter = mBlock.begin(); iter != mBlock.end();) {
+		ImGui::InputText(std::format("Name##{}",i).c_str(), &(*iter)->mName);
 		ImGui::DragFloat3(std::format("terrainTransform{}", i).c_str(), &(*iter)->mTransform.translate.x, 0.01f);
 		ImGui::DragFloat3(std::format("terrainScale{}", i).c_str(), &(*iter)->mTransform.scale.x, 0.01f);
+		ImGui::DragFloat3(std::format("max##{}", i).c_str(), &(*iter)->mAABB.max.x);
+		ImGui::DragFloat3(std::format("min##{}", i).c_str(), &(*iter)->mAABB.min.x);
+		if (Combo(std::format("ModelIndex##{}", i).c_str(), (*iter)->mModelIndex)) {
+			switch ((*iter)->mModelIndex) {
+			case FLOOR:
+				//床のモデルを読み込む
+				(*iter)->mModel = new Model();
+				(*iter)->mModel->SetModelIndex(0);
+				(*iter)->mModel->Create(mDxCommon, "resources/Model/Floor/Floor", "floor.obj");
+				break;
+
+			case GRASS:
+				//草のモデルを読み込む
+				(*iter)->mModel = new Model();
+				(*iter)->mModel->SetModelIndex(1);
+				(*iter)->mModel->Create(mDxCommon, "resources/Model/Blocks/Grass", "grass.obj");
+				(*iter)->mModel->SetTexture(mTerrainTexture);
+				break;
+			}
+		}
 		if (ImGui::Button(std::format("Erase##{}",i).c_str())) {
 			iter = mBlock.erase(iter);
 		}
@@ -171,24 +162,16 @@ void Map::Finalize()
 		terrainData["Scale"].push_back(mBlock[i]->mTransform.scale.x);
 		terrainData["Scale"].push_back(mBlock[i]->mTransform.scale.y);
 		terrainData["Scale"].push_back(mBlock[i]->mTransform.scale.z);
-		terrainData["ModelIndex"]=(mBlock[i]->mModel->GetModelIndex());
+		terrainData["ModelIndex"] = mBlock[i]->mModel->GetModelIndex();
+		terrainData["Name"] = mBlock[i]->mName;
+		terrainData["Min"].push_back(mBlock[i]->mAABB.min.x);
+		terrainData["Min"].push_back(mBlock[i]->mAABB.min.y);
+		terrainData["Min"].push_back(mBlock[i]->mAABB.min.z);
+		terrainData["Max"].push_back(mBlock[i]->mAABB.max.x);
+		terrainData["Max"].push_back(mBlock[i]->mAABB.max.y);
+		terrainData["Max"].push_back(mBlock[i]->mAABB.max.z);
 	}
 	file << data.dump(4) << std::endl;
-
-	//aabbJson書き込み
-	/*std::ofstream aabbFile(pathToAABBJSON.c_str());
-	nlohmann::json aabbData;
-	aabbData["invisibleModelCount"] = mInvisibleAABBModel.size();
-	for (uint32_t i = 0; i < mInvisibleAABBModel.size(); ++i) {
-		nlohmann::json& data = aabbData[std::format("invisible{}", i)];
-		data["Position"].push_back(mInvisibleAABBTransform[i].translate.x);
-		data["Position"].push_back(mInvisibleAABBTransform[i].translate.y);
-		data["Position"].push_back(mInvisibleAABBTransform[i].translate.z);
-		data["Scale"].push_back(mInvisibleAABBTransform[i].scale.x);
-		data["Scale"].push_back(mInvisibleAABBTransform[i].scale.y);
-		data["Scale"].push_back(mInvisibleAABBTransform[i].scale.z);
-	}
-	aabbFile << aabbData.dump(4) << std::endl;*/
 }
 
 AABB Map::CalcurateAABB(const Vector3& translate, const Vector3& scale)
