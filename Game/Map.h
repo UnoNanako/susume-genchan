@@ -37,9 +37,6 @@ public:
 private:
 	//地形
 	Texture* mTerrainTexture;
-	//std::vector<Model*> mTerrainModel; //壁や床など
-	//std::vector<Transform> mTerrainTransform;
-	//std::vector<AABB> mTerrainAABB;
 
 	std::vector<Block*> mBlock;
 
