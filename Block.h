@@ -12,4 +12,10 @@ struct Block {
 	AABB mAABB;
 	std::string mName;
 	Map::ModelIndex mModelIndex;
+	AABB GetWorldAABB() {
+		AABB ret;
+		ret.max = mAABB.max + mTransform.translate;
+		ret.min = mAABB.min + mTransform.translate;
+		return ret;
+	}
 };

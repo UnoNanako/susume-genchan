@@ -23,7 +23,6 @@ public:
 		GRASS  //1
 	};
 
-
 	void Create(DirectXCommon* dxCommon);
 	void Update();
 	void Draw(ID3D12GraphicsCommandList* commandList,Camera* camera);
