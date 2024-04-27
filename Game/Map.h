@@ -20,7 +20,8 @@ public:
 	//モデル、テクスチャの種類を管理するenum(マップチップのアレ)
 	enum ModelIndex : unsigned int {
 		FLOOR, //0
-		GRASS  //1
+		GRASS, //1
+		Wall, //2
 	};
 
 	void Create(DirectXCommon* dxCommon);
