@@ -108,7 +108,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 		mGems[i] = std::make_unique<Gem>();
 		mGems[i]->Initialize(dxCommon);
 	}
-	mGems[0]->SetTranslate({ 17.5f,10.0f,-15.0f });
+	mGems[0]->SetTranslate({ 22.5f,5.0f,-15.0f });
 
 	//スター
 	mStar = std::make_unique<Star>();
@@ -125,13 +125,13 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	mSlideSwitch->SetTransform({ {0.5f,0.5f,0.5f},{0.0f,0.0f,0.0f},{27.5f,2.5f,-20.0f} });
 
 	//UpFloor(スイッチを押すと上に動く床)
-	mUpFloor = std::make_unique<UpFloor>();
-	mUpFloor->Initialize(dxCommon);
+	//mUpFloor = std::make_unique<UpFloor>();
+	//mUpFloor->Initialize(dxCommon);
 	//スイッチ
-	mUpSwitch = std::make_unique<Switch>();
+	/*mUpSwitch = std::make_unique<Switch>();
 	mUpSwitch->SetMoveFloor(mUpFloor.get());
 	mUpSwitch->Initialize(dxCommon);
-	mUpSwitch->SetTransform({ { 0.5f,0.5f,0.5f},{0.0f,0.0f,0.0f},{7.5f,2.5f,-20.0f} });
+	mUpSwitch->SetTransform({ { 0.5f,0.5f,0.5f},{0.0f,0.0f,0.0f},{7.5f,2.5f,-20.0f} });*/
 
 	//クランク
 	mCrank = std::make_unique<Crank>();
@@ -227,8 +227,8 @@ void GamePlayScene::Update(Input* input)
 	mStar->Update();
 	mSlideFloor->Update();
 	mSlideSwitch->Update();
-	mUpFloor->Update();
-	mUpSwitch->Update();
+	//mUpFloor->Update();
+	//mUpSwitch->Update();
 	mCrank->Update(input);
 	mRotateFloor->Update();
 	mRotateFloor->SetRotate(mCrank->GetRotate());
@@ -338,55 +338,55 @@ void GamePlayScene::Update(Input* input)
 	}
 
 	//upFloorとプレイヤーの当たり判定
-	if (IsCollision(mPlayer->GetAABB(), mUpFloor->GetAABB(), collisionResult)) {
-		mPlayer->SetIsHit(true);
-		mUpFloorIsHit = true;
-		Vector3 pos = mPlayer->GetTranslate();
-		pos.x += collisionResult.normal.x * collisionResult.depth / 2;
-		pos.y += collisionResult.normal.y * collisionResult.depth / 2;
-		pos.z += collisionResult.normal.z * collisionResult.depth / 2;
-		mPlayer->SetTranslate(pos);
-		//mPlayer->SetVelocityY(0.0f);
-		//mPlayer->CalcurateAABB(mPlayer->GetTranslate());
-		if (mPlayer->GetParent() == nullptr) {
-			//プレイヤーとupFloorの親子関係を結ぶ
-			Matrix4x4 local = Multiply(mPlayer->GetWorldMatrix(), Inverse(mUpFloor->GetWorldMatrix()));
-			mPlayer->SetTranslate(Vector3{ local.m[3][0],local.m[3][1],local.m[3][2] });
-		}
-		auto& tmp = mUpFloor->GetTransform();
-		mPlayer->SetParent(&tmp);
-	}
-	else {
-		if (mUpFloorIsHit == true) {
-			mPlayer->SetParent(nullptr);
-			mUpFloorIsHit = false;
-			Matrix4x4 world = mPlayer->GetWorldMatrix();
-			mPlayer->SetTranslate(Vector3{ world.m[3][0],world.m[3][1],world.m[3][2] });
-		}
-	}
+	//if (IsCollision(mPlayer->GetAABB(), mUpFloor->GetAABB(), collisionResult)) {
+	//	mPlayer->SetIsHit(true);
+	//	mUpFloorIsHit = true;
+	//	Vector3 pos = mPlayer->GetTranslate();
+	//	pos.x += collisionResult.normal.x * collisionResult.depth / 2;
+	//	pos.y += collisionResult.normal.y * collisionResult.depth / 2;
+	//	pos.z += collisionResult.normal.z * collisionResult.depth / 2;
+	//	mPlayer->SetTranslate(pos);
+	//	//mPlayer->SetVelocityY(0.0f);
+	//	//mPlayer->CalcurateAABB(mPlayer->GetTranslate());
+	//	if (mPlayer->GetParent() == nullptr) {
+	//		//プレイヤーとupFloorの親子関係を結ぶ
+	//		Matrix4x4 local = Multiply(mPlayer->GetWorldMatrix(), Inverse(mUpFloor->GetWorldMatrix()));
+	//		mPlayer->SetTranslate(Vector3{ local.m[3][0],local.m[3][1],local.m[3][2] });
+	//	}
+	//	auto& tmp = mUpFloor->GetTransform();
+	//	mPlayer->SetParent(&tmp);
+	//}
+	//else {
+	//	if (mUpFloorIsHit == true) {
+	//		mPlayer->SetParent(nullptr);
+	//		mUpFloorIsHit = false;
+	//		Matrix4x4 world = mPlayer->GetWorldMatrix();
+	//		mPlayer->SetTranslate(Vector3{ world.m[3][0],world.m[3][1],world.m[3][2] });
+	//	}
+	//}
 
 	//upSwitchとプレイヤーの当たり判定
-	if (IsCollision(mPlayer->GetAABB(), mUpSwitch->GetAABB(), collisionResult)) {
-		mSwitchIsHit = true;
-		Vector3 pos = mPlayer->GetTranslate();
-		pos.x += collisionResult.normal.x * collisionResult.depth / 2;
-		pos.y += collisionResult.normal.y * collisionResult.depth / 2;
-		pos.z += collisionResult.normal.z * collisionResult.depth / 2;
-		//mPlayer->SetTranslate(pos);
-		//mPlayer->CalcurateAABB(mPlayer->GetTranslate());
-		if (input->GetButton(XINPUT_GAMEPAD_A)) {
-			ImGui::Begin("Debug");
-			ImGui::Text("push!!!");
-			ImGui::End();
-			mUpFloor->SetIsMove(true);
-		}
-	}
-	else {
-		mSwitchIsHit = false;
-	}
-	if (mUpFloor->GetIsMove() == true) {
-		mUpFloor->Move();
-	}
+	//if (IsCollision(mPlayer->GetAABB(), mUpSwitch->GetAABB(), collisionResult)) {
+	//	mSwitchIsHit = true;
+	//	Vector3 pos = mPlayer->GetTranslate();
+	//	pos.x += collisionResult.normal.x * collisionResult.depth / 2;
+	//	pos.y += collisionResult.normal.y * collisionResult.depth / 2;
+	//	pos.z += collisionResult.normal.z * collisionResult.depth / 2;
+	//	//mPlayer->SetTranslate(pos);
+	//	//mPlayer->CalcurateAABB(mPlayer->GetTranslate());
+	//	if (input->GetButton(XINPUT_GAMEPAD_A)) {
+	//		ImGui::Begin("Debug");
+	//		ImGui::Text("push!!!");
+	//		ImGui::End();
+	//		mUpFloor->SetIsMove(true);
+	//	}
+	//}
+	//else {
+	//	mSwitchIsHit = false;
+	//}
+	//if (mUpFloor->GetIsMove() == true) {
+	//	mUpFloor->Move();
+	//}
 
 	//クランクとプレイヤーの当たり判定
 	if (IsCollision(mPlayer->GetAABB(), mCrank->GetAABB(), collisionResult)) {
@@ -498,8 +498,8 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 	mStar->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mSlideFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mSlideSwitch->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
-	mUpFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
-	mUpSwitch->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
+	//mUpFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
+	//mUpSwitch->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mCrank->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mRotateFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mSkydome->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
