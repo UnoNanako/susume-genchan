@@ -2,6 +2,11 @@
 #include "2D/Sprite.h"
 #include "DirectXCommon.h"
 
+Crosshair::~Crosshair()
+{
+	delete mCrossSprite;
+}
+
 void Crosshair::Initialize(DirectXCommon* dxCommon)
 {
 	mCrossSprite = new Sprite();

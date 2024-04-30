@@ -11,7 +11,7 @@ void UpFloor::Initialize(DirectXCommon* dxCommon)
 	mTransform = {
 		{1.0f,1.0f,1.0f},
 		{0.0f,0.0f,0.0f},
-		{7.5f,-3.5f,-17.5f,}
+		{7.5f,-4.0f,-17.5f,}
 	};
 	mModel = new Model();
 	mModel->Create(mDxCommon, "resources/Model/Floor/Up", "updownFloor.obj");

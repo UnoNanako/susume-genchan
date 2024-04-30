@@ -260,7 +260,7 @@ void GamePlayScene::Update(Input* input)
 	//壁とrotateEnemyの当たり判定
 	for (uint32_t i = 0; i < mMap->GetBlock().size(); ++i) {
 		for (uint32_t j = 0; j < mRotateEnemies.size(); ++j) {
-			if (IsCollision(mRotateEnemies[j]->GetAABB(), mMap->GetBlock()[i]->mAABB, collisionResult)) {
+			if (IsCollision(mRotateEnemies[j]->GetAABB(), mMap->GetBlock()[i]->GetWorldAABB(), collisionResult)) {
 				Vector3 pos = mRotateEnemies[j]->GetTranslate();
 				pos.x += collisionResult.normal.x * collisionResult.depth;
 				pos.z += collisionResult.normal.z * collisionResult.depth;
@@ -269,7 +269,7 @@ void GamePlayScene::Update(Input* input)
 		}
 	}
 
-	//ghostとプレイヤーrの当たり判定
+	//ghostとプレイヤーの当たり判定
 	for (uint32_t i = 0; i < mGhosts.size(); ++i) {
 		if (IsCollision(mPlayer->GetAABB(), mGhosts[i]->GetAABB(), collisionResult)) {
 			mIsGameover = true;
@@ -520,6 +520,6 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 		mClearSprite->Draw(dxCommon->GetCommandList());
 	}
 	if (mIsGameover == true) {
-		mGameoverSprite->Draw(dxCommon->GetCommandList());
+		//mGameoverSprite->Draw(dxCommon->GetCommandList());
 	}
 }

@@ -12,6 +12,11 @@ struct Block {
 	AABB mAABB;
 	std::string mName;
 	Map::ModelIndex mModelIndex;
+	~Block() {
+		if (mModel) {
+			delete mModel;
+		}
+	}
 	AABB GetWorldAABB() {
 		AABB ret;
 		ret.max = mAABB.max + mTransform.translate;

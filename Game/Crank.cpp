@@ -11,6 +11,13 @@ Crank::Crank()
 {
 }
 
+Crank::~Crank()
+{
+	delete mTexture;
+	delete mModel;
+	delete mFoundationModel;
+}
+
 void Crank::Initialize(DirectXCommon* dxCommon)
 {
 	mCalculateAngle = 0.0f;

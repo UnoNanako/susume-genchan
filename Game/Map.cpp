@@ -26,7 +26,7 @@ void Map::Create(DirectXCommon* dxCommon)
 		//読み込んだデータをそれぞれの変数に代入する
 		for (uint32_t i = 0; i < terrainCount; ++i) {
 			nlohmann::json& terrainData = mJson[std::format("Terrain{}", i)]; //これあとで理解
-			Model* newModel;
+			//Model* newModel;
 
 			//モデルの番号を読み取る
 			ModelIndex modelIndex = terrainData["ModelIndex"].get<ModelIndex>();
@@ -89,9 +89,9 @@ void Map::Create(DirectXCommon* dxCommon)
 
 void Map::Update()
 {
-	Block* block = new Block();
 	ImGui::Begin("Map");
 	if (ImGui::Button("Create")) {
+	Block* block = new Block();
 		block->mModel = new Model();
 		block->mModel->Create(mDxCommon, "resources/Model/Blocks/Grass", "grass.obj");
 		block->mModel->SetTexture(mTerrainTexture);
@@ -186,6 +186,11 @@ void Map::Finalize()
 		terrainData["Max"].push_back(mBlock[i]->mAABB.max.z);
 	}
 	file << data.dump(4) << std::endl;
+	while (!mBlock.empty()) {
+		delete mBlock.back();
+		mBlock.pop_back();
+	}
+	delete mTerrainTexture;
 }
 
 AABB Map::CalcurateAABB(const Vector3& translate, const Vector3& scale)

@@ -8,6 +8,7 @@ class DirectXCommon;
 class Crosshair
 {
 public:
+	~Crosshair();
 	void Initialize(DirectXCommon* dxCommon);
 	void Update();
 	void Draw(ID3D12GraphicsCommandList* commandList);

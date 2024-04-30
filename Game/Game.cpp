@@ -64,6 +64,8 @@ void Game::Finalize()
 	delete mDxCommon;
 	delete mSpriteCommon;
 	delete mImgui;
+	delete mModelCommon;
+	delete mParticleCommon;
 }
 
 void Game::Update()

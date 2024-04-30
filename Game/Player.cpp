@@ -21,6 +21,12 @@ Player::Player()
 {
 }
 
+Player::~Player()
+{
+	delete mTexture;
+	delete mModel;
+}
+
 void Player::Initialize(DirectXCommon* dxCommon)
 {
 	mDxCommon = dxCommon;
