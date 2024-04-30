@@ -110,6 +110,7 @@ int WINAPI WinMain(
 	}
 	
 	game->Finalize();
+	delete game;
 	//出力ウィンドウへの文字出力
 	OutputDebugStringA("Hello,DirectX!\n");
 

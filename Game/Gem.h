@@ -11,6 +11,7 @@ struct AABB;
 class Gem : public GameObject
 {
 public:
+	~Gem();
 	void Initialize(DirectXCommon* dxCommon) override;
 	void Update() override;
 	void Draw(ID3D12GraphicsCommandList* commandList, Camera* camera);

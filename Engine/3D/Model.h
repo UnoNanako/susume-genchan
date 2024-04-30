@@ -23,6 +23,7 @@ struct ModelData {
 class Model
 {
 public:
+	~Model();
 	void Create(DirectXCommon* dxCommon, const std::string& directoryPath, const std::string& filePath);
 	void Update();
 	void Draw(ID3D12GraphicsCommandList* commandList, Camera* camera, const Transform& mTransform);
@@ -49,6 +50,6 @@ private:
 	TransformationMatrix* transformationMatrixData;
 	Transform mTransform;
 	ModelData modelData;
-	Texture *texture;
+	Texture *texture = nullptr;
 	unsigned int mModelIndex;
 };

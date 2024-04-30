@@ -16,6 +16,12 @@ RotateEnemy::RotateEnemy()
 {
 }
 
+RotateEnemy::~RotateEnemy()
+{
+	delete mTexture;
+	delete mModel;
+}
+
 void RotateEnemy::Initialize(DirectXCommon* dxCommon)
 {
 	mDxCommon = dxCommon;

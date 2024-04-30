@@ -5,6 +5,11 @@
 #include "VertexData.h"
 #include "externals/imgui/imgui.h"
 
+Star::~Star()
+{
+	delete mModel;
+}
+
 void Star::Initialize(DirectXCommon* dxCommon)
 {
 	mDxCommon = dxCommon;

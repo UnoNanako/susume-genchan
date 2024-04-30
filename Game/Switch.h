@@ -8,6 +8,7 @@ class MoveFloor;
 class Switch : public GameObject
 {
 public:
+	~Switch();
 	void Initialize(DirectXCommon* dxCommon)override;
 	void Update();
 	void Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)override;

@@ -9,6 +9,7 @@ struct OBB;
 class RotateFloor : public MoveFloor
 {
 public:
+	~RotateFloor();
 	void Initialize(DirectXCommon* dxCommon)override;
 	void Update()override;
 	void Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)override;

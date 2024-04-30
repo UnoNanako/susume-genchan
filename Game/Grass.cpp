@@ -4,6 +4,12 @@
 #include "2D/Texture.h"
 #include "VertexData.h"
 
+Grass::~Grass()
+{
+	delete mTexture;
+	delete mModel;
+}
+
 void Grass::Initialize(DirectXCommon* dxCommon)
 {
 	mDxCommon = dxCommon;

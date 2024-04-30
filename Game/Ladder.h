@@ -8,6 +8,7 @@ struct AABB;
 class Ladder : public GameObject
 {
 public:
+	~Ladder();
 	void Initialize(DirectXCommon* dxCommon);
 	void Update();
 	void Draw(ID3D12GraphicsCommandList* commandList, Camera* camera);

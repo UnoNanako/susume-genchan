@@ -8,6 +8,11 @@
 #include "VertexData.h"
 #include "Material.h"
 
+ParticleList::~ParticleList()
+{
+	delete texture;
+}
+
 void ParticleList::Create(DirectXCommon* dxCommon){
 	instancingResourse = dxCommon->CreateBufferResource(dxCommon->GetDevice(), sizeof(ParticleForGPU) * kNumInstance);
 	instancingResourse->Map(0, nullptr, reinterpret_cast<void**>(&instancingData));

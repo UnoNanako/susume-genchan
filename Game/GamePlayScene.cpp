@@ -432,7 +432,7 @@ void GamePlayScene::Update(Input* input)
 		Vector3 forwardVec = Multiply(Vector3(0.0f, 0.0f, 1.0f), MakeRotateYMatrix(mPlayer->GetRotate().y));
 		//内積を計算
 		float dotProduct = Dot(forwardVec, ladderVec);
-		if (dotProduct >= 0.9f && input->PushKey(DIK_W)) {
+		if (dotProduct >= 0.9f && (input->PushKey(DIK_W) || input->GetLStick().y >= 0.7f)) {
 			mPlayer->SetTranslate(
 				{ mLadders[0]->GetTranslate().x + 1.5f,
 				mPlayer->GetTranslate().y,
@@ -443,6 +443,9 @@ void GamePlayScene::Update(Input* input)
 			pos.y += 0.2f;
 			mPlayer->SetTranslate(pos);
 		}
+	}
+	else {
+		mPlayer->SetGravity(0.05f);
 	}
 
 	//プレイヤーの行列を更新

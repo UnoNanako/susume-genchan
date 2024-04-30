@@ -2,6 +2,11 @@
 #include "3D/Model.h"
 #include "VertexData.h"
 
+Skydome::~Skydome()
+{
+	delete mModel;
+}
+
 void Skydome::Initialize(DirectXCommon* dxCommon)
 {
 	mDxCommon = dxCommon;

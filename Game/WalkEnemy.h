@@ -11,6 +11,7 @@ class WalkEnemy : public GameObject
 {
 public:
 	WalkEnemy();
+	~WalkEnemy();
 	void Initialize(DirectXCommon* dxCommon)override;
 	void Update()override;
 	void Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)override;

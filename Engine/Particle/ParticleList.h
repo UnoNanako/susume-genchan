@@ -17,6 +17,7 @@ const uint32_t kNumInstance = 10; //インスタンス数
 class ParticleList
 {
 public:
+	~ParticleList();
 	void Create(DirectXCommon* dxCommon);
 	void Update(Camera* camera);
 	void Draw(ID3D12GraphicsCommandList* commandList,Camera* camera,const Transform &mTransform);

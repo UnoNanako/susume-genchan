@@ -9,6 +9,7 @@ class DirectXCommon;
 class Texture
 {
 public:
+	~Texture() {}
 	void Create(DirectXCommon* dxCommon,const std::string& filePath);
 	void Bind(ID3D12GraphicsCommandList* commandList);
 	uint32_t GetWidth() { return width; }

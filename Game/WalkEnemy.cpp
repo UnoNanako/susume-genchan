@@ -15,6 +15,12 @@ WalkEnemy::WalkEnemy()
 {
 }
 
+WalkEnemy::~WalkEnemy()
+{
+	delete mTexture;
+	delete mModel;
+}
+
 void WalkEnemy::Initialize(DirectXCommon* dxCommon)
 {
 	mDxCommon = dxCommon;

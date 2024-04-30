@@ -7,6 +7,7 @@ class AABB;
 class Grass : public GameObject
 {
 public:
+	~Grass();
 	void Initialize(DirectXCommon* dxCommon)override;
 	void Update()override;
 	void Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)override;

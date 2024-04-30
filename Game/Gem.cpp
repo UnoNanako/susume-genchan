@@ -4,6 +4,12 @@
 #include "Engine/DirectXCommon.h"
 #include "Engine/3D/Model.h"
 
+Gem::~Gem()
+{
+	delete mTexture;
+	delete mModel;
+}
+
 void Gem::Initialize(DirectXCommon* dxCommon)
 {
 	mDxCommon = dxCommon;

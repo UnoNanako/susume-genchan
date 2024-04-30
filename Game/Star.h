@@ -7,6 +7,7 @@ class AABB;
 class Star : public GameObject
 {
 public:
+	~Star();
 	void Initialize(DirectXCommon* dxCommon)override;
 	void Update()override;
 	void Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)override;

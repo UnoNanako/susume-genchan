@@ -7,6 +7,7 @@
 class Skydome : public GameObject
 {
 public:
+	~Skydome();
 	void Initialize(DirectXCommon* dxCommon);
 	void Update();
 	void Draw(ID3D12GraphicsCommandList* commansList,Camera* camera);

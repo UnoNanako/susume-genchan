@@ -5,6 +5,14 @@
 #include "VertexData.h"
 #include "Game/MoveFloor.h"
 
+Switch::~Switch()
+{
+	delete mMoveFloor;
+	delete mRed;
+	delete mBlue;
+	delete mModel;
+}
+
 void Switch::Initialize(DirectXCommon* dxCommon)
 {
 	mDxCommon = dxCommon;

@@ -4,6 +4,11 @@
 #include "2D/Texture.h"
 #include "VertexData.h"
 
+SlideFloor::~SlideFloor()
+{
+	delete mModel;
+}
+
 void SlideFloor::Initialize(DirectXCommon* dxCommon)
 {
 	mDxCommon = dxCommon;

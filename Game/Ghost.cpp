@@ -4,7 +4,6 @@
 #include "2D/Texture.h"
 #include "VertexData.h"
 #include "Game/Player.h"
-#include "externals/imgui/imgui.h"
 
 Ghost::Ghost()
 	:mFovAngle(kPi / 2.0f) //90°
@@ -15,6 +14,11 @@ Ghost::Ghost()
 {
 }
 
+Ghost::~Ghost()
+{
+	delete mModel;
+}
+
 void Ghost::Initialize(DirectXCommon* dxCommon)
 {
 	mDxCommon = dxCommon;
@@ -23,11 +27,8 @@ void Ghost::Initialize(DirectXCommon* dxCommon)
 		{0.0f,0.0f,0.0f}, //rotate
 		{0.0f,0.0f,0.0f} //transfrom
 	};
-	/*mTexture = new Texture();
-	mTexture->Create(mDxCommon, "resources/uvChecker.png");*/
 	mModel = new Model();
 	mModel->Create(mDxCommon, "resources/Model/Enemies/Ghost", "ghost.obj");
-	//mModel->SetTexture(mTexture);
 }
 
 void Ghost::Update()

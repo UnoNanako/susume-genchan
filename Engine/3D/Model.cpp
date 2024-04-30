@@ -18,6 +18,10 @@
 
 using namespace std;
 
+Model::~Model()
+{
+}
+
 void Model::Create(DirectXCommon* dxCommon, const std::string& directoryPath,const std::string& filePath)
 {
 	Load(directoryPath,filePath);

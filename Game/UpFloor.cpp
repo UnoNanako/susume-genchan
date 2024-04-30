@@ -4,6 +4,11 @@
 #include "2D/Texture.h"
 #include "VertexData.h"
 
+UpFloor::~UpFloor()
+{
+	delete mModel;
+}
+
 void UpFloor::Initialize(DirectXCommon* dxCommon)
 {
 	mDxCommon = dxCommon;
