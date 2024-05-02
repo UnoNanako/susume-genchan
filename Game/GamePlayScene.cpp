@@ -108,7 +108,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 		mGems[i] = std::make_unique<Gem>();
 		mGems[i]->Initialize(dxCommon);
 	}
-	mGems[0]->SetTranslate({ 22.5f,5.0f,-15.0f });
+	mGems[0]->SetTranslate({ 27.0f,10.0f,-22.5f });
 
 	//スター
 	mStar = std::make_unique<Star>();
@@ -148,6 +148,9 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	}
 	mLadders[0]->SetScale({ 0.5f,0.5f,0.5f });
 	mLadders[0]->SetTranslate({ -3.0f,13.0f,87.5f });
+	mLadders[1]->SetScale({ 0.25f,0.25f,0.25f });
+	mLadders[1]->SetTranslate({ -2.5f,10.0f,-22.5f });
+	mLadders[1]->SetRotate({ 0.0f,-kPi / 2.0f,0.0f });
 
 	//Aボタン
 	mAbuttonSprite = std::make_unique<Sprite>();
@@ -175,9 +178,11 @@ void GamePlayScene::Update(Input* input)
 	//DirectionalLightのintensity切り替え
 	ImGui::Checkbox("isDirectionalLight", &mIsDirectionalLight);
 	ImGui::Checkbox("isPlayerCamera", &mIsPlayerCamera);
-	Vector3 pos = mLadders[0]->GetTranslate();
-	ImGui::DragFloat3("ladderPos", &pos.x);
-	mLadders[0]->SetTranslate(pos);
+	for (uint32_t i = 0; i < mLadders.size(); ++i) {
+		Vector3 pos = mLadders[i]->GetTranslate();
+		ImGui::DragFloat3("ladderPos", &pos.x);
+		mLadders[i]->SetTranslate(pos);
+	}
 	ImGui::End();
 
 	mAbuttonSprite->Update();
@@ -245,8 +250,6 @@ void GamePlayScene::Update(Input* input)
 			Vector3 pos = mPlayer->GetTranslate();
 			pos += collisionResult.normal * collisionResult.depth;
 			mPlayer->SetTranslate(pos);
-			//mPlayer->SetVelocityY(0.0f);
-			//mPlayer->CalcurateAABB(mPlayer->GetTranslate());
 		}
 	}
 
@@ -438,6 +441,18 @@ void GamePlayScene::Update(Input* input)
 				mPlayer->GetTranslate().y,
 				mLadders[0]->GetTranslate().z }
 			);
+			mPlayer->SetTranslate(
+				{ mLadders[1]->GetTranslate().x + 1.5f,
+				mPlayer->GetTranslate().y,
+				mLadders[1]->GetTranslate().z }
+			);
+		/*	for (uint32_t i = 0; i < mLadders.size(); ++i) {
+				mPlayer->SetTranslate(
+					{ mLadders[i]->GetTranslate().x + 1.5f,
+					mPlayer->GetTranslate().y,
+					mLadders[i]->GetTranslate().z }
+				);
+			}*/
 			mPlayer->SetGravity(0.0f);
 			Vector3 pos = mPlayer->GetTranslate();
 			pos.y += 0.2f;
