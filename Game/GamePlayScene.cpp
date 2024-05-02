@@ -148,9 +148,27 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	}
 	mLadders[0]->SetScale({ 0.5f,0.5f,0.5f });
 	mLadders[0]->SetTranslate({ -3.0f,13.0f,87.5f });
+	mLadders[0]->SetDirection(Ladder::LEFT); //右向き
 	mLadders[1]->SetScale({ 0.25f,0.25f,0.25f });
 	mLadders[1]->SetTranslate({ -2.5f,10.0f,-22.5f });
 	mLadders[1]->SetRotate({ 0.0f,-kPi / 2.0f,0.0f });
+	mLadders[1]->SetDirection(Ladder::FRONT); //手前向き
+	for (uint32_t i = 0; i < mLadders.size(); ++i) {
+		switch (mLadders[i]->GetDirection()) {
+		case Ladder::FRONT:
+			mLadders[i]->SetVec({ 0.0f,0.0f,1.0f });
+			break;
+		case Ladder::BACK:
+			mLadders[i]->SetVec({ 0.0f,0.0f,-1.0f });
+			break;
+		case Ladder::LEFT:
+			mLadders[i]->SetVec({ -1.0f,0.0f,0.0f });
+			break;
+		case Ladder::RIGHT:
+			mLadders[i]->SetVec({ 1.0f,0.0f,0.0f });
+			break;
+		}
+	}
 
 	//Aボタン
 	mAbuttonSprite = std::make_unique<Sprite>();
@@ -416,7 +434,8 @@ void GamePlayScene::Update(Input* input)
 	//プレイヤーとはしごの当たり判定
 	for (uint32_t i = 0; i < mLadders.size(); ++i) {
 		if (IsCollision(mPlayer->GetAABB(), mLadders[i]->GetAABB(), collisionResult)) {
-			mLadderIsHit = true;
+			mLadders[i]->SetIsHit(true);
+			//mLadderIsHit = true;
 			Vector3 pos = mPlayer->GetTranslate();
 			pos.x += collisionResult.normal.x * collisionResult.depth / 2;
 			pos.y += collisionResult.normal.y * collisionResult.depth / 2;
@@ -424,43 +443,59 @@ void GamePlayScene::Update(Input* input)
 			mPlayer->SetTranslate(pos);
 		}
 		else {
-			mLadderIsHit = false;
+			mLadders[i]->SetIsHit(false);
+			//mLadderIsHit = false;
 		}
 	}
 	//プレイヤーとはしごが当たっているとき
-	if (mLadderIsHit == true) {
-		//はしごの向き(ベクトル)
-		Vector3 ladderVec = { -1.0f,0.0f,0.0f };
-		//プレイヤーの向き
-		Vector3 forwardVec = Multiply(Vector3(0.0f, 0.0f, 1.0f), MakeRotateYMatrix(mPlayer->GetRotate().y));
-		//内積を計算
-		float dotProduct = Dot(forwardVec, ladderVec);
-		if (dotProduct >= 0.9f && (input->PushKey(DIK_W) || input->GetLStick().y >= 0.7f)) {
-			mPlayer->SetTranslate(
-				{ mLadders[0]->GetTranslate().x + 1.5f,
-				mPlayer->GetTranslate().y,
-				mLadders[0]->GetTranslate().z }
-			);
-			mPlayer->SetTranslate(
-				{ mLadders[1]->GetTranslate().x + 1.5f,
-				mPlayer->GetTranslate().y,
-				mLadders[1]->GetTranslate().z }
-			);
-		/*	for (uint32_t i = 0; i < mLadders.size(); ++i) {
-				mPlayer->SetTranslate(
-					{ mLadders[i]->GetTranslate().x + 1.5f,
-					mPlayer->GetTranslate().y,
-					mLadders[i]->GetTranslate().z }
-				);
-			}*/
-			mPlayer->SetGravity(0.0f);
-			Vector3 pos = mPlayer->GetTranslate();
-			pos.y += 0.2f;
-			mPlayer->SetTranslate(pos);
+	for (uint32_t i = 0; i < mLadders.size(); ++i) {
+		if (mLadders[i]->GetIsHit() == true) {
+			//はしごの向き(ベクトル)
+			Vector3 ladderVec = mLadders[i]->GetVec();
+			//プレイヤーの向き
+			Vector3 forwardVec = Multiply(Vector3(0.0f, 0.0f, 1.0f), MakeRotateYMatrix(mPlayer->GetRotate().y));
+			//内積を計算
+			float dotProduct = Dot(forwardVec, ladderVec);
+			if (dotProduct >= 0.9f && (input->PushKey(DIK_W) || input->GetLStick().y >= 0.7f)) {
+				switch (mLadders[i]->GetDirection()) {
+				case Ladder::FRONT:
+					mPlayer->SetTranslate(
+						{ mLadders[i]->GetTranslate().x,
+						mPlayer->GetTranslate().y,
+						mLadders[i]->GetTranslate().z - 1.5f }
+					);
+					break;
+				case Ladder::BACK:
+					mPlayer->SetTranslate(
+						{ mLadders[i]->GetTranslate().x,
+						mPlayer->GetTranslate().y,
+						mLadders[i]->GetTranslate().z + 1.5f }
+					);
+					break;
+				case Ladder::LEFT:
+					mPlayer->SetTranslate(
+						{ mLadders[i]->GetTranslate().x - 1.5f,
+						mPlayer->GetTranslate().y,
+						mLadders[i]->GetTranslate().z }
+					);
+					break;
+				case Ladder::RIGHT:
+					mPlayer->SetTranslate(
+						{ mLadders[i]->GetTranslate().x + 1.5f,
+						mPlayer->GetTranslate().y,
+						mLadders[i]->GetTranslate().z }
+					);
+					break;
+				}
+				mPlayer->SetGravity(0.0f);
+				Vector3 pos = mPlayer->GetTranslate();
+				pos.y += 0.2f;
+				mPlayer->SetTranslate(pos);
+			}
 		}
-	}
-	else {
-		mPlayer->SetGravity(0.05f);
+		else {
+			mPlayer->SetGravity(0.05f);
+		}
 	}
 
 	//プレイヤーの行列を更新
@@ -527,7 +562,7 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 	//mParticle->Draw(dxCommon->GetCommandList(), camera, { 0.0f,0.0f,0.0f });
 	mGame->GetModelCommon()->Bind(dxCommon);
 	mCrosshair->Draw(dxCommon->GetCommandList());
-	
+
 	if (mSwitchIsHit == true) {
 		mAbuttonSprite->Draw(dxCommon->GetCommandList());
 	}
