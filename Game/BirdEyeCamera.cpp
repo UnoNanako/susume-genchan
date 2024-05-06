@@ -23,25 +23,26 @@ void BirdEyeCamera::Update(Input* input, Vector3 playerTranslate)
 	ImGui::DragFloat3("Rotate", &mTransform.rotate.x, 0.05f);
 	ImGui::End();
 
-	//ゲームパッドの右スティックの入力を取得
-	Vector2 rSttick = input->GetRStick();
-	//カメラの方位角と仰角を更新
-	mLon -= rSttick.x * 0.02f;
-	mLat += rSttick.y * 0.02f;
+	if (mIsHit == false) {
+		//ゲームパッドの右スティックの入力を取得
+		Vector2 rSttick = input->GetRStick();
+		//カメラの方位角と仰角を更新
+		mLon -= rSttick.x * 0.02f;
+		mLat += rSttick.y * 0.02f;
 
-	mLat = Max((kPi/18.0f), Min(mLat, static_cast<float>(kPi / 2)));
-
-	if (input->PushKey(DIK_LEFT)) {
-		mLon += 0.01f;
-	}
-	if (input->PushKey(DIK_RIGHT)) {
-		mLon -= 0.01f;
-	}
-	if (input->PushKey(DIK_UP)) {
-		mLat += 0.01f;
-	}
-	if (input->PushKey(DIK_DOWN)) {
-		mLat -= 0.01f;
+		mLat = Max((kPi / 18.0f), Min(mLat, static_cast<float>(kPi / 2)));
+		if (input->PushKey(DIK_LEFT)) {
+			mLon += 0.01f;
+		}
+		if (input->PushKey(DIK_RIGHT)) {
+			mLon -= 0.01f;
+		}
+		if (input->PushKey(DIK_UP)) {
+			mLat += 0.01f;
+		}
+		if (input->PushKey(DIK_DOWN)) {
+			mLat -= 0.01f;
+		}
 	}
 	
 	float x = mRadius * sin(mLat) * cos(mLon) + playerTranslate.x;

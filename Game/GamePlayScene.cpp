@@ -179,14 +179,14 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	}
 
 	//Aボタン
-	mAbuttonSprite = std::make_unique<Sprite>();
-	mAbuttonSprite->Create(dxCommon, "resources/Sprite/Ui/Buttons/xbox_button_color_a.png");
-	mAbuttonSprite->SetTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{620.0f,600.0f,0.0f} });
+	//mAbuttonSprite = std::make_unique<Sprite>();
+	//mAbuttonSprite->Create(dxCommon, "resources/Sprite/Ui/Buttons/xbox_button_color_a.png");
+	//mAbuttonSprite->SetTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{620.0f,600.0f,0.0f} });
 
 	//クランクスプライト
-	mCrankSprite = std::make_unique<Sprite>();
-	mCrankSprite->Create(dxCommon, "resources/Sprite/Crank/crank.png");
-	mCrankSprite->SetTransform({{1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{100.0f,100.0f,0.0f}});
+	//mCrankSprite = std::make_unique<Sprite>();
+	//mCrankSprite->Create(dxCommon, "resources/Sprite/Crank/crank.png");
+	//mCrankSprite->SetTransform({{1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{100.0f,100.0f,0.0f}});
 
 	//クリアテキスト
 	mClearSprite = std::make_unique<Sprite>();
@@ -216,8 +216,7 @@ void GamePlayScene::Update(Input* input)
 	}
 	ImGui::End();
 
-	mAbuttonSprite->Update();
-	mCrankSprite->Update();
+	//mCrankSprite->Update();
 	mClearSprite->Update();
 	mGameoverSprite->Update();
 
@@ -372,67 +371,14 @@ void GamePlayScene::Update(Input* input)
 		}
 	}
 
-	//upFloorとプレイヤーの当たり判定
-	//if (IsCollision(mPlayer->GetAABB(), mUpFloor->GetAABB(), collisionResult)) {
-	//	mPlayer->SetIsHit(true);
-	//	mUpFloorIsHit = true;
-	//	Vector3 pos = mPlayer->GetTranslate();
-	//	pos.x += collisionResult.normal.x * collisionResult.depth / 2;
-	//	pos.y += collisionResult.normal.y * collisionResult.depth / 2;
-	//	pos.z += collisionResult.normal.z * collisionResult.depth / 2;
-	//	mPlayer->SetTranslate(pos);
-	//	//mPlayer->SetVelocityY(0.0f);
-	//	//mPlayer->CalcurateAABB(mPlayer->GetTranslate());
-	//	if (mPlayer->GetParent() == nullptr) {
-	//		//プレイヤーとupFloorの親子関係を結ぶ
-	//		Matrix4x4 local = Multiply(mPlayer->GetWorldMatrix(), Inverse(mUpFloor->GetWorldMatrix()));
-	//		mPlayer->SetTranslate(Vector3{ local.m[3][0],local.m[3][1],local.m[3][2] });
-	//	}
-	//	auto& tmp = mUpFloor->GetTransform();
-	//	mPlayer->SetParent(&tmp);
-	//}
-	//else {
-	//	if (mUpFloorIsHit == true) {
-	//		mPlayer->SetParent(nullptr);
-	//		mUpFloorIsHit = false;
-	//		Matrix4x4 world = mPlayer->GetWorldMatrix();
-	//		mPlayer->SetTranslate(Vector3{ world.m[3][0],world.m[3][1],world.m[3][2] });
-	//	}
-	//}
-
-	//upSwitchとプレイヤーの当たり判定
-	//if (IsCollision(mPlayer->GetAABB(), mUpSwitch->GetAABB(), collisionResult)) {
-	//	mSwitchIsHit = true;
-	//	Vector3 pos = mPlayer->GetTranslate();
-	//	pos.x += collisionResult.normal.x * collisionResult.depth / 2;
-	//	pos.y += collisionResult.normal.y * collisionResult.depth / 2;
-	//	pos.z += collisionResult.normal.z * collisionResult.depth / 2;
-	//	//mPlayer->SetTranslate(pos);
-	//	//mPlayer->CalcurateAABB(mPlayer->GetTranslate());
-	//	if (input->GetButton(XINPUT_GAMEPAD_A)) {
-	//		ImGui::Begin("Debug");
-	//		ImGui::Text("push!!!");
-	//		ImGui::End();
-	//		mUpFloor->SetIsMove(true);
-	//	}
-	//}
-	//else {
-	//	mSwitchIsHit = false;
-	//}
-	//if (mUpFloor->GetIsMove() == true) {
-	//	mUpFloor->Move();
-	//}
-
 	//クランクとプレイヤーの当たり判定
 	if (IsCollision(mPlayer->GetAABB(), mCrank->GetAABB(), collisionResult)) {
 		mCrank->SetIsHit(true);
-		if (input->GetButton(XINPUT_GAMEPAD_A) && mCrank->GetIsHit() == true) {
-			mCrank->SetIsPushA(true);
-		}
+		mBirdEyeCamera->SetIsHit(true);
 	}
 	else {
 		mCrank->SetIsHit(false);
-		mCrank->SetIsPushA(false);
+		mBirdEyeCamera->SetIsHit(false);
 	}
 
 	//回転する床とプレイヤーの当たり判定
@@ -579,12 +525,8 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 	mGame->GetModelCommon()->Bind(dxCommon);
 	mCrosshair->Draw(dxCommon->GetCommandList());
 
-	if (mSwitchIsHit == true) {
-		mAbuttonSprite->Draw(dxCommon->GetCommandList());
-	}
 	if (mCrank->GetIsHit() == true) {
-		mAbuttonSprite->Draw(dxCommon->GetCommandList());
-		mCrankSprite->Draw(dxCommon->GetCommandList());
+		//mCrankSprite->Draw(dxCommon->GetCommandList());
 	}
 	if (mIsClear == true) {
 		mClearSprite->Draw(dxCommon->GetCommandList());

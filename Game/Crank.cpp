@@ -48,12 +48,12 @@ void Crank::Update(Input* input)
 {
 	mAABB = CalculateAABB(mTransform.translate);
 	//Lスティック
-	Vector2 lStick = input->GetLStick();
-	float length = Length(lStick);
-	if (length > 0.0f && mIsPushA == true) {
-		lStick.Normalize();
+	Vector2 rStick = input->GetRStick();
+	float length = Length(rStick);
+	if (length > 0.0f && mIsHit == true) {
+		rStick.Normalize();
 		mCalculateAngle = mCurrentAngle; //前のフレームの角度
-		mCurrentAngle = atan2(lStick.y, lStick.x); //ラジアンが求まる
+		mCurrentAngle = atan2(rStick.y, rStick.x); //ラジアンが求まる
 		float angle = mCurrentAngle - mCalculateAngle;
 		if (angle > 0.05f) {
 			angle = 0.05f;

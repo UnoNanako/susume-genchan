@@ -118,8 +118,8 @@ private:
 	/// <summary>
 	/// UI
 	/// </summary>
-	std::unique_ptr<Sprite> mAbuttonSprite; //Aボタン
-	std::unique_ptr<Sprite> mCrankSprite; //クランク
+	//std::unique_ptr<Sprite> mAbuttonSprite; //Aボタン
+	//std::unique_ptr<Sprite> mCrankSprite; //クランク
 	
 	/// <summary>
 	/// テキスト
