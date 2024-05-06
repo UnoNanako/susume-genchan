@@ -41,12 +41,12 @@ AABB Ladder::CalcurateAABB(const Vector3& translate)
 	AABB ret;
 	ret.min = {
 		{translate.x - (1.0f / 2.0f)},
-		{translate.y - (31.0f / 2.0f)},
+		{translate.y - (mHeight / 2.0f)},
 		{translate.z - (1.0f / 2.0f)}
 	};
 	ret.max = {
 		{translate.x + (1.0f / 2.0f)},
-		{translate.y + (31.0f / 2.0f)},
+		{translate.y + (mHeight / 2.0f)},
 		{translate.z + (1.0f / 2.0f)}
 	};
 	return ret;

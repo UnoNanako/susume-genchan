@@ -32,11 +32,13 @@ public:
 	Vector3 GetVec() { return mVec; }
 	void SetDirection(Direction direction) { mDirection = direction; }
 	Direction GetDirection() { return mDirection; }
+	void SetHeight(float height) { mHeight = height; }
 
 private:
 	AABB mAABB;
 	bool mIsHit = false;
 	Vector3 mVec;
 	Direction mDirection;
+	float mHeight;
 };
 

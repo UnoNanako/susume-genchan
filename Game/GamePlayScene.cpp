@@ -123,17 +123,8 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	mSlideSwitch->SetMoveFloor(mSlideFloor.get());
 	mSlideSwitch->Initialize(dxCommon);
 	mSlideSwitch->SetTransform({ {0.5f,0.5f,0.5f},{0.0f,0.0f,0.0f},{27.5f,2.5f,-20.0f} });
-
-	//UpFloor(スイッチを押すと上に動く床)
-	//mUpFloor = std::make_unique<UpFloor>();
-	//mUpFloor->Initialize(dxCommon);
-	//スイッチ
-	/*mUpSwitch = std::make_unique<Switch>();
-	mUpSwitch->SetMoveFloor(mUpFloor.get());
-	mUpSwitch->Initialize(dxCommon);
-	mUpSwitch->SetTransform({ { 0.5f,0.5f,0.5f},{0.0f,0.0f,0.0f},{7.5f,2.5f,-20.0f} });*/
-
-	//クランク
+	
+	//クランクモデル
 	mCrank = std::make_unique<Crank>();
 	mCrank->Initialize(dxCommon);
 	//クランクを回すと回る床
@@ -146,13 +137,30 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 		mLadders[i] = std::make_unique<Ladder>();
 		mLadders[i]->Initialize(dxCommon);
 	}
+	//モデルの作成
+	mLadderModel_height15_01 = std::make_unique<Model>();
+	mLadderModel_height15_01->Create(dxCommon, "resources/Model/Ladder", "inFront.obj");
+	/*mLadderModel_height15_02 = std::make_unique<Model>();
+	mLadderModel_height15_02->Create(dxCommon, "resources/Model/Ladder", "inFront.obj");*/
+	//離島にあるはしご
 	mLadders[0]->SetScale({ 0.5f,0.5f,0.5f });
 	mLadders[0]->SetTranslate({ -3.0f,13.0f,87.5f });
-	mLadders[0]->SetDirection(Ladder::LEFT); //右向き
-	mLadders[1]->SetScale({ 0.25f,0.25f,0.25f });
+	mLadders[0]->SetHeight(30.0f);
+	mLadders[0]->SetDirection(Ladder::RIGHT); //右向き
+	//リス地に一番近いはしご
+	mLadders[1]->SetModel(mLadderModel_height15_01.get());
+	mLadders[1]->SetScale({ 1.0f,1.0f,1.0f });
 	mLadders[1]->SetTranslate({ -2.5f,10.0f,-22.5f });
 	mLadders[1]->SetRotate({ 0.0f,-kPi / 2.0f,0.0f });
+	mLadders[1]->SetHeight(15.0f);
 	mLadders[1]->SetDirection(Ladder::FRONT); //手前向き
+	//クランクを回すためのはしご
+	//mLadders[2]->SetModel(mLadderModel_height15_02.get());
+	//mLadders[2]->SetScale({ 1.0f,1.0f,1.0f });
+	//mLadders[2]->SetTranslate({25.0f,7.5f,0.0f});
+	//mLadders[2]->SetHeight(15.0f);
+	//mLadders[2]->SetDirection(Ladder::RIGHT); //右向き
+
 	for (uint32_t i = 0; i < mLadders.size(); ++i) {
 		switch (mLadders[i]->GetDirection()) {
 		case Ladder::FRONT:
@@ -174,6 +182,11 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	mAbuttonSprite = std::make_unique<Sprite>();
 	mAbuttonSprite->Create(dxCommon, "resources/Sprite/Ui/Buttons/xbox_button_color_a.png");
 	mAbuttonSprite->SetTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{620.0f,600.0f,0.0f} });
+
+	//クランクスプライト
+	mCrankSprite = std::make_unique<Sprite>();
+	mCrankSprite->Create(dxCommon, "resources/Sprite/Crank/crank.png");
+	mCrankSprite->SetTransform({{1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{100.0f,100.0f,0.0f}});
 
 	//クリアテキスト
 	mClearSprite = std::make_unique<Sprite>();
@@ -204,6 +217,7 @@ void GamePlayScene::Update(Input* input)
 	ImGui::End();
 
 	mAbuttonSprite->Update();
+	mCrankSprite->Update();
 	mClearSprite->Update();
 	mGameoverSprite->Update();
 
@@ -553,6 +567,8 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 	mCrank->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mRotateFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mSkydome->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
+	mLadderModel_height15_01->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get(),mLadders[0]->GetTransform());
+	//mLadderModel_height15_02->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get(), mLadders[2]->GetTransform());
 	for (uint32_t i = 0; i < mLadders.size(); ++i) {
 		mLadders[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	}
@@ -568,6 +584,7 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 	}
 	if (mCrank->GetIsHit() == true) {
 		mAbuttonSprite->Draw(dxCommon->GetCommandList());
+		mCrankSprite->Draw(dxCommon->GetCommandList());
 	}
 	if (mIsClear == true) {
 		mClearSprite->Draw(dxCommon->GetCommandList());

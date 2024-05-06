@@ -59,9 +59,9 @@ private:
 	const int mLADDER_MAX = 2;
 	std::vector<std::unique_ptr<Ladder>> mLadders; 
 	//はしご用のモデル、テクスチャ
-	Model* mLadderModel0; //離島にあるはしご
-	Model* mLadderModel1; //本島の上に上るはしご
-
+	std::unique_ptr<Model> mLadderModel0; //離島にあるはしご
+	std::unique_ptr<Model> mLadderModel_height15_01; //縦15(3マス分)のはしご
+	std::unique_ptr<Model> mLadderModel_height15_02; //縦15のはしご2つ目
 	/// <summary>
 	/// 敵
 	/// </summary>
@@ -118,7 +118,8 @@ private:
 	/// <summary>
 	/// UI
 	/// </summary>
-	std::unique_ptr<Sprite> mAbuttonSprite;
+	std::unique_ptr<Sprite> mAbuttonSprite; //Aボタン
+	std::unique_ptr<Sprite> mCrankSprite; //クランク
 	
 	/// <summary>
 	/// テキスト
