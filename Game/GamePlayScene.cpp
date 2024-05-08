@@ -138,28 +138,29 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 		mLadders[i]->Initialize(dxCommon);
 	}
 	//モデルの作成
-	mLadderModel_height15_01 = std::make_unique<Model>();
-	mLadderModel_height15_01->Create(dxCommon, "resources/Model/Ladder", "inFront.obj");
-	/*mLadderModel_height15_02 = std::make_unique<Model>();
-	mLadderModel_height15_02->Create(dxCommon, "resources/Model/Ladder", "inFront.obj");*/
+	mLadderModel_height15 = std::make_unique<Model>();
+	mLadderModel_height15->Create(dxCommon, "resources/Model/Ladder", "inFront.obj");
+	mLadderModel_height15_02 = std::make_unique<Model>();
+	mLadderModel_height15_02->Create(dxCommon, "resources/Model/Ladder", "inFront.obj");
+
 	//離島にあるはしご
 	mLadders[0]->SetScale({ 0.5f,0.5f,0.5f });
 	mLadders[0]->SetTranslate({ -3.0f,13.0f,87.5f });
 	mLadders[0]->SetHeight(30.0f);
 	mLadders[0]->SetDirection(Ladder::RIGHT); //右向き
 	//リス地に一番近いはしご
-	mLadders[1]->SetModel(mLadderModel_height15_01.get());
+	mLadders[1]->SetModel(mLadderModel_height15.get());
 	mLadders[1]->SetScale({ 1.0f,1.0f,1.0f });
 	mLadders[1]->SetTranslate({ -2.5f,10.0f,-22.5f });
 	mLadders[1]->SetRotate({ 0.0f,-kPi / 2.0f,0.0f });
 	mLadders[1]->SetHeight(15.0f);
 	mLadders[1]->SetDirection(Ladder::FRONT); //手前向き
 	//クランクを回すためのはしご
-	//mLadders[2]->SetModel(mLadderModel_height15_02.get());
-	//mLadders[2]->SetScale({ 1.0f,1.0f,1.0f });
-	//mLadders[2]->SetTranslate({25.0f,7.5f,0.0f});
-	//mLadders[2]->SetHeight(15.0f);
-	//mLadders[2]->SetDirection(Ladder::RIGHT); //右向き
+	mLadders[2]->SetModel(mLadderModel_height15_02.get());
+	mLadders[2]->SetScale({ 1.0f,1.0f,1.0f });
+	mLadders[2]->SetTranslate({25.0f,10.0f,0.0f});
+	mLadders[2]->SetHeight(15.0f);
+	mLadders[2]->SetDirection(Ladder::RIGHT); //右向き
 
 	for (uint32_t i = 0; i < mLadders.size(); ++i) {
 		switch (mLadders[i]->GetDirection()) {
@@ -508,13 +509,10 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 	mStar->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mSlideFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mSlideSwitch->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
-	//mUpFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
-	//mUpSwitch->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mCrank->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mRotateFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mSkydome->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
-	mLadderModel_height15_01->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get(),mLadders[0]->GetTransform());
-	//mLadderModel_height15_02->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get(), mLadders[2]->GetTransform());
+
 	for (uint32_t i = 0; i < mLadders.size(); ++i) {
 		mLadders[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	}

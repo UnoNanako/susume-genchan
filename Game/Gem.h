@@ -3,10 +3,12 @@
 #include "Engine/GameObject.h"
 #include <wrl.h>
 #include <d3d12.h>
+#include <memory>
 
 class DirectXCommon;
 class Texture;
 struct AABB;
+class ParticleList;
 
 class Gem : public GameObject
 {
@@ -23,9 +25,12 @@ public:
 	/// </summary>
 	void SetTranslate(Vector3 translate) { mTransform.translate = translate; }
 	AABB GetAABB() { return mAABB; }
+	bool GetIsHit() { return mIsHit; }
+	void SetIsHit(bool isHit) { mIsHit = isHit; }
 
 private:
-	Texture* mGetColor; //ユニークポインタにする
+	std::unique_ptr<Texture> mGetColor;
 	AABB mAABB;
+	bool mIsHit = false;
 };
 

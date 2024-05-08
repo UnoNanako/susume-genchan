@@ -14,9 +14,9 @@ void Gem::Initialize(DirectXCommon* dxCommon)
 {
 	mDxCommon = dxCommon;
 	mTransform = { {1.0f,1.0f,1.0f} ,{0.0f,0.0f,0.0f},{1.0f,1.0f,1.0f} };
-	mTexture = new Texture();
+	mTexture = new Texture;
 	mTexture->Create(mDxCommon, "resources/Model/Gem/gemColor.png");
-	mGetColor = new Texture();
+	mGetColor = std::make_unique<Texture>();
 	mGetColor->Create(mDxCommon, "resources/Model/Gem/gemGet.png");
 	mModel = new Model();
 	mModel->Create(mDxCommon, "resources/Model/Gem", "Gem.obj");

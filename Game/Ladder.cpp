@@ -6,7 +6,6 @@
 Ladder::~Ladder()
 {
 	delete mTexture;
-	delete mModel;
 }
 
 void Ladder::Initialize(DirectXCommon* dxCommon)

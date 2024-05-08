@@ -56,12 +56,13 @@ private:
 	std::unique_ptr<ParticleList> mParticle;
 	std::unique_ptr<Skydome> mSkydome; //天球
 	//はしご
-	const int mLADDER_MAX = 2;
+	const int mLADDER_MAX = 3;
 	std::vector<std::unique_ptr<Ladder>> mLadders; 
 	//はしご用のモデル、テクスチャ
 	std::unique_ptr<Model> mLadderModel0; //離島にあるはしご
-	std::unique_ptr<Model> mLadderModel_height15_01; //縦15(3マス分)のはしご
+	std::unique_ptr<Model> mLadderModel_height15; //縦15(3マス分)のはしご
 	std::unique_ptr<Model> mLadderModel_height15_02; //縦15のはしご2つ目
+
 	/// <summary>
 	/// 敵
 	/// </summary>
