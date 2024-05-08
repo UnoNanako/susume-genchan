@@ -123,7 +123,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	mSlideSwitch->SetMoveFloor(mSlideFloor.get());
 	mSlideSwitch->Initialize(dxCommon);
 	mSlideSwitch->SetTransform({ {0.5f,0.5f,0.5f},{0.0f,0.0f,0.0f},{27.5f,2.5f,-20.0f} });
-	
+
 	//クランクモデル
 	mCrank = std::make_unique<Crank>();
 	mCrank->Initialize(dxCommon);
@@ -158,7 +158,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 	//クランクを回すためのはしご
 	mLadders[2]->SetModel(mLadderModel_height15_02.get());
 	mLadders[2]->SetScale({ 1.0f,1.0f,1.0f });
-	mLadders[2]->SetTranslate({25.0f,10.0f,0.0f});
+	mLadders[2]->SetTranslate({ 25.0f,10.0f,0.0f });
 	mLadders[2]->SetHeight(15.0f);
 	mLadders[2]->SetDirection(Ladder::RIGHT); //右向き
 
@@ -171,10 +171,10 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 			mLadders[i]->SetVec({ 0.0f,0.0f,-1.0f });
 			break;
 		case Ladder::LEFT:
-			mLadders[i]->SetVec({ -1.0f,0.0f,0.0f });
+			mLadders[i]->SetVec({ 1.0f,0.0f,0.0f });
 			break;
 		case Ladder::RIGHT:
-			mLadders[i]->SetVec({ 1.0f,0.0f,0.0f });
+			mLadders[i]->SetVec({ -1.0f,0.0f,0.0f });
 			break;
 		}
 	}
@@ -264,8 +264,6 @@ void GamePlayScene::Update(Input* input)
 	mStar->Update();
 	mSlideFloor->Update();
 	mSlideSwitch->Update();
-	//mUpFloor->Update();
-	//mUpSwitch->Update();
 	mCrank->Update(input);
 	mRotateFloor->Update();
 	mRotateFloor->SetRotate(mCrank->GetRotate());
@@ -273,8 +271,10 @@ void GamePlayScene::Update(Input* input)
 		mLadders[i]->Update();
 	}
 
+	///--------------------当たり判定ここから--------------------
+
 	CollisionResult collisionResult;
-	//壁,床とプレイヤーの当たり判定
+	//壁,床とプレイヤー
 	mPlayer->SetIsHit(false);
 	for (uint32_t i = 0; i < mMap->GetBlock().size(); ++i) {
 		if (IsCollision(mPlayer->GetAABB(), mMap->GetBlock()[i]->GetWorldAABB(), collisionResult)) {
@@ -285,14 +285,14 @@ void GamePlayScene::Update(Input* input)
 		}
 	}
 
-	//rotateEnemyとプレイヤーの当たり判定
+	//rotateEnemyとプレイヤー
 	for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
 		if (IsCollision(mPlayer->GetAABB(), mRotateEnemies[i]->GetAABB(), collisionResult)) {
 			mIsGameover = true;
 		}
 	}
 
-	//壁とrotateEnemyの当たり判定
+	//壁とrotateEnemy
 	for (uint32_t i = 0; i < mMap->GetBlock().size(); ++i) {
 		for (uint32_t j = 0; j < mRotateEnemies.size(); ++j) {
 			if (IsCollision(mRotateEnemies[j]->GetAABB(), mMap->GetBlock()[i]->GetWorldAABB(), collisionResult)) {
@@ -304,19 +304,19 @@ void GamePlayScene::Update(Input* input)
 		}
 	}
 
-	//ghostとプレイヤーの当たり判定
+	//ghostとプレイヤー
 	for (uint32_t i = 0; i < mGhosts.size(); ++i) {
 		if (IsCollision(mPlayer->GetAABB(), mGhosts[i]->GetAABB(), collisionResult)) {
 			mIsGameover = true;
 		}
 	}
 
-	//starとプレイヤーの当たり判定
+	//starとプレイヤー
 	if (IsCollision(mPlayer->GetAABB(), mStar->GetAABB(), collisionResult)) {
 		mIsClear = true;
 	}
 
-	//gemとプレイヤーの当たり判定
+	//gemとプレイヤー
 	for (uint32_t i = 0; i < mGems.size(); ++i) {
 		if (IsCollision(mPlayer->GetAABB(), mGems[i]->GetAABB(), collisionResult)) {
 			Vector3 pos = mPlayer->GetTranslate();
@@ -326,7 +326,7 @@ void GamePlayScene::Update(Input* input)
 		}
 	}
 
-	//grassとプレイヤーの当たり判定
+	//grassとプレイヤー
 	for (uint32_t i = 0; i < mGrasses.size(); ++i) {
 		if (IsCollision(mPlayer->GetAABB(), mGrasses[i]->GetAABB(), collisionResult)) {
 			Vector3 pos = mPlayer->GetTranslate();
@@ -336,7 +336,7 @@ void GamePlayScene::Update(Input* input)
 		}
 	}
 
-	//SlideSwitchとプレイヤーの当たり判定
+	//SlideSwitchとプレイヤー
 	if (IsCollision(mPlayer->GetAABB(), mSlideSwitch->GetAABB(), collisionResult)) {
 		mSwitchIsHit = true;
 		mSlideFloor->SetIsMoving(true);
@@ -345,7 +345,7 @@ void GamePlayScene::Update(Input* input)
 		mSwitchIsHit = false;
 	}
 
-	//slideFloorとプレイヤーの当たり判定
+	//slideFloorとプレイヤー
 	if (IsCollision(mPlayer->GetAABB(), mSlideFloor->GetAABB(), collisionResult)) {
 		mPlayer->SetIsHit(true);
 		mSlideFloorIsHit = true;
@@ -354,7 +354,6 @@ void GamePlayScene::Update(Input* input)
 		pos.y += collisionResult.normal.y * collisionResult.depth;
 		pos.z += collisionResult.normal.z * collisionResult.depth;
 		mPlayer->SetTranslate(pos);
-		//mPlayer->CalcurateAABB(mPlayer->GetTranslate());
 		if (mPlayer->GetParent() == nullptr) {
 			//プレイヤーとslideFloorの親子関係を結ぶ
 			Matrix4x4 local = Multiply(mPlayer->GetWorldMatrix(), Inverse(mSlideFloor->GetWorldMatrix()));
@@ -372,7 +371,7 @@ void GamePlayScene::Update(Input* input)
 		}
 	}
 
-	//クランクとプレイヤーの当たり判定
+	//クランクとプレイヤー
 	if (IsCollision(mPlayer->GetAABB(), mCrank->GetAABB(), collisionResult)) {
 		mCrank->SetIsHit(true);
 		mBirdEyeCamera->SetIsHit(true);
@@ -382,7 +381,7 @@ void GamePlayScene::Update(Input* input)
 		mBirdEyeCamera->SetIsHit(false);
 	}
 
-	//回転する床とプレイヤーの当たり判定
+	//回転する床とプレイヤー
 	if (IsCollision(mPlayer->GetAABB(), mRotateFloor->GetOBB(), collisionResult)) {
 		mPlayer->SetIsHit(true);
 		Vector3 pos = mPlayer->GetTranslate();
@@ -392,11 +391,10 @@ void GamePlayScene::Update(Input* input)
 		mPlayer->SetTranslate(pos);
 	}
 
-	//プレイヤーとはしごの当たり判定
+	//プレイヤーとはしご
 	for (uint32_t i = 0; i < mLadders.size(); ++i) {
 		if (IsCollision(mPlayer->GetAABB(), mLadders[i]->GetAABB(), collisionResult)) {
 			mLadders[i]->SetIsHit(true);
-			//mLadderIsHit = true;
 			Vector3 pos = mPlayer->GetTranslate();
 			pos.x += collisionResult.normal.x * collisionResult.depth / 2;
 			pos.y += collisionResult.normal.y * collisionResult.depth / 2;
@@ -405,59 +403,69 @@ void GamePlayScene::Update(Input* input)
 		}
 		else {
 			mLadders[i]->SetIsHit(false);
-			//mLadderIsHit = false;
 		}
 	}
+
+	bool isHitLadder = false;
 	//プレイヤーとはしごが当たっているとき
 	for (uint32_t i = 0; i < mLadders.size(); ++i) {
 		if (mLadders[i]->GetIsHit() == true) {
+			isHitLadder = true;
 			//はしごの向き(ベクトル)
 			Vector3 ladderVec = mLadders[i]->GetVec();
 			//プレイヤーの向き
 			Vector3 forwardVec = Multiply(Vector3(0.0f, 0.0f, 1.0f), MakeRotateYMatrix(mPlayer->GetRotate().y));
 			//内積を計算
 			float dotProduct = Dot(forwardVec, ladderVec);
-			if (dotProduct >= 0.9f && (input->PushKey(DIK_W) || input->GetLStick().y >= 0.7f)) {
-				switch (mLadders[i]->GetDirection()) {
-				case Ladder::FRONT:
-					mPlayer->SetTranslate(
-						{ mLadders[i]->GetTranslate().x,
-						mPlayer->GetTranslate().y,
-						mLadders[i]->GetTranslate().z - 1.5f }
-					);
-					break;
-				case Ladder::BACK:
-					mPlayer->SetTranslate(
-						{ mLadders[i]->GetTranslate().x,
-						mPlayer->GetTranslate().y,
-						mLadders[i]->GetTranslate().z + 1.5f }
-					);
-					break;
-				case Ladder::LEFT:
-					mPlayer->SetTranslate(
-						{ mLadders[i]->GetTranslate().x - 1.5f,
-						mPlayer->GetTranslate().y,
-						mLadders[i]->GetTranslate().z }
-					);
-					break;
-				case Ladder::RIGHT:
-					mPlayer->SetTranslate(
-						{ mLadders[i]->GetTranslate().x + 1.5f,
-						mPlayer->GetTranslate().y,
-						mLadders[i]->GetTranslate().z }
-					);
-					break;
+			if (dotProduct >= 0.9f)
+			{
+				if (input->PushKey(DIK_W) || input->GetLStick().y >= 0.7f) {
+					switch (mLadders[i]->GetDirection()) {
+					case Ladder::FRONT:
+						mPlayer->SetTranslate(
+							{ mLadders[i]->GetTranslate().x,
+							mPlayer->GetTranslate().y,
+							mLadders[i]->GetTranslate().z - 1.5f }
+						);
+						break;
+					case Ladder::BACK:
+						mPlayer->SetTranslate(
+							{ mLadders[i]->GetTranslate().x,
+							mPlayer->GetTranslate().y,
+							mLadders[i]->GetTranslate().z + 1.5f }
+						);
+						break;
+					case Ladder::LEFT:
+						mPlayer->SetTranslate(
+							{ mLadders[i]->GetTranslate().x - 1.5f,
+							mPlayer->GetTranslate().y,
+							mLadders[i]->GetTranslate().z }
+						);
+						break;
+					case Ladder::RIGHT:
+						mPlayer->SetTranslate(
+							{ mLadders[i]->GetTranslate().x + 1.5f,
+							mPlayer->GetTranslate().y,
+							mLadders[i]->GetTranslate().z }
+						);
+						break;
+					}
+
+					Vector3 pos = mPlayer->GetTranslate();
+					pos.y += 0.2f;
+					mPlayer->SetTranslate(pos);
 				}
-				mPlayer->SetGravity(0.0f);
-				Vector3 pos = mPlayer->GetTranslate();
-				pos.y += 0.2f;
-				mPlayer->SetTranslate(pos);
 			}
 		}
-		else {
-			mPlayer->SetGravity(0.05f);
-		}
 	}
+	if (isHitLadder == true) {
+		mPlayer->SetGravity(0.0f);
+	}
+	else {
+		mPlayer->SetGravity(0.05f);
+	}
+
+	///--------------------当たり判定ここまで--------------------
 
 	//プレイヤーの行列を更新
 	mPlayer->GetTransform().UpdateMatrix();
