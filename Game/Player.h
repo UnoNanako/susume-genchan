@@ -9,6 +9,7 @@ class LightList;
 struct AABB;
 class MovingFloor;
 
+
 class Player : public GameObject
 {
 public:
@@ -36,6 +37,13 @@ public:
 	void SetVelocityY(float y) { mVelocity.y = y; }
 	void SetGravity(float gravity) { mGravity = gravity; }
 
+	enum class State {
+		NORMAL, //通常
+		CLIMBINGLADDER, //はしごを登っている状態
+	};
+	State GetState() { return mState; }
+	void SetState(State state) { mState = state; }
+
 private:
 	Vector3 mVelocity;
 	Texture* mTexture;
@@ -48,7 +56,8 @@ private:
 	float mGravity; //重力
 
 	Matrix4x4 mTransposeViewMatrix;
-
 	MovingFloor* mMovingFloor; //動く床
+
+	State mState;
 };
 
