@@ -33,7 +33,7 @@ public:
 	void SetDirection(Direction direction) { mDirection = direction; }
 	Direction GetDirection() { return mDirection; }
 	void SetHeight(float height) { mHeight = height; }
-
+	float GetHeight() { return mHeight; }
 private:
 	AABB mAABB;
 	bool mIsHit = false;

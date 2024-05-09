@@ -58,6 +58,6 @@ private:
 	Matrix4x4 mTransposeViewMatrix;
 	MovingFloor* mMovingFloor; //動く床
 
-	State mState;
+	State mState = State::NORMAL; //初期は通常
 };
 
