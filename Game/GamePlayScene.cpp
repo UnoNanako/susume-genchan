@@ -400,26 +400,12 @@ void GamePlayScene::Update(Input* input)
 			pos.y += collisionResult.normal.y * collisionResult.depth / 2;
 			pos.z += collisionResult.normal.z * collisionResult.depth / 2;
 			mPlayer->SetTranslate(pos);
-			//プレイヤーの状態をはしごを登る状態に設定
-			mPlayer->SetState(Player::State::CLIMBINGLADDER);
 		}
 		else {
 			mLadders[i]->SetIsHit(false);
 		}
 	}
 	bool isHitLadder = false;
-	//はしごを登る状態の場合
-	if (mPlayer->GetState() == Player::State::CLIMBINGLADDER) {
-		//はしごから離れた場合
-		if (!isHitLadder) {
-			mPlayer->SetState(Player::State::NORMAL);
-		}
-		//はしごを登り切った場合
-		else if (input->PushKey(DIK_W) || input->GetLStick().y >= 0.7f) {
-			//プレイヤーの位置を調整する処理を追加
-			//例えば、プレイヤーの位置を一定量移動させるなど
-		}
-	}
 
 	//プレイヤーとはしごが当たっているとき
 	for (uint32_t i = 0; i < mLadders.size(); ++i) {
@@ -441,6 +427,9 @@ void GamePlayScene::Update(Input* input)
 							mPlayer->GetTranslate().y,
 							mLadders[i]->GetTranslate().z - 1.5f }
 						);
+						if (mPlayer->GetTranslate().y >= 17.5f) {
+							mPlayer->SetTranslate({ mPlayer->GetTranslate().x,mPlayer->GetTranslate().y + 2.0f,mPlayer->GetTranslate().z + 2.0f });
+						}
 						break;
 					case Ladder::BACK:
 						mPlayer->SetTranslate(
@@ -448,6 +437,9 @@ void GamePlayScene::Update(Input* input)
 							mPlayer->GetTranslate().y,
 							mLadders[i]->GetTranslate().z + 1.5f }
 						);
+						if (mPlayer->GetTranslate().y >= 17.5) {
+							mPlayer->SetTranslate({ mPlayer->GetTranslate().x,mPlayer->GetTranslate().y + 2.0f,mPlayer->GetTranslate().z - 2.0f });
+						}
 						break;
 					case Ladder::LEFT:
 						mPlayer->SetTranslate(
@@ -455,6 +447,9 @@ void GamePlayScene::Update(Input* input)
 							mPlayer->GetTranslate().y,
 							mLadders[i]->GetTranslate().z }
 						);
+						if (mPlayer->GetTranslate().y >= 17.5f) {
+							mPlayer->SetTranslate({ mPlayer->GetTranslate().x + 2.0f, mPlayer->GetTranslate().y + 2.0f,mPlayer->GetTranslate().z });
+						}
 						break;
 					case Ladder::RIGHT:
 						mPlayer->SetTranslate(
@@ -462,6 +457,9 @@ void GamePlayScene::Update(Input* input)
 							mPlayer->GetTranslate().y,
 							mLadders[i]->GetTranslate().z }
 						);
+						if (mPlayer->GetTranslate().y >= 17.5f) {
+							mPlayer->SetTranslate({ mPlayer->GetTranslate().x - 2.0f, mPlayer->GetTranslate().y + 2.0f,mPlayer->GetTranslate().z });
+						}
 						break;
 					}
 
