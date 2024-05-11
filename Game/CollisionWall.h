@@ -17,6 +17,9 @@ public:
 	/// </summary>
 	Transform GetTransform() { return mTransform; }
 	Vector3 GetTranslate() { return mTransform.translate; }
+	Vector3 GetScale() { return mTransform.scale; }
+	AABB GetAABB() { return mAABB; }
+	void SetTransform(Transform transform) { mTransform = transform; }
 	
 private:
 	AABB mAABB;

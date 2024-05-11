@@ -23,7 +23,8 @@
 #include "Game/Skydome.h"
 #include "Game/Ladder.h"
 #include "Engine/Light/LightList.h"
-	
+#include "Game/CollisionWall.h"
+
 class DirectXCommon;
 class Sprite;
 class Model;
@@ -35,33 +36,27 @@ class Input;
 class GamePlayScene
 {
 public:
-	GamePlayScene(Game *game);
+	GamePlayScene(Game* game);
 	void Initialize(DirectXCommon* dxCommon);
 	void Finalize();
 	void Update(Input* input);
 	void Draw(DirectXCommon* dxCommon);
 
 private:
+	void LadderInitialize(DirectXCommon* dxCommon);
+	void ObjectUpdate(Input* input);
+	void Collision(Input* input);
+
 	Game* mGame;
+	std::unique_ptr<PlayerCamera> mPlayerCamera;
+	std::unique_ptr<BirdEyeCamera> mBirdEyeCamera; //俯瞰カメラ
+	std::unique_ptr<LightList> mLightList; //ライト
+	std::unique_ptr<ParticleList> mParticle; //パーティクル
 
 	/// <summary>
-	/// オブジェクト
+	/// プレイヤー
 	/// </summary>
-	std::unique_ptr<PlayerCamera> mPlayerCamera;
-	std::unique_ptr<BirdEyeCamera> mBirdEyeCamera;
-	std::unique_ptr<LightList> mLightList;
 	std::unique_ptr<Player> mPlayer;
-	std::unique_ptr<Map> mMap;
-	std::unique_ptr<Crosshair> mCrosshair;
-	std::unique_ptr<ParticleList> mParticle;
-	std::unique_ptr<Skydome> mSkydome; //天球
-	//はしご
-	const int mLADDER_MAX = 3;
-	std::vector<std::unique_ptr<Ladder>> mLadders; 
-	//はしご用のモデル、テクスチャ
-	std::unique_ptr<Model> mLadderModel0; //離島にあるはしご
-	std::unique_ptr<Model> mLadderModel_height15; //縦15(3マス分)のはしご
-	std::unique_ptr<Model> mLadderModel_height15_02; //縦15のはしご2つ目
 
 	/// <summary>
 	/// 敵
@@ -76,18 +71,6 @@ private:
 	const int mGHOST_MAX = 1;
 	std::vector<std::unique_ptr<Ghost>> mGhosts;
 
-	/// <summary>
-	/// アイテム
-	/// </summary>
-	std::vector <std::unique_ptr<Gem>> mGems;
-	std::unique_ptr<Star> mStar;
-
-	/// <summary>
-	/// 草
-	/// </summary>
-	const int mGRASS_MAX = 1;
-	std::vector<std::unique_ptr<Grass>> mGrasses;
-	
 	/// <summary>
 	/// ギミック
 	/// </summary>
@@ -105,6 +88,18 @@ private:
 	std::unique_ptr<RotateFloor> mRotateFloor;
 
 	/// <summary>
+	/// アイテム
+	/// </summary>
+	std::vector <std::unique_ptr<Gem>> mGems;
+	std::unique_ptr<Star> mStar;
+
+	/// <summary>
+	/// 当たり判定の壁(透明)
+	/// <summary>
+	const int mCOLLISIONWALL_MAX = 2;
+	std::vector<std::unique_ptr<CollisionWall>> mCollisionWalls;
+
+	/// <summary>
 	/// フラグ
 	/// </summary>
 	bool mIsDirectionalLight = true;
@@ -117,15 +112,26 @@ private:
 	bool mLadderIsHit = false; //はしごに当たっているか
 
 	/// <summary>
-	/// UI
+	/// オブジェクト
 	/// </summary>
-	//std::unique_ptr<Sprite> mAbuttonSprite; //Aボタン
-	//std::unique_ptr<Sprite> mCrankSprite; //クランク
-	
+	std::unique_ptr<Map> mMap; //マップ
+	std::unique_ptr<Skydome> mSkydome; //天球
+	//はしご
+	const int mLADDER_MAX = 3;
+	std::vector<std::unique_ptr<Ladder>> mLadders;
+	//はしご用のモデル、テクスチャ
+	std::unique_ptr<Model> mLadderModel0; //離島にあるはしご
+	std::unique_ptr<Model> mLadderModel_height15; //縦15(3マス分)のはしご
+	std::unique_ptr<Model> mLadderModel_height15_02; //縦15のはしご2つ目
+	//草
+	const int mGRASS_MAX = 1;
+	std::vector<std::unique_ptr<Grass>> mGrasses;
+
 	/// <summary>
-	/// テキスト
-	/// </summary>
-	std::unique_ptr<Sprite> mClearSprite;
-	std::unique_ptr<Sprite> mGameoverSprite;
+	/// スプライト
+	/// <summary>
+	std::unique_ptr<Crosshair> mCrosshair; //クロスヘア
+	std::unique_ptr<Sprite> mClearSprite; //クリアスプライト
+	std::unique_ptr<Sprite> mGameoverSprite; //ゲームオーバースプライト
 };
 

@@ -171,7 +171,7 @@
     <ClCompile Include="externals\imgui\imgui_stdlib.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
-    <ClCompile Include="CollisionWall.cpp">
+    <ClCompile Include="Game\CollisionWall.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -350,7 +350,7 @@
     <ClInclude Include="externals\imgui\imgui_stdlib.h">
       <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="CollisionWall.h">
+    <ClInclude Include="Game\CollisionWall.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
