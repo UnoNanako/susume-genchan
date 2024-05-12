@@ -149,8 +149,16 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon)
 		mCollisionWalls[i] = std::make_unique<CollisionWall>();
 		mCollisionWalls[i]->Initialize();
 	}
+	//外周（左から時計回り）
 	mCollisionWalls[0]->SetTransform({{3.0f,5.0f,50.0f},{0.0f,0.0f,0.0f},{-30.0f,5.0f,0.0f}});
 	mCollisionWalls[1]->SetTransform({ {30.0f,5.0f,3.0f},{0.0f,0.0f,0.0f},{-15.0f,5.0f,27.5f}});
+	mCollisionWalls[2]->SetTransform({ {3.0f,5.0f,50.0f},{0.0f,0.0f,0.0f},{30.0f,5.0f,0.0f} });
+	mCollisionWalls[3]->SetTransform({ {60.0f,5.0f,3.0f},{0.0f,0.0f,0.0f},{0.0f,5.0f,-27.5f} });
+	//草
+	mCollisionWalls[4]->SetTransform({ {5.5f,5.5f,40.0f},{0.0f,0.0f,0.0f},{-17.5f,5.0f,-7.5f} });
+	mCollisionWalls[5]->SetTransform({ {5.5f,5.0f,15.0f},{0.0f,0.0f,0.0f},{-22.5f,5.0f,15.0f} });
+	mCollisionWalls[6]->SetTransform({ {15.5f,5.0f,10.5f},{0.0f,0.0f,0.0f},{-2.5f,5.0f,-17.5f} });
+	mCollisionWalls[7]->SetTransform({ {5.5f,5.0f,10.5f},{0.0f,0.0f,0.0f},{-7.5f,5.0f,-7.5f} });
 }
 
 void GamePlayScene::Finalize()

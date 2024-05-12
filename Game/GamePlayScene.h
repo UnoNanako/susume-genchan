@@ -96,7 +96,7 @@ private:
 	/// <summary>
 	/// 当たり判定の壁(透明)
 	/// <summary>
-	const int mCOLLISIONWALL_MAX = 2;
+	const int mCOLLISIONWALL_MAX = 8;
 	std::vector<std::unique_ptr<CollisionWall>> mCollisionWalls;
 
 	/// <summary>
