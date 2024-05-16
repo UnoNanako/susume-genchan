@@ -12,9 +12,6 @@
 #include <Windows.h>
 #include "PlayerCamera.h"
 #include "ImGuiManager.h"
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
 
 using namespace std;
 
@@ -73,8 +70,8 @@ void Model::Draw(ID3D12GraphicsCommandList* commandList,Camera* camera,const Tra
 	//Model用のWorldViewProjectionMatrixをつくる
 	Matrix4x4 worldMatrix = mTransform.mMatWorld;//MakeAffineMatrix(mTransform.scale, mTransform.rotate, mTransform.translate);
 	Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(camera->GetViewMatrix(), camera->GetProjectionMatrix()));
-	transformationMatrixData->WVP = worldViewProjectionMatrix;
-	transformationMatrixData->World = worldMatrix;
+	transformationMatrixData->WVP = Multiply(modelData.rootNode.localMatrix,worldViewProjectionMatrix);
+	transformationMatrixData->World = Multiply(modelData.rootNode.localMatrix,worldMatrix);
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	commandList->SetGraphicsRootConstantBufferView(0, materialResource->GetGPUVirtualAddress());
 	commandList->SetGraphicsRootConstantBufferView(1, transformationMatrixResource->GetGPUVirtualAddress());
@@ -112,87 +109,12 @@ MaterialData Model::LoadMaterialTemplateFile(const std::string& directoryPath, c
 	return materialData;
 }
 
-void Model::LoadObjFile(const std::string& filePath)
-{
-	//1. 中で必要となる変数の宣言
-	vector<Vector4> positions; //位置
-	vector<Vector3> normals; //法線
-	vector<Vector2> texcoords; //テクスチャ座標
-	string line; //ファイルから呼んだ1行を格納するもの
-
-	//2. ファイルを開く
-	ifstream file(filePath); //ファイルを開く
-	assert(file.is_open()); //とりあえず開けなかったら止める
-
-	//3. 実際にファイルを読み、ModelDataを構築していく
-	while (getline(file, line)) {
-		string identifire;
-		istringstream s(line);
-		s >> identifire; //先頭の識別子を読む
-
-		//identifireに応じた処理
-		//頂点情報を読む
-		if (identifire == "v") {
-			Vector4 position;
-			s >> position.x >> position.y >> position.z;
-			position.w = 1.0f;
-			positions.push_back(position);
-		}
-		else if (identifire == "vt") {
-			Vector2 texcoord;
-			s >> texcoord.x >> texcoord.y;
-			texcoords.push_back(texcoord);
-		}
-		else if (identifire == "vn") {
-			Vector3 normal;
-			s >> normal.x >> normal.y >> normal.z;
-			normals.push_back(normal);
-		}
-		//三角形を作る
-		else if (identifire == "f") {
-			//面は三角形限定。その他は未対応
-			VertexData triangle[3];
-			for (int32_t faceVertex = 0; faceVertex < 3; ++faceVertex) {
-				string vertexDefinition;
-				s >> vertexDefinition;
-				//頂点の要素へのIndexは「位置/UV/法線」で格納されているので、分解してIndexを取得する
-				std::istringstream v(vertexDefinition);
-				uint32_t elementIndices[3];
-				for (int32_t element = 0; element < 3; ++element) {
-					std::string index;
-					std::getline(v, index, '/');// /区切りでインデックスを読んでいく
-					elementIndices[element] = std::stoi(index);
-				}
-				// 要素へのIndexから、実際の要素の値を取得して、頂点を構築する
-				Vector4 position = positions[elementIndices[0] - 1];
-				position.x *= -1;
-				Vector2 texcoord = texcoords[elementIndices[1] - 1];
-				Vector3 normal = normals[elementIndices[2] - 1];
-				normal.x *= -1;
-				triangle[faceVertex] = {position, texcoord, normal};
-				//modelData.vertices.push_back(vertex);
-			}
-			// 頂点を逆順で登録することで、回り順を逆にする
-			modelData.vertices.push_back(triangle[2]);
-			modelData.vertices.push_back(triangle[1]);
-			modelData.vertices.push_back(triangle[0]);
-		}
-		//material読み込み
-		else if (identifire == "mtllib") {
-			//materialTemplateLibraryファイルの名前を取得する
-			std::string materialFilename;
-			s >> materialFilename;
-			//基本的にobjファイルと同一階層にmtlは存在させるので、ディレクトリ名とファイル名を探す
-			modelData.material = LoadMaterialTemplateFile("resources", materialFilename);
-		}
-	}
-}
-
 void Model::Load(const std::string& directoryPath, const std::string& filename)
 {
 	Assimp::Importer importer;
 	std::string filePath = directoryPath + "/" + filename;
 	const aiScene* scene = importer.ReadFile(filePath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
+	modelData.rootNode = ReadNode(scene->mRootNode);
 	assert(scene->HasMeshes()); //メッシュがないのは対応しない
 	for (uint32_t meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex) {
 		aiMesh* mesh = scene->mMeshes[meshIndex];
@@ -229,4 +151,33 @@ void Model::Load(const std::string& directoryPath, const std::string& filename)
 			}
 		}
 	}
+}
+
+Node Model::ReadNode(aiNode* node){
+	Node ret;
+	aiMatrix4x4 aiLocalMatrix = node->mTransformation; //nodeのlocalMatrixを取得
+	aiLocalMatrix.Transpose(); //列ベクトル形式を行ベクトル形式に転置
+	ret.localMatrix.m[0][0] = aiLocalMatrix[0][0]; 
+	ret.localMatrix.m[0][1] = aiLocalMatrix[0][1];
+	ret.localMatrix.m[0][2] = aiLocalMatrix[0][2];
+	ret.localMatrix.m[0][3] = aiLocalMatrix[0][3];
+	ret.localMatrix.m[1][0] = aiLocalMatrix[1][0];
+	ret.localMatrix.m[1][1] = aiLocalMatrix[1][1];
+	ret.localMatrix.m[1][2] = aiLocalMatrix[1][2];
+	ret.localMatrix.m[1][3] = aiLocalMatrix[1][3];
+	ret.localMatrix.m[2][0] = aiLocalMatrix[2][0];
+	ret.localMatrix.m[2][1] = aiLocalMatrix[2][1];
+	ret.localMatrix.m[2][2] = aiLocalMatrix[2][2];
+	ret.localMatrix.m[2][3] = aiLocalMatrix[2][3];
+	ret.localMatrix.m[3][0] = aiLocalMatrix[3][0];
+	ret.localMatrix.m[3][1] = aiLocalMatrix[3][1];
+	ret.localMatrix.m[3][2] = aiLocalMatrix[3][2];
+	ret.localMatrix.m[3][3] = aiLocalMatrix[3][3];
+	ret.name = node->mName.C_Str(); //Node名を格納
+	ret.children.resize(node->mNumChildren); //子供の数だけ確保
+	for (uint32_t childIndex = 0; childIndex < node->mNumChildren; ++childIndex) {
+		//再帰的に読んで階層構造を作っていく
+		ret.children[childIndex] = ReadNode(node->mChildren[childIndex]);
+	}
+	return ret;
 }

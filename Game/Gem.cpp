@@ -3,6 +3,7 @@
 #include "Engine/2D/Texture.h"
 #include "Engine/DirectXCommon.h"
 #include "Engine/3D/Model.h"
+#include "Easing.h"
 
 Gem::~Gem(){
 	delete mTexture;
@@ -13,12 +14,10 @@ void Gem::Initialize(DirectXCommon* dxCommon){
 	mDxCommon = dxCommon;
 	mTransform = { {1.0f,1.0f,1.0f} ,{0.0f,0.0f,0.0f},{1.0f,1.0f,1.0f} };
 	mTexture = new Texture;
-	mTexture->Create(mDxCommon, "resources/Model/Gem/gemColor.png");
 	mGetColor = std::make_unique<Texture>();
 	mGetColor->Create(mDxCommon, "resources/Model/Gem/gemGet.png");
 	mModel = new Model();
-	mModel->Create(mDxCommon, "resources/Model/Gem", "Gem.obj");
-	mModel->SetTexture(mTexture);
+	mModel->Create(mDxCommon, "resources/Model/Gem", "Gem_gltf.gltf");
 }
 
 void Gem::Update(){
@@ -28,7 +27,6 @@ void Gem::Update(){
 }
 
 void Gem::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
-	mTexture->Bind(commandList);
 	mGetColor->Bind(commandList);
 	mModel->Draw(commandList, camera, mTransform);
 }
@@ -36,14 +34,14 @@ void Gem::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
 AABB Gem::CalcurateAABB(const Vector3& translate){
 	AABB ret;
 	ret.min = {
-		{translate.x - (1.0f / 2.0f)},
-		{translate.y - (1.0f / 2.0f)},
-		{translate.z - (1.0f / 2.0f)}
+		{translate.x - (5.0f / 2.0f)},
+		{translate.y - (5.0f / 2.0f)},
+		{translate.z - (5.0f / 2.0f)}
 	};
 	ret.max = {
-		{translate.x + (1.0f / 2.0f)},
-		{translate.y + (1.0f / 2.0f)},
-		{translate.z + (1.0f / 2.0f)}
+		{translate.x + (5.0f / 2.0f)},
+		{translate.y + (5.0f / 2.0f)},
+		{translate.z + (5.0f / 2.0f)}
 	};
 	return ret;
 }

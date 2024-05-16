@@ -8,8 +8,7 @@ class Texture;
 class Camera;
 struct VertexData;
 
-class GameObject
-{
+class GameObject{
 public:
 	virtual void Initialize(DirectXCommon* dxCommon);
 	virtual void Update();

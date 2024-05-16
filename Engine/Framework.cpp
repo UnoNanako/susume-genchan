@@ -1,19 +1,15 @@
 #include "Framework.h"
 
-void Framework::Initialize()
-{
+void Framework::Initialize(){
 }
 
-void Framework::Finalize()
-{
+void Framework::Finalize(){
 }
 
-void Framework::Update()
-{
+void Framework::Update(){
 }
 
-void Framework::Run()
-{
+void Framework::Run(){
 	//ゲームの初期化
 	Initialize();
 

@@ -1,6 +1,5 @@
 #pragma once
-class Framework
-{
+class Framework{
 public:
 	//初期化
 	virtual void Initialize();

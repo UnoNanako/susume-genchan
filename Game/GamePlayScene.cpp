@@ -76,7 +76,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon){
 		mGems[i] = std::make_unique<Gem>();
 		mGems[i]->Initialize(dxCommon);
 	}
-	mGems[0]->SetTranslate({ 27.0f,10.0f,-22.5f });
+	mGems[0]->SetTranslate({ 22.0f,5.0f,-22.5f });
 	//スター
 	mStar = std::make_unique<Star>();
 	mStar->Initialize(dxCommon);
@@ -426,10 +426,13 @@ void GamePlayScene::Collision(Input *input){
 	//gemとプレイヤー
 	for (uint32_t i = 0; i < mGems.size(); ++i) {
 		if (IsCollision(mPlayer->GetAABB(), mGems[i]->GetAABB(), collisionResult)) {
+			mGems[i]->SetIsHit(true);
 			Vector3 pos = mPlayer->GetTranslate();
 			pos.x += collisionResult.normal.x * collisionResult.depth;
 			pos.z += collisionResult.normal.z * collisionResult.depth;
 			mPlayer->SetTranslate(pos);
+		} else {
+			mGems[i]->SetIsHit(false);
 		}
 	}
 

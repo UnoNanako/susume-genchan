@@ -9,8 +9,7 @@
 #include <chrono>
 
 //DirectX基盤
-class DirectXCommon
-{
+class DirectXCommon{
 public:
 	void Initialize(WinApiManager* winApiManager);// 初期化
 	void Finalize(); //Initializeの逆

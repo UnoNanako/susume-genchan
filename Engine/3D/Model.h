@@ -6,6 +6,9 @@
 #include <vector>
 #include <Windows.h>
 #include <wrl.h>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 class DirectXCommon;
 class Texture;
@@ -14,10 +17,18 @@ struct TransformationMatrix;
 struct VertexData;
 class Camera;
 
+//ノード
+struct Node {
+	Matrix4x4 localMatrix;
+	std::string name;
+	std::vector<Node> children;
+};
+
 //モデルデータ
 struct ModelData {
 	std::vector<VertexData> vertices;
 	MaterialData material;
+	Node rootNode;
 };
 
 class Model
@@ -33,6 +44,7 @@ public:
 	void LoadObjFile(const std::string& filePath);
 	//glTFを読む関数
 	void Load(const std::string& derectoryPath,const std::string& filename);
+	Node ReadNode(aiNode* node);
 
 	/// <summary>
 	/// アクセッサ

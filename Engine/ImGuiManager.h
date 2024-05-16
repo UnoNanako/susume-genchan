@@ -12,8 +12,7 @@ class DirectXCommon;
 
 using namespace Microsoft::WRL;
 
-class ImGuiManager
-{
+class ImGuiManager{
 public:
 	void Initialize(WinApiManager* winApp, DirectXCommon* dxCommon);
 	void Finalize();
@@ -23,8 +22,7 @@ public:
 };
 
 template <class T>
-bool Combo(const char* name, T& curr)
-{
+bool Combo(const char* name, T& curr){
 	bool isChanged = false;
 	if (ImGui::BeginCombo(name, magic_enum::enum_name(curr).data())) {
 		for (size_t i = 0; i < magic_enum::enum_count<T>(); ++i) {

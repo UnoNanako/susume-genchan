@@ -8,8 +8,7 @@
 #include <sstream>
 #include <Windows.h>
 
-void ImGuiManager::Initialize(WinApiManager* winApp, DirectXCommon* dxCommon)
-{
+void ImGuiManager::Initialize(WinApiManager* winApp, DirectXCommon* dxCommon){
 	//ImGuiのコンテキストを生成
 	ImGui::CreateContext();
 	//ImGuiのスタイルを設定

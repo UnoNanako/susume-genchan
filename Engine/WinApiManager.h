@@ -3,8 +3,7 @@
 #include <cstdint>
 
 //WindowsAPI
-class WinApiManager
-{
+class WinApiManager{
 public: //メンバ関数
 	//定数　クライアント領域のサイズ
 	static const int32_t kClientWidth = 1280;
