@@ -29,13 +29,11 @@
 #include "Block.h"
 #include "Engine//3D/Model.h"
 
-GamePlayScene::GamePlayScene(Game* game)
-{
+GamePlayScene::GamePlayScene(Game* game){
 	mGame = game;
 }
 
-void GamePlayScene::Initialize(DirectXCommon* dxCommon)
-{
+void GamePlayScene::Initialize(DirectXCommon* dxCommon){
 	//カメラの初期化
 	mPlayerCamera = std::make_unique<PlayerCamera>();
 	mPlayerCamera->Initialize(dxCommon);
@@ -166,8 +164,7 @@ void GamePlayScene::Finalize()
 	mMap->Finalize();
 }
 
-void GamePlayScene::Update(Input* input)
-{
+void GamePlayScene::Update(Input* input){
 	/// <summary>
 	/// ImGui
 	/// <summary>
@@ -197,8 +194,7 @@ void GamePlayScene::Update(Input* input)
 	mPlayer->GetTransform().UpdateMatrix();
 }
 
-void GamePlayScene::Draw(DirectXCommon* dxCommon)
-{
+void GamePlayScene::Draw(DirectXCommon* dxCommon){
 	mGame->GetModelCommon()->Bind(dxCommon);
 	mLightList->Bind(dxCommon->GetCommandList());
 	//----------モデルここから----------
@@ -268,8 +264,7 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon)
 	}
 }
 
-void GamePlayScene::LadderInitialize(DirectXCommon* dxCommon)
-{
+void GamePlayScene::LadderInitialize(DirectXCommon* dxCommon){
 	//はしご
 	mLadders.resize(mLADDER_MAX);
 	for (uint32_t i = 0; i < mLadders.size(); ++i) {
@@ -317,8 +312,7 @@ void GamePlayScene::LadderInitialize(DirectXCommon* dxCommon)
 	}
 }
 
-void GamePlayScene::ObjectUpdate(Input *input)
-{
+void GamePlayScene::ObjectUpdate(Input *input){
 	/// <summary>
 	/// 更新
 	/// <summary>
@@ -371,11 +365,9 @@ void GamePlayScene::ObjectUpdate(Input *input)
 	mClearSprite->Update(); //クリアスプライト
 	mGameoverSprite->Update(); //ゲームオーバースプライト
 	mCrosshair->Update(); //クロスヘア
-
 }
 
-void GamePlayScene::Collision(Input *input)
-{
+void GamePlayScene::Collision(Input *input){
 	CollisionResult collisionResult;
 	//壁,床とプレイヤー
 	mPlayer->SetIsHit(false);
@@ -455,8 +447,7 @@ void GamePlayScene::Collision(Input *input)
 	if (IsCollision(mPlayer->GetAABB(), mSlideSwitch->GetAABB(), collisionResult)) {
 		mSwitchIsHit = true;
 		mSlideFloor->SetIsMoving(true);
-	}
-	else {
+	}else {
 		mSwitchIsHit = false;
 	}
 
@@ -476,8 +467,7 @@ void GamePlayScene::Collision(Input *input)
 		}
 		auto& tmp = mSlideFloor->GetTransform();
 		mPlayer->SetParent(&tmp);
-	}
-	else {
+	}else {
 		if (mSlideFloorIsHit == true) {
 			mPlayer->SetParent(nullptr);
 			mSlideFloorIsHit = false;
@@ -490,8 +480,7 @@ void GamePlayScene::Collision(Input *input)
 	if (IsCollision(mPlayer->GetAABB(), mCrank->GetAABB(), collisionResult)) {
 		mCrank->SetIsHit(true);
 		mBirdEyeCamera->SetIsHit(true);
-	}
-	else {
+	}else {
 		mCrank->SetIsHit(false);
 		mBirdEyeCamera->SetIsHit(false);
 	}
@@ -515,8 +504,7 @@ void GamePlayScene::Collision(Input *input)
 			pos.y += collisionResult.normal.y * collisionResult.depth / 2;
 			pos.z += collisionResult.normal.z * collisionResult.depth / 2;
 			mPlayer->SetTranslate(pos);
-		}
-		else {
+		}else {
 			mLadders[i]->SetIsHit(false);
 		}
 	}
@@ -587,8 +575,7 @@ void GamePlayScene::Collision(Input *input)
 	}
 	if (isHitLadder == true) {
 		mPlayer->SetGravity(0.0f);
-	}
-	else {
+	}else {
 		mPlayer->SetGravity(0.05f);
 	}
 }

@@ -6,8 +6,7 @@
 class Player;
 class AABB;
 
-class Ghost : public GameObject
-{
+class Ghost : public GameObject{
 public:
 	Ghost();
 	~Ghost();

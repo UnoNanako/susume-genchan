@@ -2,24 +2,20 @@
 #include "2D/Sprite.h"
 #include "DirectXCommon.h"
 
-Crosshair::~Crosshair()
-{
+Crosshair::~Crosshair(){
 	delete mCrossSprite;
 }
 
-void Crosshair::Initialize(DirectXCommon* dxCommon)
-{
+void Crosshair::Initialize(DirectXCommon* dxCommon){
 	mCrossSprite = new Sprite();
 	mCrossSprite->Create(dxCommon, "resources/Sprite/Crosshair/Cross.png");
 	mCrossSprite->SetTransform({ { 1.0f,1.0f,1.0f },{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} });
 }
 
-void Crosshair::Update()
-{
+void Crosshair::Update(){
 	mCrossSprite->Update();
 }
 
-void Crosshair::Draw(ID3D12GraphicsCommandList* commandList)
-{
+void Crosshair::Draw(ID3D12GraphicsCommandList* commandList){
 	mCrossSprite->Draw(commandList);
 }

@@ -4,13 +4,11 @@
 #include "2D/Texture.h"
 #include "VertexData.h"
 
-SlideFloor::~SlideFloor()
-{
+SlideFloor::~SlideFloor(){
 	delete mModel;
 }
 
-void SlideFloor::Initialize(DirectXCommon* dxCommon)
-{
+void SlideFloor::Initialize(DirectXCommon* dxCommon){
 	mDxCommon = dxCommon;
 	mSpeed = -0.15f;
 	mTransform = {
@@ -23,8 +21,7 @@ void SlideFloor::Initialize(DirectXCommon* dxCommon)
 	mIsMove = false;
 }
 
-void SlideFloor::Update()
-{
+void SlideFloor::Update(){
 	if (mIsMove == true) {
 		mTransform.translate.z += mSpeed;
 		//現在の時間を取得
@@ -38,13 +35,11 @@ void SlideFloor::Update()
 	mTransform.UpdateMatrix();
 }
 
-void SlideFloor::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
-{
+void SlideFloor::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
 	mModel->Draw(commandList, camera, mTransform);
 }
 
-AABB SlideFloor::CalcurateAABB(const Vector3& translate)
-{
+AABB SlideFloor::CalcurateAABB(const Vector3& translate){
 	AABB ret;
 	ret.min = {
 		{translate.x - (10.0f / 2.0f)},

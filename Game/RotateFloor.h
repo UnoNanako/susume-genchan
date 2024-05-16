@@ -6,8 +6,7 @@
 
 struct OBB;
 
-class RotateFloor : public MoveFloor
-{
+class RotateFloor : public MoveFloor{
 public:
 	~RotateFloor();
 	void Initialize(DirectXCommon* dxCommon)override;

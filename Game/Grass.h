@@ -4,8 +4,7 @@
 
 class AABB;
 
-class Grass : public GameObject
-{
+class Grass : public GameObject{
 public:
 	~Grass();
 	void Initialize(DirectXCommon* dxCommon)override;

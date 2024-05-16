@@ -6,8 +6,7 @@
 
 class DirectXCommon;
 
-class PlayerCamera : public Camera
-{
+class PlayerCamera : public Camera{
 public:
 	PlayerCamera();
 	void Update() override;

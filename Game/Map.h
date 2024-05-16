@@ -14,8 +14,7 @@ struct Block;
 const std::string pathToJSON("./resources/Json/map.json");
 const std::string pathToAABBJSON("./resources/Json/mapAABB.json");
 
-class Map : public GameObject
-{
+class Map : public GameObject{
 public:
 	//モデル、テクスチャの種類を管理するenum(マップチップのアレ)
 	enum ModelIndex : unsigned int {

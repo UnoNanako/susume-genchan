@@ -5,8 +5,7 @@
 class AABB;
 class MoveFloor;
 
-class Switch : public GameObject
-{
+class Switch : public GameObject{
 public:
 	~Switch();
 	void Initialize(DirectXCommon* dxCommon)override;

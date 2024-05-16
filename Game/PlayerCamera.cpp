@@ -4,13 +4,11 @@
 #include "externals/imgui/imgui.h"
 #include "MyMath.h"
 
-PlayerCamera::PlayerCamera()
-{
+PlayerCamera::PlayerCamera(){
 	mTransform = { {1.0f,1.0f,1.0f},{0.8f,0.0f,0.0f},{0.0f,95.0f,-100.0f} };
 }
 
-void PlayerCamera::Update()
-{
+void PlayerCamera::Update(){
 	ImGui::Begin("Camera");
 	ImGui::DragFloat3("Position", &mTransform.translate.x, 0.05f);
 	ImGui::DragFloat3("Rotate", &mTransform.rotate.x, 0.05f);

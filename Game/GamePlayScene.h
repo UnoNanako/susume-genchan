@@ -33,8 +33,7 @@ class Texture;
 class Camera;
 class Input;
 
-class GamePlayScene
-{
+class GamePlayScene{
 public:
 	GamePlayScene(Game* game);
 	void Initialize(DirectXCommon* dxCommon);

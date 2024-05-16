@@ -4,13 +4,11 @@
 #include "2D/Texture.h"
 #include "VertexData.h"
 
-UpFloor::~UpFloor()
-{
+UpFloor::~UpFloor(){
 	delete mModel;
 }
 
-void UpFloor::Initialize(DirectXCommon* dxCommon)
-{
+void UpFloor::Initialize(DirectXCommon* dxCommon){
 	mDxCommon = dxCommon;
 	mSpeed = 0.05f;
 	mTransform = {
@@ -23,19 +21,16 @@ void UpFloor::Initialize(DirectXCommon* dxCommon)
 	mIsMove = false;
 }
 
-void UpFloor::Update()
-{
+void UpFloor::Update(){
 	mAABB = CalcurateAABB(mTransform.translate);
 	mTransform.UpdateMatrix();
 }
 
-void UpFloor::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
-{
+void UpFloor::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
 	mModel->Draw(commandList, camera, mTransform);
 }
 
-void UpFloor::Move()
-{
+void UpFloor::Move(){
 	mTransform.translate.y += mSpeed;
 	if (mTransform.translate.y >= 7.5f) {
 		mSpeed = 0.0f;
@@ -44,8 +39,7 @@ void UpFloor::Move()
 	mTransform.UpdateMatrix();
 }
 
-AABB UpFloor::CalcurateAABB(const Vector3& translate)
-{
+AABB UpFloor::CalcurateAABB(const Vector3& translate){
 	AABB ret;
 	ret.min = {
 		{translate.x - (5.0f / 2.0f)},

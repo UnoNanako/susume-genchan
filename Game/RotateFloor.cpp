@@ -5,14 +5,12 @@
 #include "VertexData.h"
 #include "Math/MyMath.h"
 
-RotateFloor::~RotateFloor()
-{
+RotateFloor::~RotateFloor(){
 	delete mTexture;
 	delete mModel;
 }
 
-void RotateFloor::Initialize(DirectXCommon* dxCommon)
-{
+void RotateFloor::Initialize(DirectXCommon* dxCommon){
 	mDxCommon = dxCommon;
 	mTransform = {
 		{1.0f,1.0f,1.0f},
@@ -26,20 +24,17 @@ void RotateFloor::Initialize(DirectXCommon* dxCommon)
 	mModel->SetTexture(mTexture);
 }
 
-void RotateFloor::Update()
-{
+void RotateFloor::Update(){
 	Vector3 WorldPos = GetWorldPosition();
 	CalcurateOBB(WorldPos);
 	mTransform.UpdateMatrix();
 }
 
-void RotateFloor::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
-{
+void RotateFloor::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
 	mModel->Draw(commandList, camera, mTransform);
 }
 
-void RotateFloor::CalcurateOBB(const Vector3& translate)
-{
+void RotateFloor::CalcurateOBB(const Vector3& translate){
 	mOBB.center = translate;
 	mOBB.size = { 6.0f,0.1f,35.0f };
 	Matrix4x4 rotateX = MakeRotateXMatrix(mTransform.rotate.x);

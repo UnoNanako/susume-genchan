@@ -11,18 +11,15 @@ WalkEnemy::WalkEnemy()
 	:mFovAngle(kPi / 2.0f) //90°
 	, mIsPlayerInView(false)
 	, mLength(20.0f)
-	, mVelocity({ 0.05f,0.0f,0.05f })
-{
+	, mVelocity({ 0.05f,0.0f,0.05f }){
 }
 
-WalkEnemy::~WalkEnemy()
-{
+WalkEnemy::~WalkEnemy(){
 	delete mTexture;
 	delete mModel;
 }
 
-void WalkEnemy::Initialize(DirectXCommon* dxCommon)
-{
+void WalkEnemy::Initialize(DirectXCommon* dxCommon){
 	mDxCommon = dxCommon;
 	mTransform = {
 		{1.0f,1.0f,1.0f}, //scale
@@ -36,8 +33,7 @@ void WalkEnemy::Initialize(DirectXCommon* dxCommon)
 	mModel->SetTexture(mTexture);
 }
 
-void WalkEnemy::Update()
-{
+void WalkEnemy::Update(){
 	switch (mDirection) {
 	case UP:
 		mTransform.translate.z += mVelocity.z;
@@ -67,8 +63,7 @@ void WalkEnemy::Update()
 	mTransform.UpdateMatrix();
 }
 
-void WalkEnemy::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
-{
+void WalkEnemy::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
 	mTexture->Bind(commandList);
 	mModel->Draw(commandList, camera, mTransform);
 }

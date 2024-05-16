@@ -5,8 +5,7 @@
 #include "MyMath.h"
 #include "Engine/Input/Input.h"
 
-BirdEyeCamera::BirdEyeCamera()
-{
+BirdEyeCamera::BirdEyeCamera(){
 	mTransform = { {1.0f,1.0f,1.0f},{0.8f,0.0f,0.0f},{-50.0f,35.0f,-55.0f} };
 	mTarget = { 0.0f,0.0f,0.0f };
 	mUp = { 0.0f,1.0f,0.0f };
@@ -16,8 +15,7 @@ BirdEyeCamera::BirdEyeCamera()
 	mLon = 0.0f;
 }
 
-void BirdEyeCamera::Update(Input* input, Vector3 playerTranslate)
-{
+void BirdEyeCamera::Update(Input* input, Vector3 playerTranslate){
 	ImGui::Begin("BirdCamera");
 	ImGui::DragFloat3("Position", &mTransform.translate.x, 0.05f);
 	ImGui::DragFloat3("Rotate", &mTransform.rotate.x, 0.05f);

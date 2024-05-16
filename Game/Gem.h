@@ -10,8 +10,7 @@ class Texture;
 struct AABB;
 class ParticleList;
 
-class Gem : public GameObject
-{
+class Gem : public GameObject{
 public:
 	~Gem();
 	void Initialize(DirectXCommon* dxCommon) override;

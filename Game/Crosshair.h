@@ -5,8 +5,7 @@
 class Sprite;
 class DirectXCommon;
 
-class Crosshair
-{
+class Crosshair{
 public:
 	~Crosshair();
 	void Initialize(DirectXCommon* dxCommon);

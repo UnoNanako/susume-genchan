@@ -14,8 +14,7 @@ class GamePlayScene;
 class ModelCommon;
 class ParticleCommon;
 
-class Game : public Framework
-{
+class Game : public Framework{
 public:
 	void Initialize() override;
 	void Finalize() override;

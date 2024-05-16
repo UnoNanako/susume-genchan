@@ -4,8 +4,7 @@
 
 class AABB;
 
-class Star : public GameObject
-{
+class Star : public GameObject{
 public:
 	~Star();
 	void Initialize(DirectXCommon* dxCommon)override;

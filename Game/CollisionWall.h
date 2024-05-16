@@ -4,8 +4,7 @@
 
 struct AABB;
 
-class CollisionWall
-{
+class CollisionWall{
 public:
 	void Initialize();
 	void Update();

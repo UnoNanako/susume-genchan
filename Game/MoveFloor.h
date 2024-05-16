@@ -3,8 +3,7 @@
 #include "Transform.h"
 #include<d3d12.h>
 
-class MoveFloor : public GameObject
-{
+class MoveFloor : public GameObject{
 protected:
 	virtual void Initialize(DirectXCommon* dxCommon);
 	virtual void Update();

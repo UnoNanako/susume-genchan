@@ -9,8 +9,7 @@ class Player;
 class MyMath;
 class Input;
 
-class BirdEyeCamera : public Camera
-{
+class BirdEyeCamera : public Camera{
 public:
 	BirdEyeCamera();
 	void Update(Input* input,Vector3 playerTranslate);

@@ -6,8 +6,7 @@
 
 class AABB;
 
-class UpFloor : public MoveFloor
-{
+class UpFloor : public MoveFloor{
 public:
 	~UpFloor();
 	void Initialize(DirectXCommon* dxCommon)override;

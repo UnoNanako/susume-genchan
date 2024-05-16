@@ -7,8 +7,7 @@
 
 class AABB;
 
-class SlideFloor : public MoveFloor
-{
+class SlideFloor : public MoveFloor{
 public:
 	~SlideFloor();
 	void Initialize(DirectXCommon* dxCommon)override;

@@ -7,8 +7,7 @@ class AABB;
 class Player;
 
 
-class WalkEnemy : public GameObject
-{
+class WalkEnemy : public GameObject{
 public:
 	WalkEnemy();
 	~WalkEnemy();

@@ -4,8 +4,7 @@
 #include "Transform.h"
 
 
-class Skydome : public GameObject
-{
+class Skydome : public GameObject{
 public:
 	~Skydome();
 	void Initialize(DirectXCommon* dxCommon);

@@ -14,8 +14,7 @@
 #include "Engine/3D/ModelCommon.h"
 #include "Engine/Particle/ParticleCommon.h"
 
-void Game::Initialize()
-{
+void Game::Initialize(){
 	//ポインタ
 	mWinApiManager = nullptr;
 	//WindowsAPIの初期化
@@ -48,8 +47,7 @@ void Game::Initialize()
 	mParticleCommon->Initialize(mDxCommon);
 }
 
-void Game::Finalize()
-{
+void Game::Finalize(){
 	//解放処理
 	//WindowsAPIの終了処理
 	mWinApiManager->Finalize();
@@ -68,8 +66,7 @@ void Game::Finalize()
 	delete mParticleCommon;
 }
 
-void Game::Update()
-{
+void Game::Update(){
 	mImgui->Begin();
 	//入力の更新
 	mInput->Update();
@@ -82,8 +79,7 @@ void Game::Update()
 	mScene->Update(mInput);
 }
 
-void Game::Draw()
-{
+void Game::Draw(){
 	mDxCommon->PreDraw(); //描画前コマンド
 	mImgui->End();
 	//シーン描画

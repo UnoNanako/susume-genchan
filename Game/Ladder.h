@@ -5,8 +5,7 @@
 
 struct AABB;
 
-class Ladder : public GameObject
-{
+class Ladder : public GameObject{
 public:
 	enum Direction {
 		FRONT,

@@ -7,19 +7,16 @@
 
 Crank::Crank()
 	:mCalculateAngle(0.0f)
-	,mCurrentAngle(0.0f)
-{
+	,mCurrentAngle(0.0f){
 }
 
-Crank::~Crank()
-{
+Crank::~Crank(){
 	delete mTexture;
 	delete mModel;
 	delete mFoundationModel;
 }
 
-void Crank::Initialize(DirectXCommon* dxCommon)
-{
+void Crank::Initialize(DirectXCommon* dxCommon){
 	mCalculateAngle = 0.0f;
 	mCurrentAngle = 0.0f;
 	mDxCommon = dxCommon;
@@ -44,8 +41,7 @@ void Crank::Initialize(DirectXCommon* dxCommon)
 	mFoundationModel->Create(mDxCommon, "resources/Model/Gimmick/Foundation", "Foundation.obj");
 }
 
-void Crank::Update(Input* input)
-{
+void Crank::Update(Input* input){
 	mAABB = CalculateAABB(mTransform.translate);
 	//Lスティック
 	Vector2 rStick = input->GetRStick();
@@ -67,15 +63,13 @@ void Crank::Update(Input* input)
 	mFoundationTransform.UpdateMatrix();
 }
 
-void Crank::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
-{
+void Crank::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
 	mTexture->Bind(commandList);
 	mModel->Draw(commandList, camera, mTransform);
 	mFoundationModel->Draw(commandList, camera, mFoundationTransform);
 }
 
-AABB Crank::CalculateAABB(const Vector3& translate)
-{
+AABB Crank::CalculateAABB(const Vector3& translate){
 	AABB ret;
 	ret.min = {
 		{translate.x - (2.0f / 2.0f)},

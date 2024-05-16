@@ -9,8 +9,7 @@
 #include "Block.h"
 #include <format>
 
-void Map::Create(DirectXCommon* dxCommon)
-{
+void Map::Create(DirectXCommon* dxCommon){
 	mDxCommon = dxCommon;
 
 	mTerrainTexture = new Texture();
@@ -87,8 +86,7 @@ void Map::Create(DirectXCommon* dxCommon)
 	}
 }
 
-void Map::Update()
-{
+void Map::Update(){
 	ImGui::Begin("Map");
 	if (ImGui::Button("Create")) {
 	Block* block = new Block();
@@ -155,15 +153,13 @@ void Map::Update()
 	}
 }
 
-void Map::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
-{
+void Map::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
 	for (uint32_t i = 0; i < mBlock.size(); ++i) {
 		mBlock[i]->mModel->Draw(commandList, camera, mBlock[i]->mTransform);
 	}
 }
 
-void Map::Finalize()
-{
+void Map::Finalize(){
 	//mapJson書き込み
 	std::ofstream file(pathToJSON.c_str());
 	nlohmann::json data;
@@ -193,8 +189,7 @@ void Map::Finalize()
 	delete mTerrainTexture;
 }
 
-AABB Map::CalcurateAABB(const Vector3& translate, const Vector3& scale)
-{
+AABB Map::CalcurateAABB(const Vector3& translate, const Vector3& scale){
 	AABB ret;
 	ret.min = {
 		{ translate.x - (scale.x / 2.0f) },

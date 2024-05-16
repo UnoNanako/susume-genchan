@@ -5,13 +5,11 @@
 #include "VertexData.h"
 #include "externals/imgui/imgui.h"
 
-Star::~Star()
-{
+Star::~Star(){
 	delete mModel;
 }
 
-void Star::Initialize(DirectXCommon* dxCommon)
-{
+void Star::Initialize(DirectXCommon* dxCommon){
 	mDxCommon = dxCommon;
 	mTransform = { 
 		{1.0f,1.0f,1.0f},
@@ -22,8 +20,7 @@ void Star::Initialize(DirectXCommon* dxCommon)
 	mModel->Create(mDxCommon, "resources/Model/Star", "star.obj");
 }
 
-void Star::Update()
-{
+void Star::Update(){
 	mTransform.rotate.y += 0.05f;
 	mAABB = CalcurateAABB(mTransform.translate);
 	ImGui::Begin("Debug");
@@ -32,13 +29,11 @@ void Star::Update()
 	mTransform.UpdateMatrix();
 }
 
-void Star::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
-{
+void Star::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
 	mModel->Draw(commandList, camera, mTransform);
 }
 
-AABB Star::CalcurateAABB(const Vector3& translate)
-{
+AABB Star::CalcurateAABB(const Vector3& translate){
 	AABB ret;
 	ret.min = {
 		{translate.x - (2.0f / 2.0f)},

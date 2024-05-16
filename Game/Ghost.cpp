@@ -10,17 +10,14 @@ Ghost::Ghost()
 	, mIsPlayerInView(false)
 	, mLength(20.0f)
 	, mVelocity({ 0.05f,0.0f,0.0f })
-	, mDirection(LEFT)
-{
+	, mDirection(LEFT){
 }
 
-Ghost::~Ghost()
-{
+Ghost::~Ghost(){
 	delete mModel;
 }
 
-void Ghost::Initialize(DirectXCommon* dxCommon)
-{
+void Ghost::Initialize(DirectXCommon* dxCommon){
 	mDxCommon = dxCommon;
 	mTransform = {
 		{2.0f,2.0f,2.0f}, //scale
@@ -31,20 +28,17 @@ void Ghost::Initialize(DirectXCommon* dxCommon)
 	mModel->Create(mDxCommon, "resources/Model/Enemies/Ghost", "ghost.obj");
 }
 
-void Ghost::Update()
-{
+void Ghost::Update(){
 	mAABB = CalcurateAABB(mTransform.translate);
 	mTransform.UpdateMatrix();
 }
 
-void Ghost::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
-{
+void Ghost::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
 	mModel->Draw(commandList, camera, mTransform);
 }
 
 //プレイヤーが視野内に収まっているか判定する関数
-bool Ghost::DetectPlayer(Player* player)
-{
+bool Ghost::DetectPlayer(Player* player){
 	//プレイヤーの位置を取得
 	Vector3 position = mTransform.translate;
 	Vector3 playerPosition = player->GetWorldPosition();
@@ -68,8 +62,7 @@ bool Ghost::DetectPlayer(Player* player)
 	}
 }
 
-void Ghost::TrackPlayer(Player* player)
-{
+void Ghost::TrackPlayer(Player* player){
 	//プレイヤーの位置を取得
 	Vector3 playerPosition = player->GetWorldPosition();
 	//敵からプレイヤーへのベクトルを計算する
@@ -110,8 +103,7 @@ void Ghost::TrackPlayer(Player* player)
 	}
 }
 
-AABB Ghost::CalcurateAABB(const Vector3& translate)
-{
+AABB Ghost::CalcurateAABB(const Vector3& translate){
 	AABB ret;
 	ret.min = {
 		{translate.x - (mTransform.scale.x / 2.0f)},

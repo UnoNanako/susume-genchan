@@ -12,18 +12,15 @@ RotateEnemy::RotateEnemy()
 	, mIsRotate(false)
 	, mFovAngle(kPi / 2.0f) //90°
 	,mIsPlayerInView(false)
-	,mLength(20.0f)
-{
+	,mLength(20.0f){
 }
 
-RotateEnemy::~RotateEnemy()
-{
+RotateEnemy::~RotateEnemy(){
 	delete mTexture;
 	delete mModel;
 }
 
-void RotateEnemy::Initialize(DirectXCommon* dxCommon)
-{
+void RotateEnemy::Initialize(DirectXCommon* dxCommon){
 	mDxCommon = dxCommon;
 	mTransform = {
 		{1.0f,1.0f,1.0f}, //scale
@@ -37,8 +34,7 @@ void RotateEnemy::Initialize(DirectXCommon* dxCommon)
 	mModel->SetTexture(mTexture);
 }
 
-void RotateEnemy::Update()
-{
+void RotateEnemy::Update(){
 	ImGui::Begin("Debug");
 	ImGui::DragFloat3("enemy translate", &mTransform.translate.x, 0.01f);
 	ImGui::End();
@@ -57,15 +53,13 @@ void RotateEnemy::Update()
 	mTransform.UpdateMatrix();
 }
 
-void RotateEnemy::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
-{
+void RotateEnemy::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
 	mTexture->Bind(commandList);
 	mModel->Draw(commandList, camera, mTransform);
 }
 
 //プレイヤーが視野角内に収まっているか判定する関数
-bool RotateEnemy::DetectPlayer(Player* player)
-{
+bool RotateEnemy::DetectPlayer(Player* player){
 	//プレイヤーの位置を取得
 	Vector3 position = mTransform.translate;
 	Vector3 playerPosition = player->GetTranslate();
@@ -89,8 +83,7 @@ bool RotateEnemy::DetectPlayer(Player* player)
 	}
 }
 
-void RotateEnemy::TrackPlayer(Player* player)
-{
+void RotateEnemy::TrackPlayer(Player* player){
 	//プレイヤーが視野角内にいるかどうか
 	if (DetectPlayer(player)) {
 		//プレイヤーの位置を取得
@@ -121,8 +114,7 @@ void RotateEnemy::TrackPlayer(Player* player)
 	}
 }
 
-AABB RotateEnemy::CalcurateAABB(const Vector3& translate)
-{
+AABB RotateEnemy::CalcurateAABB(const Vector3& translate){
 	AABB ret;
 	ret.min = {
 		{ translate.x - (5.0f / 2.0f) },

@@ -7,8 +7,7 @@
 struct AABB;
 class Player;
 
-class RotateEnemy : public GameObject
-{
+class RotateEnemy : public GameObject{
 public:
 	RotateEnemy();
 	~RotateEnemy();

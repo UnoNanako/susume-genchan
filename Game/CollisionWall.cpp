@@ -1,8 +1,7 @@
 #include "CollisionWall.h"
 #include "Math/MyMath.h"
 
-void CollisionWall::Initialize()
-{
+void CollisionWall::Initialize(){
 	mTransform = {
 		{0.0f,0.0f,0.0f},
 		{0.0f,0.0f,0.0f},
@@ -10,14 +9,12 @@ void CollisionWall::Initialize()
 	};
 }
 
-void CollisionWall::Update()
-{
+void CollisionWall::Update(){
 	mAABB = CalcurateAABB(mTransform.translate, mTransform.scale);
 	mTransform.UpdateMatrix();
 }
 
-AABB CollisionWall::CalcurateAABB(const Vector3& translate, const Vector3& scale)
-{
+AABB CollisionWall::CalcurateAABB(const Vector3& translate, const Vector3& scale){
 	AABB ret;
 	ret.min = {
 		{translate.x - (scale.x / 2.0f)},

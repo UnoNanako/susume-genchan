@@ -4,14 +4,12 @@
 #include "Engine/DirectXCommon.h"
 #include "Engine/3D/Model.h"
 
-Gem::~Gem()
-{
+Gem::~Gem(){
 	delete mTexture;
 	delete mModel;
 }
 
-void Gem::Initialize(DirectXCommon* dxCommon)
-{
+void Gem::Initialize(DirectXCommon* dxCommon){
 	mDxCommon = dxCommon;
 	mTransform = { {1.0f,1.0f,1.0f} ,{0.0f,0.0f,0.0f},{1.0f,1.0f,1.0f} };
 	mTexture = new Texture;
@@ -23,22 +21,19 @@ void Gem::Initialize(DirectXCommon* dxCommon)
 	mModel->SetTexture(mTexture);
 }
 
-void Gem::Update()
-{
+void Gem::Update(){
 	mTransform.rotate.y += 0.05f;
 	mAABB = CalcurateAABB(mTransform.translate);
 	mTransform.UpdateMatrix();
 }
 
-void Gem::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
-{
+void Gem::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
 	mTexture->Bind(commandList);
 	mGetColor->Bind(commandList);
 	mModel->Draw(commandList, camera, mTransform);
 }
 
-AABB Gem::CalcurateAABB(const Vector3& translate)
-{
+AABB Gem::CalcurateAABB(const Vector3& translate){
 	AABB ret;
 	ret.min = {
 		{translate.x - (1.0f / 2.0f)},

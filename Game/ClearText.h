@@ -3,8 +3,7 @@
 
 class Sprite;
 
-class ClearText : public GameObject
-{
+class ClearText : public GameObject{
 public:
 	void Initialize();
 	void Update();

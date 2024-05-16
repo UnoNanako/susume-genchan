@@ -8,8 +8,7 @@ class Input;
 class AABB;
 class Model;
 
-class Crank : public GameObject
-{
+class Crank : public GameObject{
 public:
 	Crank();
 	~Crank();

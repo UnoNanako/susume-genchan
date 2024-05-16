@@ -13,8 +13,7 @@
 
 using namespace Microsoft::WRL;
 
-void DirectXCommon::Initialize(WinApiManager* winApiManager)
-{
+void DirectXCommon::Initialize(WinApiManager* winApiManager){
 	//FPS固定初期化
 	InitializeFixFPS();
 	//NULL検出
@@ -34,8 +33,7 @@ void DirectXCommon::Initialize(WinApiManager* winApiManager)
 	CreateCompiler();
 }
 
-void DirectXCommon::Finalize()
-{
+void DirectXCommon::Finalize(){
 	CloseHandle(mFenceEvent);
 	mFence->Release();
 	mRtvDescriptorHeap->Release();
@@ -49,8 +47,7 @@ void DirectXCommon::Finalize()
 	mDxgiFactory->Release();
 }
 
-void DirectXCommon::PreDraw()
-{
+void DirectXCommon::PreDraw(){
 	//--------------------1. バックバッファのインデックスを取得--------------------
 	// これから書き込むバックバッファのインデックスを取得
 	mBackBufferIndex = mSwapChain->GetCurrentBackBufferIndex();
@@ -87,8 +84,7 @@ void DirectXCommon::PreDraw()
 	mCommandList->RSSetScissorRects(1, &mScissorRect);    // Scirssorを設定
 }
 
-void DirectXCommon::PostDraw()
-{
+void DirectXCommon::PostDraw(){
 	//FPS固定更新
 	UpdateFixFPS();
 	//--------------------6. リソースバリア(レンダーターゲット→表示)--------------------

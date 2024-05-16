@@ -5,16 +5,14 @@
 #include "VertexData.h"
 #include "Game/MoveFloor.h"
 
-Switch::~Switch()
-{
+Switch::~Switch(){
 	delete mMoveFloor;
 	delete mRed;
 	delete mBlue;
 	delete mModel;
 }
 
-void Switch::Initialize(DirectXCommon* dxCommon)
-{
+void Switch::Initialize(DirectXCommon* dxCommon){
 	mDxCommon = dxCommon;
 	mTransform = { {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 
@@ -29,21 +27,18 @@ void Switch::Initialize(DirectXCommon* dxCommon)
 	mModel->SetTexture(mRed);
 }
 
-void Switch::Update()
-{
+void Switch::Update(){
 	mAABB = CalcurateAABB(mTransform.translate);
 	mTransform.UpdateMatrix();
 }
 
-void Switch::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
-{
+void Switch::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
 	mRed->Bind(commandList);
 	mBlue->Bind(commandList);
 	mModel->Draw(commandList, camera, mTransform);
 }
 
-AABB Switch::CalcurateAABB(const Vector3& translate)
-{
+AABB Switch::CalcurateAABB(const Vector3& translate){
 	AABB ret;
 	ret.min = {
 		{translate.x - (1.0f / 2.0f)},

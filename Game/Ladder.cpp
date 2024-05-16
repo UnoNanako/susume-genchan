@@ -3,13 +3,11 @@
 #include "2D/Texture.h"
 #include "VertexData.h"
 
-Ladder::~Ladder()
-{
+Ladder::~Ladder(){
 	delete mTexture;
 }
 
-void Ladder::Initialize(DirectXCommon* dxCommon)
-{
+void Ladder::Initialize(DirectXCommon* dxCommon){
 	mDxCommon = dxCommon;
 	mTransform = {
 		{1.0f,1.0f,1.0f},
@@ -23,20 +21,17 @@ void Ladder::Initialize(DirectXCommon* dxCommon)
 	mModel->SetTexture(mTexture);
 }
 
-void Ladder::Update()
-{
+void Ladder::Update(){
 	mAABB = CalcurateAABB(mTransform.translate);
 	mTransform.UpdateMatrix();
 }
 
-void Ladder::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
-{
+void Ladder::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
 	mTexture->Bind(commandList);
 	mModel->Draw(commandList, camera, mTransform);
 }
 
-AABB Ladder::CalcurateAABB(const Vector3& translate)
-{
+AABB Ladder::CalcurateAABB(const Vector3& translate){
 	AABB ret;
 	ret.min = {
 		{translate.x - (1.0f / 2.0f)},

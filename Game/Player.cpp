@@ -17,18 +17,15 @@ Player::Player()
 	, mSpeed(0.2f)
 	, mTexture(nullptr)
 	, mVelocity({ 0.1f,0.0f,0.1f })
-	, mGravity(0.05f)
-{
+	, mGravity(0.05f){
 }
 
-Player::~Player()
-{
+Player::~Player(){
 	delete mTexture;
 	delete mModel;
 }
 
-void Player::Initialize(DirectXCommon* dxCommon)
-{
+void Player::Initialize(DirectXCommon* dxCommon){
 	mDxCommon = dxCommon;
 	mTransform = {
 		{1.0f,1.0f,1.0f}, //scale
@@ -46,8 +43,7 @@ void Player::Initialize(DirectXCommon* dxCommon)
 	mModel->SetTexture(mTexture);
 }
 
-void Player::Update(Input* input, float theta)
-{
+void Player::Update(Input* input, float theta){
 	if (mIsHit == true) { //地面に当たったら
 		//mTransform.translate.y = 3.0f;
 		mVelocity.y = 0.0f;
@@ -143,8 +139,7 @@ void Player::Update(Input* input, float theta)
 	ImGui::End();
 }
 
-void Player::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
-{
+void Player::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
 	mLightList->SetSpotLightPos(mTransform.translate);
 	Matrix4x4 rotationX = MakeRotateXMatrix(mTransform.rotate.x);
 	Matrix4x4 rotationY = MakeRotateYMatrix(mTransform.rotate.y);
@@ -159,8 +154,7 @@ void Player::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)
 	mModel->Draw(commandList, camera, mTransform);
 }
 
-AABB Player::CalcurateAABB(const Vector3& translate)
-{
+AABB Player::CalcurateAABB(const Vector3& translate){
 	AABB ret;
 	ret.min = {
 		{translate.x - (mTransform.scale.x)},
