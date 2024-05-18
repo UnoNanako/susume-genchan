@@ -13,8 +13,13 @@ template <class T>
 inline T Min(const T& a, const T& b) {
 	return a < b ? a : b;
 }
+template <typename T>
+inline T Lerp(const T& a, const T& b, float t) {
+	return (1.0f - t) * a + t * b;
+}
 
 const float kPi = std::numbers::pi_v<float>;
+const float kPiOver2 = kPi / 2.0f; //π/2
 const float kInfinity = std::numeric_limits<float>::infinity(); //無限
 const float kEpsilon = std::numeric_limits<float>::epsilon();
 
