@@ -18,12 +18,14 @@ void Gem::Initialize(DirectXCommon* dxCommon){
 	mGetColor->Create(mDxCommon, "resources/Model/Gem/gemGet.png");
 	mModel = new Model();
 	mModel->Create(mDxCommon, "resources/Model/Gem", "Gem_gltf.gltf");
+	mModel->SetAnimation(mModel->LoadAnimationFile("resources/Model/Gem", "Gem_gltf.gltf"));
 }
 
 void Gem::Update(){
 	mTransform.rotate.y += 0.05f;
 	mAABB = CalcurateAABB(mTransform.translate);
 	mTransform.UpdateMatrix();
+	mModel->Update();
 }
 
 void Gem::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){

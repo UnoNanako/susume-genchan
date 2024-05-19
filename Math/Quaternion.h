@@ -1,5 +1,7 @@
 #pragma once
-#include "MyMath.h"
+
+struct Vector3;
+struct Matrix4x4;
 
 //	クォータニオン
 class Quaternion{

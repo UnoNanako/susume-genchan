@@ -13,6 +13,7 @@
 #include "PlayerCamera.h"
 #include "ImGuiManager.h"
 #include "Math/Quaternion.h"
+#include "Math/MyMath.h"
 
 using namespace std;
 
@@ -44,6 +45,7 @@ void Model::Create(DirectXCommon* dxCommon, const std::string& directoryPath,con
 	//SpriteはLightingしないのでfalseを設定する
 	materialData->enableLighting = true;
 	materialData->shininess = 100.0f;
+	mLocalMatrix = MakeIdentity4x4();
 
 	//Texture
 	texture = new Texture();
@@ -63,12 +65,14 @@ void Model::Create(DirectXCommon* dxCommon, const std::string& directoryPath,con
 void Model::Update()
 {
 	//Animationを再生する
-	float animationTime = 0.0f;
 	//時刻を進めて、指定した時刻の各種データを取得し。localMatrixを生成する
-	animationTime += 1.0f / 60.0f; //時刻を進める、1/60で固定してあるが、計測した時間を使って可変フレーム対応する方が望ましい
-	animationTime = std::fmod(animationTime, mAnimation.duration); //最後まで言ったらリピート再生。リピートしなくても別にいい
+	mAnimationTime += 1.0f / 60.0f; //時刻を進める、1/60で固定してあるが、計測した時間を使って可変フレーム対応する方が望ましい
+	mAnimationTime = std::fmod(mAnimationTime, mAnimation.duration); //最後まで言ったらリピート再生。リピートしなくても別にいい
 	NodeAnimation& rootNodeAnimation = mAnimation.nodeAnimations[mModelData.rootNode.name]; //rootNodeのAnimationを取得
-	
+	Vector3 translate = CalculateValue(rootNodeAnimation.translate.keyframe, mAnimationTime); //指定時刻の値を取得
+	Quaternion rotate = CalculateValue(rootNodeAnimation.rotate.keyframe, mAnimationTime);
+	Vector3 scale = CalculateValue(rootNodeAnimation.scale.keyframe, mAnimationTime);
+	mLocalMatrix = MakeAffineMatrix(scale, rotate, translate);
 }
 
 void Model::Draw(ID3D12GraphicsCommandList* commandList,Camera* camera,const Transform &mTransform)
@@ -77,8 +81,8 @@ void Model::Draw(ID3D12GraphicsCommandList* commandList,Camera* camera,const Tra
 	//Model用のWorldViewProjectionMatrixをつくる
 	Matrix4x4 worldMatrix = mTransform.mMatWorld;//MakeAffineMatrix(mTransform.scale, mTransform.rotate, mTransform.translate);
 	Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(camera->GetViewMatrix(), camera->GetProjectionMatrix()));
-	transformationMatrixData->WVP = Multiply(mModelData.rootNode.localMatrix,worldViewProjectionMatrix);
-	transformationMatrixData->World = Multiply(mModelData.rootNode.localMatrix,worldMatrix);
+	transformationMatrixData->WVP = Multiply(mLocalMatrix,worldViewProjectionMatrix);
+	transformationMatrixData->World = Multiply(mLocalMatrix,worldMatrix);
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	commandList->SetGraphicsRootConstantBufferView(0, materialResource->GetGPUVirtualAddress());
 	commandList->SetGraphicsRootConstantBufferView(1, transformationMatrixResource->GetGPUVirtualAddress());
@@ -164,22 +168,22 @@ Node Model::ReadNode(aiNode* node){
 	Node ret;
 	aiMatrix4x4 aiLocalMatrix = node->mTransformation; //nodeのlocalMatrixを取得
 	aiLocalMatrix.Transpose(); //列ベクトル形式を行ベクトル形式に転置
-	ret.localMatrix.m[0][0] = aiLocalMatrix[0][0]; 
-	ret.localMatrix.m[0][1] = aiLocalMatrix[0][1];
-	ret.localMatrix.m[0][2] = aiLocalMatrix[0][2];
-	ret.localMatrix.m[0][3] = aiLocalMatrix[0][3];
-	ret.localMatrix.m[1][0] = aiLocalMatrix[1][0];
-	ret.localMatrix.m[1][1] = aiLocalMatrix[1][1];
-	ret.localMatrix.m[1][2] = aiLocalMatrix[1][2];
-	ret.localMatrix.m[1][3] = aiLocalMatrix[1][3];
-	ret.localMatrix.m[2][0] = aiLocalMatrix[2][0];
-	ret.localMatrix.m[2][1] = aiLocalMatrix[2][1];
-	ret.localMatrix.m[2][2] = aiLocalMatrix[2][2];
-	ret.localMatrix.m[2][3] = aiLocalMatrix[2][3];
-	ret.localMatrix.m[3][0] = aiLocalMatrix[3][0];
-	ret.localMatrix.m[3][1] = aiLocalMatrix[3][1];
-	ret.localMatrix.m[3][2] = aiLocalMatrix[3][2];
-	ret.localMatrix.m[3][3] = aiLocalMatrix[3][3];
+	ret.mLocalMatrix.m[0][0] = aiLocalMatrix[0][0]; 
+	ret.mLocalMatrix.m[0][1] = aiLocalMatrix[0][1];
+	ret.mLocalMatrix.m[0][2] = aiLocalMatrix[0][2];
+	ret.mLocalMatrix.m[0][3] = aiLocalMatrix[0][3];
+	ret.mLocalMatrix.m[1][0] = aiLocalMatrix[1][0];
+	ret.mLocalMatrix.m[1][1] = aiLocalMatrix[1][1];
+	ret.mLocalMatrix.m[1][2] = aiLocalMatrix[1][2];
+	ret.mLocalMatrix.m[1][3] = aiLocalMatrix[1][3];
+	ret.mLocalMatrix.m[2][0] = aiLocalMatrix[2][0];
+	ret.mLocalMatrix.m[2][1] = aiLocalMatrix[2][1];
+	ret.mLocalMatrix.m[2][2] = aiLocalMatrix[2][2];
+	ret.mLocalMatrix.m[2][3] = aiLocalMatrix[2][3];
+	ret.mLocalMatrix.m[3][0] = aiLocalMatrix[3][0];
+	ret.mLocalMatrix.m[3][1] = aiLocalMatrix[3][1];
+	ret.mLocalMatrix.m[3][2] = aiLocalMatrix[3][2];
+	ret.mLocalMatrix.m[3][3] = aiLocalMatrix[3][3];
 	ret.name = node->mName.C_Str(); //Node名を格納
 	ret.children.resize(node->mNumChildren); //子供の数だけ確保
 	for (uint32_t childIndex = 0; childIndex < node->mNumChildren; ++childIndex) {
@@ -205,28 +209,64 @@ Animation Model::LoadAnimationFile(const std::string& directoryPath, const std::
 		//Position
 		for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumPositionKeys; ++keyIndex) {
 			aiVectorKey& keyAssimp = nodeAnimationAssimp->mPositionKeys[keyIndex];
-			KeyfreamVector3 keyfream;
-			keyfream.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond); //ここも秒に変換
-			keyfream.value = { -keyAssimp.mValue.x,keyAssimp.mValue.y,keyAssimp.mValue.z }; //右手->左手
-			nodeAnimation.translate.keyfream.push_back(keyfream);
+			KeyframeVector3 keyframe;
+			keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond); //ここも秒に変換
+			keyframe.value = { -keyAssimp.mValue.x,keyAssimp.mValue.y,keyAssimp.mValue.z }; //右手->左手
+			nodeAnimation.translate.keyframe.push_back(keyframe);
 		}
 		//Scale
 		for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumScalingKeys; ++keyIndex) {
 			aiVectorKey& keyAssimp = nodeAnimationAssimp->mScalingKeys[keyIndex];
-			KeyfreamVector3 keyfream;
-			keyfream.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond); //秒に変換
-			keyfream.value = Vector3(keyAssimp.mValue.x, keyAssimp.mValue.y, keyAssimp.mValue.z);
-			nodeAnimation.scale.keyfream.push_back(keyfream);
+			KeyframeVector3 keyframe;
+			keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond); //秒に変換
+			keyframe.value = Vector3(keyAssimp.mValue.x, keyAssimp.mValue.y, keyAssimp.mValue.z);
+			nodeAnimation.scale.keyframe.push_back(keyframe);
 		}
 		//Rotation
 		for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumRotationKeys; ++keyIndex) {
 			aiQuatKey& keyAssimp = nodeAnimationAssimp->mRotationKeys[keyIndex];
-			Keyfream<Quaternion> keyfream;
-			keyfream.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond); //秒に変換
-			keyfream.value = Quaternion(keyAssimp.mValue.w, keyAssimp.mValue.x, -keyAssimp.mValue.y, -keyAssimp.mValue.z);
-			nodeAnimation.rotate.keyfream.push_back(keyfream);
+			Keyframe<Quaternion> keyframe;
+			keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond); //秒に変換
+			keyframe.value = Quaternion(keyAssimp.mValue.w, keyAssimp.mValue.x, -keyAssimp.mValue.y, -keyAssimp.mValue.z);
+			nodeAnimation.rotate.keyframe.push_back(keyframe);
 		}
 	}
 	//解析完了
 	return animation;
+}
+
+Vector3 Model::CalculateValue(const std::vector<KeyframeVector3>& keyframes, float time){
+	assert(!keyframes.empty()); //キーが無いものは返す値が分からないのでダメ
+	if (keyframes.size() == 1 || time <= keyframes[0].time) { //キーが1つか、時刻がキーフレーム前なら最初の値とする
+		return keyframes[0].value;
+	}
+	for (size_t index = 0; index < keyframes.size() - 1; ++index) {
+		size_t nextIndex = index + 1;
+		//indexとnextIndexの2つのkeyframeを取得して範囲内に時刻があるかを判定
+		if (keyframes[index].time <= time && time <= keyframes[nextIndex].time) {
+			//範囲内を補間する
+			float t = (time - keyframes[index].time) / (keyframes[nextIndex].time - keyframes[index].time);
+			return Lerp(keyframes[index].value, keyframes[nextIndex].value, t);
+		}
+	}
+	//ここまできた場合は一番後の時刻よりも後ろなので最後の値を返すことにする
+	return (*keyframes.rbegin()).value;
+}
+
+Quaternion Model::CalculateValue(const std::vector<KeyframeQuaternion>& keyframes, float time) {
+	assert(!keyframes.empty()); //キーが無いものは返す値がわからないのでダメ
+	if (keyframes.size() == 1 || time <= keyframes[0].time) { //キーが1つか、時刻がキーフレーム前なら最初の値とする
+		return keyframes[0].value;
+	}
+	for (size_t index = 0; index < keyframes.size() - 1; ++index) {
+		size_t nextIndex = index + 1;
+		//indexとnextIndexの2つのkeyframeを取得して範囲内に時刻があるかを判定
+		if (keyframes[index].time <= time && time <= keyframes[nextIndex].time) {
+			//範囲内を補間する
+			float t = (time - keyframes[index].time) / (keyframes[nextIndex].time - keyframes[index].time);
+			return Lerp(keyframes[index].value, keyframes[nextIndex].value, t);
+		}
+	}
+	//ここまできた場合は一番後の時刻よりも後ろなので最後の値を返すことにする
+	return (*keyframes.rbegin()).value;
 }

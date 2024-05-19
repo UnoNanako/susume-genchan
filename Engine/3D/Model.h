@@ -22,7 +22,7 @@ class Quaternion;
 
 //ノード
 struct Node {
-	Matrix4x4 localMatrix;
+	Matrix4x4 mLocalMatrix;
 	std::string name;
 	std::vector<Node> children;
 };
@@ -36,16 +36,16 @@ struct ModelData {
 
 //キーフレーム
 template <typename tValue>
-struct Keyfream {
+struct Keyframe {
 	float time;
 	tValue value;
 };
-using KeyfreamVector3 = Keyfream<Vector3>;
-using KeyfreamQuaternion = Keyfream<Quaternion>;
+using KeyframeVector3 = Keyframe<Vector3>;
+using KeyframeQuaternion = Keyframe<Quaternion>;
 
 template<typename tValue>
 struct AnimationCurve {
-	std::vector<Keyfream<tValue>> keyfream;
+	std::vector<Keyframe<tValue>> keyframe;
 };
 
 struct NodeAnimation {
@@ -69,13 +69,16 @@ public:
 	void Draw(ID3D12GraphicsCommandList* commandList, Camera* camera, const Transform& mTransform);
 	//マテリアルデータを読む関数
 	MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
-	//OBJファイルを読む関数
-	void LoadObjFile(const std::string& filePath);
 	//glTFを読む関数
 	void Load(const std::string& derectoryPath,const std::string& filename);
 	Node ReadNode(aiNode* node);
 	//Animationを解析する関数
 	Animation LoadAnimationFile(const std::string& directoryPath, const std::string& filename);
+	//任意の時刻の値を取得する
+	//Vector3 Ver
+	Vector3 CalculateValue(const std::vector<KeyframeVector3>& keyfream, float time);
+	//Quaternion Ver
+	Quaternion CalculateValue(const std::vector<KeyframeQuaternion>& keyframes, float time);
 
 	/// <summary>
 	/// アクセッサ
@@ -84,6 +87,7 @@ public:
 	void SetTexture(Texture* texture) { this->texture = texture; }
 	unsigned int GetModelIndex() { return mModelIndex; }
 	void SetModelIndex(unsigned int modelIndex) { mModelIndex = modelIndex; }
+	void SetAnimation(Animation animation) { mAnimation = animation; }
 private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
@@ -96,4 +100,6 @@ private:
 	Texture *texture = nullptr;
 	unsigned int mModelIndex;
 	Animation mAnimation;
+	float mAnimationTime = 0.0f;
+	Matrix4x4 mLocalMatrix;
 };

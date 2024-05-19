@@ -4,6 +4,7 @@
 #include <cmath>
 #include <numbers>
 #include <limits>
+#include "Math/Quaternion.h"
 
 template <class T>
 inline T Max(const T& a, const T& b) {
@@ -442,17 +443,17 @@ inline Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2) {
 	ret.m[0][1] = m1.m[0][1] + m2.m[0][1];
 	ret.m[0][2] = m1.m[0][2] + m2.m[0][2];
 	ret.m[0][3] = m1.m[0][3] + m2.m[0][3];
-	 
+
 	ret.m[1][0] = m1.m[1][0] + m2.m[1][0];
 	ret.m[1][1] = m1.m[1][1] + m2.m[1][1];
 	ret.m[1][2] = m1.m[1][2] + m2.m[1][2];
 	ret.m[1][3] = m1.m[1][3] + m2.m[1][3];
-	 
+
 	ret.m[2][0] = m1.m[2][0] + m2.m[2][0];
 	ret.m[2][1] = m1.m[2][1] + m2.m[2][1];
 	ret.m[2][2] = m1.m[2][2] + m2.m[2][2];
 	ret.m[2][3] = m1.m[2][3] + m2.m[2][3];
-	
+
 	ret.m[3][0] = m1.m[3][0] + m2.m[3][0];
 	ret.m[3][1] = m1.m[3][1] + m2.m[3][1];
 	ret.m[3][2] = m1.m[3][2] + m2.m[3][2];
@@ -467,17 +468,17 @@ inline Matrix4x4 Subtract(const Matrix4x4& m1, const Matrix4x4& m2) {
 	ret.m[0][1] = m1.m[0][1] - m2.m[0][1];
 	ret.m[0][2] = m1.m[0][2] - m2.m[0][2];
 	ret.m[0][3] = m1.m[0][3] - m2.m[0][3];
-	 
+
 	ret.m[1][0] = m1.m[1][0] - m2.m[1][0];
 	ret.m[1][1] = m1.m[1][1] - m2.m[1][1];
 	ret.m[1][2] = m1.m[1][2] - m2.m[1][2];
 	ret.m[1][3] = m1.m[1][3] - m2.m[1][3];
-	  
+
 	ret.m[2][0] = m1.m[2][0] - m2.m[2][0];
 	ret.m[2][1] = m1.m[2][1] - m2.m[2][1];
 	ret.m[2][2] = m1.m[2][2] - m2.m[2][2];
 	ret.m[2][3] = m1.m[2][3] - m2.m[2][3];
-	  
+
 	ret.m[3][0] = m1.m[3][0] - m2.m[3][0];
 	ret.m[3][1] = m1.m[3][1] - m2.m[3][1];
 	ret.m[3][2] = m1.m[3][2] - m2.m[3][2];
@@ -608,17 +609,17 @@ inline Matrix4x4 Transpose(const Matrix4x4& m) {
 	ret.m[0][1] = m.m[1][0];
 	ret.m[0][2] = m.m[2][0];
 	ret.m[0][3] = m.m[3][0];
-	
+
 	ret.m[1][0] = m.m[0][1];
 	ret.m[1][1] = m.m[1][1];
 	ret.m[1][2] = m.m[2][1];
 	ret.m[1][3] = m.m[3][1];
-	
+
 	ret.m[2][0] = m.m[0][2];
 	ret.m[2][1] = m.m[1][2];
 	ret.m[2][2] = m.m[2][2];
 	ret.m[2][3] = m.m[3][2];
-	
+
 	ret.m[3][0] = m.m[0][3];
 	ret.m[3][1] = m.m[1][3];
 	ret.m[3][2] = m.m[2][3];
@@ -785,11 +786,46 @@ inline Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, c
 	ret.m[1][0] *= scale.y;
 	ret.m[1][1] *= scale.y;
 	ret.m[1][2] *= scale.y;
-	
+
 	ret.m[2][0] *= scale.z;
 	ret.m[2][1] *= scale.z;
 	ret.m[2][2] *= scale.z;
-	
+
+	ret.m[3][0] = translate.x;
+	ret.m[3][1] = translate.y;
+	ret.m[3][2] = translate.z;
+	return ret;
+}
+
+inline Matrix4x4 CreateRotate(const Quaternion& q) {
+	float ww = 2.0f * q.w;
+	float xx = 2.0f * q.x;
+	float yy = 2.0f * q.y;
+	float zz = 2.0f * q.z;
+	Matrix4x4 ret = MakeIdentity4x4();
+	ret.m[0][0] = 1.0f - yy * q.y - zz * q.z;
+	ret.m[0][1] = xx * q.y + ww * q.z;
+	ret.m[0][2] = xx * q.z - ww * q.y;
+	ret.m[1][0] = xx * q.y - ww * q.z;
+	ret.m[1][1] = 1.0f - xx * q.x - zz * q.z;
+	ret.m[1][2] = yy * q.z + ww * q.x;
+	ret.m[2][0] = xx * q.z + ww * q.y;
+	ret.m[2][1] = yy * q.z - ww * q.x;
+	ret.m[2][2] = 1.0f - xx * q.x - yy * q.y;
+	return ret;
+}
+
+inline Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Quaternion& rotate, const Vector3& translate) {
+	Matrix4x4 ret = CreateRotate(rotate);
+	ret.m[0][0] *= scale.x;
+	ret.m[0][1] *= scale.x;
+	ret.m[0][2] *= scale.x;
+	ret.m[1][0] *= scale.y;
+	ret.m[1][1] *= scale.y;
+	ret.m[1][2] *= scale.y;
+	ret.m[2][0] *= scale.z;
+	ret.m[2][1] *= scale.z;
+	ret.m[2][2] *= scale.z;
 	ret.m[3][0] = translate.x;
 	ret.m[3][1] = translate.y;
 	ret.m[3][2] = translate.z;
@@ -871,8 +907,7 @@ inline bool IsCollision(const Sphere& s1, const Sphere& s2) {
 	float sumRadius = s1.radius + s2.radius;
 	if (distanceSq <= (sumRadius * sumRadius)) {
 		return true;
-	}
-	else {
+	} else {
 		return false;
 	}
 }
@@ -882,8 +917,7 @@ inline bool IsCollision(const Sphere& sphere, const Plane& plane) {
 	float distance = std::abs(Dot(sphere.center, plane.normal) - plane.distance);
 	if (distance <= sphere.radius) {
 		return true;
-	}
-	else {
+	} else {
 		return false;
 	}
 }
@@ -901,8 +935,7 @@ inline bool IsCollision(const AABB& aabb1, const AABB& aabb2, CollisionResult& r
 			minOverlap = x;
 			if (aabb1.max.x - aabb2.min.x < aabb2.max.x - aabb1.min.x) {
 				result.normal = Vector3(-1.0f, 0.0f, 0.0f);
-			}
-			else {
+			} else {
 				result.normal = Vector3(1.0f, 0.0f, 0.0f);
 			}
 		}
@@ -910,8 +943,7 @@ inline bool IsCollision(const AABB& aabb1, const AABB& aabb2, CollisionResult& r
 			minOverlap = y;
 			if (aabb1.max.y - aabb2.min.y < aabb2.max.y - aabb1.min.y) {
 				result.normal = Vector3(0.0f, -1.0f, 0.0f);
-			}
-			else {
+			} else {
 				result.normal = Vector3(0.0f, 1.0f, 0.0f);
 			}
 		}
@@ -919,8 +951,7 @@ inline bool IsCollision(const AABB& aabb1, const AABB& aabb2, CollisionResult& r
 			minOverlap = z;
 			if (aabb1.max.z - aabb2.min.z < aabb2.max.z - aabb1.min.z) {
 				result.normal = Vector3(0.0f, 0.0f, -1.0f);
-			}
-			else {
+			} else {
 				result.normal = Vector3(0.0f, 0.0f, 1.0f);
 			}
 		}
