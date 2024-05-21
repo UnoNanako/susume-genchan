@@ -102,4 +102,5 @@ private:
 	Animation mAnimation;
 	float mAnimationTime = 0.0f;
 	Matrix4x4 mLocalMatrix;
+	bool mIsLoop = false; //アニメーションがループしているか
 };

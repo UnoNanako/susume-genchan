@@ -25,7 +25,9 @@ void Gem::Update(){
 	mTransform.rotate.y += 0.05f;
 	mAABB = CalcurateAABB(mTransform.translate);
 	mTransform.UpdateMatrix();
-	mModel->Update();
+	if (mIsHit) {
+		mModel->Update();
+	}
 }
 
 void Gem::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){

@@ -67,7 +67,9 @@ void Model::Update()
 	//Animationを再生する
 	//時刻を進めて、指定した時刻の各種データを取得し。localMatrixを生成する
 	mAnimationTime += 1.0f / 60.0f; //時刻を進める、1/60で固定してあるが、計測した時間を使って可変フレーム対応する方が望ましい
-	mAnimationTime = std::fmod(mAnimationTime, mAnimation.duration); //最後まで言ったらリピート再生。リピートしなくても別にいい
+	if (mIsLoop) {
+		mAnimationTime = std::fmod(mAnimationTime, mAnimation.duration); //最後まで言ったらリピート再生。リピートしなくても別にいい
+	}
 	NodeAnimation& rootNodeAnimation = mAnimation.nodeAnimations[mModelData.rootNode.name]; //rootNodeのAnimationを取得
 	Vector3 translate = CalculateValue(rootNodeAnimation.translate.keyframe, mAnimationTime); //指定時刻の値を取得
 	Quaternion rotate = CalculateValue(rootNodeAnimation.rotate.keyframe, mAnimationTime);

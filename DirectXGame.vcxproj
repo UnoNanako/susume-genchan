@@ -151,6 +151,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\MoveFloor.cpp" />
     <ClCompile Include="Game\RotateFloor.cpp" />
     <ClCompile Include="Math\Quaternion.cpp" />
+    <ClCompile Include="Game\TitleScene.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Game\UpFloor.cpp" />
   </ItemGroup>
@@ -215,6 +216,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\MoveFloor.h" />
     <ClInclude Include="Game\RotateFloor.h" />
     <ClInclude Include="Math\Quaternion.h" />
+    <ClInclude Include="Game\TitleScene.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

@@ -427,10 +427,6 @@ void GamePlayScene::Collision(Input *input){
 	for (uint32_t i = 0; i < mGems.size(); ++i) {
 		if (IsCollision(mPlayer->GetAABB(), mGems[i]->GetAABB(), collisionResult)) {
 			mGems[i]->SetIsHit(true);
-			Vector3 pos = mPlayer->GetTranslate();
-			pos.x += collisionResult.normal.x * collisionResult.depth;
-			pos.z += collisionResult.normal.z * collisionResult.depth;
-			mPlayer->SetTranslate(pos);
 		} else {
 			mGems[i]->SetIsHit(false);
 		}
