@@ -46,6 +46,8 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon){
 	//パーティクル
 	mParticle = std::make_unique<ParticleList>();
 	mParticle->Create(dxCommon);
+	//タイトルシーン
+	mTitleScene = std::make_unique<TitleScene>();
 
 	/// <summary>
 	/// プレイヤー

@@ -145,5 +145,6 @@ private:
 	/// シーン
 	/// <summary>
 	Scene mScene = Scene::TITLE; //タイトルから始まる
+	std::unique_ptr<TitleScene> mTitleScene;
 };
 
