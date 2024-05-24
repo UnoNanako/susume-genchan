@@ -24,6 +24,7 @@
 #include "Game/Ladder.h"
 #include "Engine/Light/LightList.h"
 #include "Game/CollisionWall.h"
+#include "Game/TitleScene.h"
 
 class DirectXCommon;
 class Sprite;
@@ -32,6 +33,13 @@ class SphereModel;
 class Texture;
 class Camera;
 class Input;
+
+enum class Scene {
+	TITLE,
+	GAME, 
+	GAMECLEAR,
+	GAMEOVER
+};
 
 class GamePlayScene{
 public:
@@ -132,5 +140,10 @@ private:
 	std::unique_ptr<Crosshair> mCrosshair; //クロスヘア
 	std::unique_ptr<Sprite> mClearSprite; //クリアスプライト
 	std::unique_ptr<Sprite> mGameoverSprite; //ゲームオーバースプライト
+
+	/// <summary>
+	/// シーン
+	/// <summary>
+	Scene mScene = Scene::TITLE; //タイトルから始まる
 };
 
