@@ -1,20 +1,21 @@
 #include "TitleScene.h"
 #include "Engine/DirectXCommon.h"
-#include "Engine/2D/Texture.h"
+#include "Engine/2D/Sprite.h"
 
 void TitleScene::Initialize(DirectXCommon* dxCommon)
 {
 	mDxCommon = dxCommon;
-	mTransform = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{100.0f,100.0f,0.0f} };
-	mTexture = std::make_unique<Texture>();
-	mTexture->Create(mDxCommon, "resources/Sprite/Text/title.png");
+	mSprite = std::make_unique<Sprite>();
+	mSprite->Create(mDxCommon, "resources/Sprite/Text/title.png");
+	mSprite->SetTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} });
 }
 
-void TitleScene::Update(Input* input)
+void TitleScene::Update()
 {
+	mSprite->Update();
 }
 
 void TitleScene::Draw(ID3D12GraphicsCommandList* commandList)
 {
-	mTexture->Bind(commandList);
+	mSprite->Draw(commandList);
 }

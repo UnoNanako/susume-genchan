@@ -34,13 +34,6 @@ class Texture;
 class Camera;
 class Input;
 
-enum class Scene {
-	TITLE,
-	GAME, 
-	GAMECLEAR,
-	GAMEOVER
-};
-
 class GamePlayScene{
 public:
 	GamePlayScene(Game* game);
@@ -117,6 +110,7 @@ private:
 	bool mIsClear = false;
 	bool mIsGameover = false;
 	bool mLadderIsHit = false; //はしごに当たっているか
+	bool mIsTitleScene = true; //タイトルシーンか、そうでないか
 
 	/// <summary>
 	/// オブジェクト
@@ -144,7 +138,6 @@ private:
 	/// <summary>
 	/// シーン
 	/// <summary>
-	Scene mScene = Scene::TITLE; //タイトルから始まる
 	std::unique_ptr<TitleScene> mTitleScene;
 };
 

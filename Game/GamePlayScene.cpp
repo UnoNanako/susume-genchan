@@ -48,6 +48,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon){
 	mParticle->Create(dxCommon);
 	//タイトルシーン
 	mTitleScene = std::make_unique<TitleScene>();
+	mTitleScene->Initialize(dxCommon);
 
 	/// <summary>
 	/// プレイヤー
@@ -188,6 +189,10 @@ void GamePlayScene::Update(Input* input){
 		mLightList->SetDirectionalLightIntensity(0.7f);
 	}
 
+	if (input->GetButton(XINPUT_GAMEPAD_A)) {
+		mIsTitleScene = false;
+	}
+
 	ObjectUpdate(input); //オブジェクトの更新
 	
 	Collision(input); //当たり判定の更新
@@ -254,14 +259,13 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon){
 	//mParticle->Draw(dxCommon->GetCommandList(), camera, { 0.0f,0.0f,0.0f });
 	mGame->GetModelCommon()->Bind(dxCommon);
 	mCrosshair->Draw(dxCommon->GetCommandList());
-
-	if (mCrank->GetIsHit() == true) {
-		//mCrankSprite->Draw(dxCommon->GetCommandList());
+	if (mIsTitleScene) {
+		mTitleScene->Draw(dxCommon->GetCommandList());
 	}
-	if (mIsClear == true) {
+	if (mIsClear) {
 		mClearSprite->Draw(dxCommon->GetCommandList());
 	}
-	if (mIsGameover == true) {
+	if (mIsGameover) {
 		//mGameoverSprite->Draw(dxCommon->GetCommandList());
 	}
 }
@@ -314,7 +318,7 @@ void GamePlayScene::LadderInitialize(DirectXCommon* dxCommon){
 	}
 }
 
-void GamePlayScene::ObjectUpdate(Input *input){
+void GamePlayScene::ObjectUpdate(Input* input) {
 	/// <summary>
 	/// 更新
 	/// <summary>
@@ -323,8 +327,7 @@ void GamePlayScene::ObjectUpdate(Input *input){
 	//プレイヤーカメラ
 	if (mIsPlayerCamera == true) {
 		mPlayerCamera->Update();
-	}
-	else {
+	} else {
 		mBirdEyeCamera->Update(input, mPlayer->GetWorldPosition());
 	}
 	mMap->Update(); //マップ
@@ -367,7 +370,11 @@ void GamePlayScene::ObjectUpdate(Input *input){
 	mClearSprite->Update(); //クリアスプライト
 	mGameoverSprite->Update(); //ゲームオーバースプライト
 	mCrosshair->Update(); //クロスヘア
+	if (mIsTitleScene) {
+		mTitleScene->Update();
+	}
 }
+
 
 void GamePlayScene::Collision(Input *input){
 	CollisionResult collisionResult;

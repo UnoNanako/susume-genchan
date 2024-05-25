@@ -4,18 +4,17 @@
 #include <memory>
 
 class DirectXCommon;
-class Texture;
+class Sprite;
 class Input;
 
 class TitleScene
 {
 public:
 	void Initialize(DirectXCommon* dxCommon);
-	void Update(Input* input);
+	void Update();
 	void Draw(ID3D12GraphicsCommandList* commandList);
 private:
 	DirectXCommon* mDxCommon;
-	std::unique_ptr<Texture> mTexture;
-	Transform mTransform;
+	std::unique_ptr<Sprite> mSprite;
 };
 
