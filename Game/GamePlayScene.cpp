@@ -174,6 +174,9 @@ void GamePlayScene::Update(Input* input){
 	ImGui::Begin("Debug");
 	//DirectionalLightのintensity切り替え
 	ImGui::Checkbox("isDirectionalLight", &mIsDirectionalLight);
+	Transform transform = mBirdEyeCamera.get()->GetTransform();
+	ImGui::DragFloat3("birdEyeCameraPos", &transform.translate.x);
+	mBirdEyeCamera.get()->SetTransform(transform);
 	ImGui::Checkbox("isPlayerCamera", &mIsPlayerCamera);
 	for (uint32_t i = 0; i < mLadders.size(); ++i) {
 		Vector3 pos = mLadders[i]->GetTranslate();
@@ -328,7 +331,7 @@ void GamePlayScene::ObjectUpdate(Input* input) {
 	if (mIsPlayerCamera == true) {
 		mPlayerCamera->Update();
 	} else {
-		mBirdEyeCamera->Update(input, mPlayer->GetWorldPosition());
+		mBirdEyeCamera->Update(input, mPlayer->GetWorldPosition(),mIsTitleScene);
 	}
 	mMap->Update(); //マップ
 	mSkydome->Update(); //天球

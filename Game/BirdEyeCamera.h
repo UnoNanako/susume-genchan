@@ -12,7 +12,7 @@ class Input;
 class BirdEyeCamera : public Camera{
 public:
 	BirdEyeCamera();
-	void Update(Input* input,Vector3 playerTranslate);
+	void Update(Input* input, Vector3 playerTranslate, bool isTitleScene);
 	float GetLon() { return mLon; }
 	Matrix4x4 GetViewMatrix() { return mViewMatrix; }
 	bool GetIsHit() { return mIsHit; }

@@ -12,10 +12,10 @@ BirdEyeCamera::BirdEyeCamera(){
 	mViewMatrix = CreateLookAt(mTransform.translate, mTarget, mUp);
 	mRadius = 50.0f;
 	mLat = 1.0f;
-	mLon = 0.0f;
+	mLon = -kPi/2.0f;
 }
 
-void BirdEyeCamera::Update(Input* input, Vector3 playerTranslate){
+void BirdEyeCamera::Update(Input* input, Vector3 playerTranslate,bool isTitleScene){
 	ImGui::Begin("BirdCamera");
 	ImGui::DragFloat3("Position", &mTransform.translate.x, 0.05f);
 	ImGui::DragFloat3("Rotate", &mTransform.rotate.x, 0.05f);
@@ -43,13 +43,14 @@ void BirdEyeCamera::Update(Input* input, Vector3 playerTranslate){
 		}
 	}
 	
-	float x = mRadius * sin(mLat) * cos(mLon) + playerTranslate.x;
-	float y = mRadius * cos(mLat) + playerTranslate.y;
-	float z = mRadius * sin(mLat) * sin(mLon) +playerTranslate.z;
-	mTransform.translate.x = x;
-	mTransform.translate.y = y;
-	mTransform.translate.z = z;
-
+	if (!isTitleScene) {
+		float x = mRadius * sin(mLat) * cos(mLon) + playerTranslate.x;
+		float y = mRadius * cos(mLat) + playerTranslate.y;
+		float z = mRadius * sin(mLat) * sin(mLon) + playerTranslate.z;
+		mTransform.translate.x = x;
+		mTransform.translate.y = y;
+		mTransform.translate.z = z;
+	}
 	mViewMatrix = CreateLookAt(mTransform.translate, playerTranslate, mUp);
 	mProjectionMatrix = MakePerspectiveFovMatrix(50.0f * (kPi / 180.0f), WinApiManager::kClientWidth / float(WinApiManager::kClientHeight), 0.1f, 1000.0f);
 	*cameraData = { mTransform.translate };
