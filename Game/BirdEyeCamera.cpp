@@ -6,13 +6,15 @@
 #include "Engine/Input/Input.h"
 
 BirdEyeCamera::BirdEyeCamera(){
-	mTransform = { {1.0f,1.0f,1.0f},{0.8f,0.0f,0.0f},{-50.0f,35.0f,-55.0f} };
+	mTransform = { {1.0f,1.0f,1.0f},{0.8f,0.0f,0.0f},{-21.0f,8.0f,-19.0f} };
 	mTarget = { 0.0f,0.0f,0.0f };
 	mUp = { 0.0f,1.0f,0.0f };
 	mViewMatrix = CreateLookAt(mTransform.translate, mTarget, mUp);
 	mRadius = 50.0f;
 	mLat = 1.0f;
 	mLon = -kPi/2.0f;
+	mT = 0.0f;
+	mStartPos = mTransform.translate;
 }
 
 void BirdEyeCamera::Update(Input* input, Vector3 playerTranslate,bool isTitleScene){
@@ -43,13 +45,22 @@ void BirdEyeCamera::Update(Input* input, Vector3 playerTranslate,bool isTitleSce
 		}
 	}
 	
+	//線形補間
 	if (!isTitleScene) {
+		mT += 0.05f;
+		if (mT > 1.0f) {
+			mT = 1.0f;
+		}
 		float x = mRadius * sin(mLat) * cos(mLon) + playerTranslate.x;
 		float y = mRadius * cos(mLat) + playerTranslate.y;
 		float z = mRadius * sin(mLat) * sin(mLon) + playerTranslate.z;
-		mTransform.translate.x = x;
-		mTransform.translate.y = y;
-		mTransform.translate.z = z;
+		Vector3 tmp = { x - mStartPos.x,y - mStartPos.y,z - mStartPos.z };
+		tmp.x = mStartPos.x + (x - mStartPos.x) * mT;
+		tmp.y = mStartPos.y + (y - mStartPos.y) * mT;
+		tmp.z = mStartPos.z + (z - mStartPos.z) * mT;
+		mTransform.translate.x = tmp.x;
+		mTransform.translate.y = tmp.y;
+		mTransform.translate.z = tmp.z;
 	}
 	mViewMatrix = CreateLookAt(mTransform.translate, playerTranslate, mUp);
 	mProjectionMatrix = MakePerspectiveFovMatrix(50.0f * (kPi / 180.0f), WinApiManager::kClientWidth / float(WinApiManager::kClientHeight), 0.1f, 1000.0f);

@@ -24,5 +24,7 @@ private:
 	Vector3 mTarget; //注視点の座標
 	Vector3 mUp; //カメラの上方向の座標
 	bool mIsHit = false; 
+	float mT; //線形補間
+	Vector3 mStartPos; //線形補間開始位置
 };
 
