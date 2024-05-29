@@ -43,7 +43,7 @@ void Crank::Initialize(DirectXCommon* dxCommon){
 
 void Crank::Update(Input* input){
 	mAABB = CalculateAABB(mTransform.translate);
-	//Lスティック
+	//Rスティック
 	Vector2 rStick = input->GetRStick();
 	float length = Length(rStick);
 	if (length > 0.0f && mIsHit == true) {

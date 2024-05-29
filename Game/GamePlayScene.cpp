@@ -192,7 +192,7 @@ void GamePlayScene::Update(Input* input){
 		mLightList->SetDirectionalLightIntensity(0.7f);
 	}
 
-	if (input->GetButton(XINPUT_GAMEPAD_A)) {
+	if (input->GetButton(XINPUT_GAMEPAD_A) || input->PushKey(DIK_SPACE)) {
 		mIsTitleScene = false;
 	}
 

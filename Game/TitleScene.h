@@ -15,6 +15,7 @@ public:
 	void Draw(ID3D12GraphicsCommandList* commandList);
 private:
 	DirectXCommon* mDxCommon;
-	std::unique_ptr<Sprite> mSprite;
+	std::unique_ptr<Sprite> mTitleSprite;
+	std::unique_ptr<Sprite> mAbuttonSprite;
 };
 

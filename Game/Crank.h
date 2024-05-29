@@ -3,10 +3,12 @@
 #include "Transform.h"
 #include <d3d12.h>
 #include <vector>
+#include <memory>
 
 class Input;
 class AABB;
 class Model;
+class Sprite;
 
 class Crank : public GameObject{
 public:
@@ -31,6 +33,7 @@ private:
 	AABB mAABB; 
 	Model* mFoundationModel; //土台
 	Transform mFoundationTransform; //土台
+	std::unique_ptr<Sprite> mLTButtonSprite;
 	float mCalculateAngle; //前の角度
 	float mCurrentAngle; //現在の角度
 	bool mIsHit = false; //プレイヤーと当たっているか
