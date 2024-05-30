@@ -3,6 +3,7 @@
 #include "Transform.h"
 #include "3D/Model.h"
 #include "2D/Texture.h"
+#include "2D/Sprite.h"
 #include "VertexData.h"
 
 Crank::Crank()
@@ -39,6 +40,10 @@ void Crank::Initialize(DirectXCommon* dxCommon){
 	//土台
 	mFoundationModel = new Model();
 	mFoundationModel->Create(mDxCommon, "resources/Model/Gimmick/Foundation", "Foundation.obj");
+	//LTボタン
+	mLTButtonSprite = std::make_unique<Sprite>();
+	mLTButtonSprite->Create(mDxCommon, "resources/Sprite/Ui/Buttons/xbox_lt.png");
+	mLTButtonSprite->SetTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{600.0f,500.0f,0.0f} });
 }
 
 void Crank::Update(Input* input){
@@ -67,6 +72,9 @@ void Crank::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
 	mTexture->Bind(commandList);
 	mModel->Draw(commandList, camera, mTransform);
 	mFoundationModel->Draw(commandList, camera, mFoundationTransform);
+	if (mIsHit) {
+		mLTButtonSprite->Draw(commandList);
+	}
 }
 
 AABB Crank::CalculateAABB(const Vector3& translate){
