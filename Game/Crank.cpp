@@ -41,9 +41,9 @@ void Crank::Initialize(DirectXCommon* dxCommon){
 	mFoundationModel = new Model();
 	mFoundationModel->Create(mDxCommon, "resources/Model/Gimmick/Foundation", "Foundation.obj");
 	//LTボタン
-	mLTButtonSprite = std::make_unique<Sprite>();
-	mLTButtonSprite->Create(mDxCommon, "resources/Sprite/Ui/Buttons/xbox_lt.png");
-	mLTButtonSprite->SetTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{600.0f,500.0f,0.0f} });
+	mRStickSprite = std::make_unique<Sprite>();
+	mRStickSprite->Create(mDxCommon, "resources/Sprite/Ui/Buttons/xbox_stick_top_r.png");
+	mRStickSprite->SetTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{600.0f,500.0f,0.0f} });
 }
 
 void Crank::Update(Input* input){
@@ -66,6 +66,7 @@ void Crank::Update(Input* input){
 	}
 	mTransform.UpdateMatrix();
 	mFoundationTransform.UpdateMatrix();
+	mRStickSprite->Update();
 }
 
 void Crank::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
@@ -73,7 +74,7 @@ void Crank::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
 	mModel->Draw(commandList, camera, mTransform);
 	mFoundationModel->Draw(commandList, camera, mFoundationTransform);
 	if (mIsHit) {
-		mLTButtonSprite->Draw(commandList);
+		mRStickSprite->Draw(commandList);
 	}
 }
 
