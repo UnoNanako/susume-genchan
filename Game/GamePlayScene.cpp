@@ -423,6 +423,13 @@ void GamePlayScene::Collision(Input *input){
 		}
 	}
 
+	//walkEnemyとプレイヤー
+	for (uint32_t i = 0; i < mWalkEnemies.size(); ++i) {
+		if (IsCollision(mWalkEnemies[i]->GetAABB(), mPlayer->GetAABB(),collisionResult)) {
+			mPlayer->SetIsHit(true);
+		}
+	}
+
 	//ghostとプレイヤー
 	for (uint32_t i = 0; i < mGhosts.size(); ++i) {
 		if (IsCollision(mPlayer->GetAABB(), mGhosts[i]->GetAABB(), collisionResult)) {
