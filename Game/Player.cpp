@@ -11,6 +11,8 @@
 
 Player::Player()
 	:mIsHit(false)
+	,mIsEnemyHit(false)
+	,mIsAttack(false)
 	, mAABBtranslate({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} })
 	, mLightList(nullptr)
 	, mRotateSpeed(0.05f)
@@ -19,7 +21,9 @@ Player::Player()
 	, mVelocity({ 0.1f,0.0f,0.1f })
 	, mGravity(0.05f)
 	,mHp(2)
-	,mInvincibleTime(120){
+	,mInvincibleTime(120)
+	,mProgressTimer(5)
+	,mBackTimer(5){
 }
 
 Player::~Player(){
@@ -101,12 +105,6 @@ void Player::Update(Input* input, float theta){
 		mTransform.translate.y += rightVec.y;
 		mTransform.translate.z += rightVec.z;
 	}
-	/*if (input->PushKey(DIK_LEFT)) {
-		mTransform.rotate.y -= 0.05f;
-	}
-	if (input->PushKey(DIK_RIGHT)) {
-		mTransform.rotate.y += 0.05f;
-	}*/
 
 	//ゲームパッド
 	//Lスティック
@@ -125,7 +123,28 @@ void Player::Update(Input* input, float theta){
 	mTransform.translate.z += rightVec.z;
 	//Rスティック
 	Vector2 rStick = input->GetRStick();
-	//mTransform.rotate.y += (rStick.x * mRotateSpeed);
+	//Bボタン
+	if (input->GetButtonDown(XINPUT_GAMEPAD_B)) {
+		mIsAttack = true;
+	}
+	if (mIsAttack == true && mProgressTimer > 0) {
+		--mProgressTimer;
+		Vector3 frontVec;
+		frontVec = { 0.0f,0.0f,1.0f };
+		frontVec = Multiply(frontVec, MakeRotateYMatrix(mTransform.rotate.y));
+		mTransform.translate += frontVec;
+	}else if(mIsAttack == true && mProgressTimer <= 0){
+		Vector3 frontVec;
+		frontVec = { 0.0f,0.0f,1.0f };
+		frontVec = Multiply(frontVec, MakeRotateYMatrix(mTransform.rotate.y));
+		mTransform.translate -= frontVec;
+		--mBackTimer;
+		if (mBackTimer <= 0) {
+			mIsAttack = false;
+			mProgressTimer = 5;
+			mBackTimer = 5;
+		}
+	}
 	mTransform.rotate.y = -theta - kPi/2.0f;
 	mTransform.UpdateMatrix();
 	Vector3 worldPos = GetWorldPosition();

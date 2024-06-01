@@ -49,10 +49,13 @@ private:
 
 	AABB mAABBtranslate; //当たり判定用
 	bool mIsHit; //壁や床に当たったかどうかを管理するフラグ
-	bool mIsEnemyHit = false; //敵と当たったかどうかを管理するフラグ
+	bool mIsEnemyHit; //敵と当たったかどうかを管理するフラグ
+	bool mIsAttack; //攻撃しているかどうかを管理するフラグ
 	float mSpeed; 
 	float mRotateSpeed; //回転スピード
 	float mGravity; //重力
+	int32_t mProgressTimer; //前進タイマー
+	int32_t mBackTimer; //後退タイマー
 
 	Matrix4x4 mTransposeViewMatrix;
 	MovingFloor* mMovingFloor; //動く床
