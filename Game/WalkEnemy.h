@@ -26,8 +26,9 @@ public:
 
 private:
 	float mFovAngle; //視野角
-	float mLength;
+	float mLength; //視線の長さ
 	bool mIsPlayerInView; //プレイヤーが視野内にいるか
+	float mGravity; //重力
 	Vector3 mVelocity;
 	AABB mAABB; //当たり判定
 

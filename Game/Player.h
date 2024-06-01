@@ -22,11 +22,15 @@ public:
 	/// <summary>
 	/// アクセッサ
 	/// </summary>
+	int GetHp() { return mHp; }
+	bool GetIsEnemyHit() { return mIsEnemyHit; }
 	AABB GetAABB() { return mAABBtranslate; }
 	Vector3 GetVelocity() { return mVelocity; }
 	Vector3 GetWorldPosition() { return Vector3{ mTransform.mMatWorld.m[3][0],mTransform.mMatWorld.m[3][1],mTransform.mMatWorld.m[3][2] }; }
 	Matrix4x4 GetWorldMatrix() { return mTransform.mMatWorld; }
 	Transform* GetParent() { return mTransform.mParent; }
+	void SetHp(uint32_t hp) { mHp = hp; }
+	void SetIsEnemyHit(bool isEnemyHit) { mIsEnemyHit = isEnemyHit; }
 	void SetVelocity(Vector3 velocity) { mVelocity = velocity; }
 	void SetIsHit(bool isHit) { mIsHit = isHit; }
 	void SetLightList(LightList* lightList) { mLightList = lightList; }
@@ -37,12 +41,15 @@ public:
 	void SetGravity(float gravity) { mGravity = gravity; }
 
 private:
+	uint32_t mHp; //最大2
+	uint32_t mInvincibleTime; //無敵時間(2秒)
 	Vector3 mVelocity;
 	Texture* mTexture;
 	LightList* mLightList;
 
 	AABB mAABBtranslate; //当たり判定用
 	bool mIsHit; //壁や床に当たったかどうかを管理するフラグ
+	bool mIsEnemyHit = false; //敵と当たったかどうかを管理するフラグ
 	float mSpeed; 
 	float mRotateSpeed; //回転スピード
 	float mGravity; //重力

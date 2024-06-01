@@ -268,8 +268,8 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon){
 	if (mIsClear) {
 		mClearSprite->Draw(dxCommon->GetCommandList());
 	}
-	if (mIsGameover) {
-		//mGameoverSprite->Draw(dxCommon->GetCommandList());
+	if (mPlayer->GetHp() <= 0) {
+		mGameoverSprite->Draw(dxCommon->GetCommandList());
 	}
 }
 
@@ -344,11 +344,11 @@ void GamePlayScene::ObjectUpdate(Input* input) {
 	//歩く敵
 	for (uint32_t i = 0; i < mWalkEnemies.size(); ++i) {
 		mWalkEnemies[i]->Update();
-		mGhosts[i]->TrackPlayer(mPlayer.get());
 	}
 	//ゴースト(テレサ)
 	for (uint32_t i = 0; i < mGhosts.size(); ++i) {
 		mGhosts[i]->Update();
+		mGhosts[i]->TrackPlayer(mPlayer.get());
 	}
 	//ジェム
 	for (uint32_t i = 0; i < mGems.size(); ++i) {
@@ -407,7 +407,10 @@ void GamePlayScene::Collision(Input *input){
 	//rotateEnemyとプレイヤー
 	for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
 		if (IsCollision(mPlayer->GetAABB(), mRotateEnemies[i]->GetAABB(), collisionResult)) {
-			mIsGameover = true;
+			if (mPlayer->GetIsEnemyHit() == false) {
+				mPlayer->SetHp(mPlayer->GetHp() - 1);
+			}
+			mPlayer->SetIsEnemyHit(true);
 		}
 	}
 
@@ -426,14 +429,20 @@ void GamePlayScene::Collision(Input *input){
 	//walkEnemyとプレイヤー
 	for (uint32_t i = 0; i < mWalkEnemies.size(); ++i) {
 		if (IsCollision(mWalkEnemies[i]->GetAABB(), mPlayer->GetAABB(),collisionResult)) {
-			mPlayer->SetIsHit(true);
+			if (mPlayer->GetIsEnemyHit() == false) {
+				mPlayer->SetHp(mPlayer->GetHp() - 1);
+			}
+			mPlayer->SetIsEnemyHit(true);
 		}
 	}
 
 	//ghostとプレイヤー
 	for (uint32_t i = 0; i < mGhosts.size(); ++i) {
 		if (IsCollision(mPlayer->GetAABB(), mGhosts[i]->GetAABB(), collisionResult)) {
-			mIsGameover = true;
+			if (mPlayer->GetIsEnemyHit() == false) {
+				mPlayer->SetHp(mPlayer->GetHp() - 1);
+			}
+			mPlayer->SetIsEnemyHit(true);
 		}
 	}
 

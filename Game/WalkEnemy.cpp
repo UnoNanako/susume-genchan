@@ -11,7 +11,8 @@ WalkEnemy::WalkEnemy()
 	:mFovAngle(kPi / 2.0f) //90°
 	, mIsPlayerInView(false)
 	, mLength(20.0f)
-	, mVelocity({ 0.05f,0.0f,0.05f }){
+	, mVelocity({ 0.05f,0.0f,0.05f })
+	,mGravity(0.05f){
 }
 
 WalkEnemy::~WalkEnemy(){
@@ -22,9 +23,9 @@ WalkEnemy::~WalkEnemy(){
 void WalkEnemy::Initialize(DirectXCommon* dxCommon){
 	mDxCommon = dxCommon;
 	mTransform = {
-		{1.0f,1.0f,1.0f}, //scale
-		{0.0f,0.0f,0.0f}, //rotate
-		{0.0f,0.0f,0.0f} //translate
+		{1.0f,1.0f,1.0f},
+		{0.0f,0.0f,0.0f},
+		{0.0f,0.0f,0.0f} 
 	};
 	mTexture = new Texture();
 	mTexture->Create(mDxCommon, "resources/Model/Enemies/WalkEnemy/Atlas.png");
@@ -36,24 +37,28 @@ void WalkEnemy::Initialize(DirectXCommon* dxCommon){
 void WalkEnemy::Update(){
 	switch (mDirection) {
 	case UP:
+		mTransform.rotate = { 0.0f,0.0f,0.0f };
 		mTransform.translate.z += mVelocity.z;
 		if (mTransform.translate.z > 25.0f) {
 			mDirection = RIGHT;
 		}
 		break;
 	case DOWN:
+		mTransform.rotate = { 0.0f,kPi,0.0f };
 		mTransform.translate.z -= mVelocity.z;
 		if (mTransform.translate.z < 15.0f) {
 			mDirection = LEFT;
 		}
 		break;
 	case LEFT:
+		mTransform.rotate = { 0.0f,-kPi / 2.0f,0.0f };
 		mTransform.translate.x -= mVelocity.x;
 		if (mTransform.translate.x < -17.5f) {
 			mDirection = UP;
 		}
 		break;
 	case RIGHT:
+		mTransform.rotate = { 0.0f,kPi/2.0f,0.0f };
 		mTransform.translate.x += mVelocity.x;
 		if (mTransform.translate.x > -7.5f) {
 			mDirection = DOWN;
@@ -72,14 +77,14 @@ void WalkEnemy::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
 AABB WalkEnemy::CalcurateAABB(const Vector3& translate){
 	AABB ret;
 	ret.min = {
-		{translate.x - (5.0f / 2.0f)},
-		{translate.y - (5.0f / 2.0f)},
-		{translate.z - (5.0f / 2.0f)}
+		{translate.x - (2.0f / 2.0f)},
+		{translate.y - (2.0f / 2.0f)},
+		{translate.z - (2.0f / 2.0f)}
 	};
 	ret.max = {
-		{translate.x + (5.0f / 2.0f)},
-		{translate.y + (5.0f / 2.0f)},
-		{translate.z + (5.0f / 2.0f)}
+		{translate.x + (2.0f / 2.0f)},
+		{translate.y + (2.0f / 2.0f)},
+		{translate.z + (2.0f / 2.0f)}
 	};
 	return ret;
 }

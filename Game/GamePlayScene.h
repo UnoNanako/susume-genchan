@@ -62,13 +62,13 @@ private:
 	/// 敵
 	/// </summary>
 	//回転するだけの敵
-	const int mROTATEENEMY_MAX = 1;
+	const uint32_t mROTATEENEMY_MAX = 1;
 	std::vector<std::unique_ptr<RotateEnemy>> mRotateEnemies;
 	//歩く敵
-	const int mWALKENEMY_MAX = 1;
+	const uint32_t mWALKENEMY_MAX = 1;
 	std::vector<std::unique_ptr<WalkEnemy>> mWalkEnemies;
 	//幽霊(テレサ)
-	const int mGHOST_MAX = 1;
+	const uint32_t mGHOST_MAX = 1;
 	std::vector<std::unique_ptr<Ghost>> mGhosts;
 
 	/// <summary>
@@ -96,7 +96,7 @@ private:
 	/// <summary>
 	/// 当たり判定の壁(透明)
 	/// <summary>
-	const int mCOLLISIONWALL_MAX = 8;
+	const uint32_t mCOLLISIONWALL_MAX = 8;
 	std::vector<std::unique_ptr<CollisionWall>> mCollisionWalls;
 
 	/// <summary>
@@ -118,14 +118,14 @@ private:
 	std::unique_ptr<Map> mMap; //マップ
 	std::unique_ptr<Skydome> mSkydome; //天球
 	//はしご
-	const int mLADDER_MAX = 3;
+	const uint32_t mLADDER_MAX = 3;
 	std::vector<std::unique_ptr<Ladder>> mLadders;
 	//はしご用のモデル、テクスチャ
 	std::unique_ptr<Model> mLadderModel0; //離島にあるはしご
 	std::unique_ptr<Model> mLadderModel_height15; //縦15(3マス分)のはしご
 	std::unique_ptr<Model> mLadderModel_height15_02; //縦15のはしご2つ目
 	//草
-	const int mGRASS_MAX = 1;
+	const uint32_t mGRASS_MAX = 1;
 	std::vector<std::unique_ptr<Grass>> mGrasses;
 
 	/// <summary>

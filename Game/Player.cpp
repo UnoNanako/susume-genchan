@@ -17,7 +17,9 @@ Player::Player()
 	, mSpeed(0.2f)
 	, mTexture(nullptr)
 	, mVelocity({ 0.1f,0.0f,0.1f })
-	, mGravity(0.05f){
+	, mGravity(0.05f)
+	,mHp(2)
+	,mInvincibleTime(120){
 }
 
 Player::~Player(){
@@ -133,6 +135,15 @@ void Player::Update(Input* input, float theta){
 		Initialize(mDxCommon);
 	}
 
+	//敵と当たっているとき
+	if (mIsEnemyHit) {
+		--mInvincibleTime;
+		if (mInvincibleTime <= 0) {
+			mIsEnemyHit = false;
+			mInvincibleTime = 120;
+		}
+	}
+
 	ImGui::Begin("Debug");
 	ImGui::DragFloat3("player Position", &mTransform.translate.x, 0.01f);
 	ImGui::DragFloat3("player Rotation", &mTransform.rotate.x, 0.01f);
@@ -151,7 +162,9 @@ void Player::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
 	mLightList->SetSpotLightDirection(frontVec);
 
 	mTexture->Bind(commandList);
-	mModel->Draw(commandList, camera, mTransform);
+	if ((mInvincibleTime / 5) % 2 == 0) {
+		mModel->Draw(commandList, camera, mTransform);
+	}
 }
 
 AABB Player::CalcurateAABB(const Vector3& translate){
