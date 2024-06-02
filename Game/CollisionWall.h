@@ -10,7 +10,7 @@ public:
 	void Update();
 
 	//translateとscaleを渡すとmin,maxを求めてくれる関数
-	AABB CalcurateAABB(const Vector3& translate, const Vector3& scale);
+	AABB CalculateAABB(const Vector3& translate, const Vector3& scale);
 	/// <summary>
 	/// アクセッサ
 	/// </summary>

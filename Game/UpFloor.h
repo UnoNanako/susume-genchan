@@ -14,7 +14,7 @@ public:
 	void Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)override;
 	void Move();
 	//minとmaxを求める関数
-	AABB CalcurateAABB(const Vector3& translate);
+	AABB CalculateAABB(const Vector3& translate);
 
 	/// <summary>
 	/// アクセッサ

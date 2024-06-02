@@ -153,7 +153,7 @@ void Player::Update(Input* input, float theta) {
 
 	mTransform.UpdateMatrix();
 	Vector3 worldPos = GetWorldPosition();
-	mAABBtranslate = CalcurateAABB(worldPos);
+	mAABBtranslate = CalculateAABB(worldPos);
 	//リスポーン
 	if (mTransform.translate.y <= -50.0f) {
 		Initialize(mDxCommon);
@@ -191,17 +191,17 @@ void Player::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera) {
 	}
 }
 
-AABB Player::CalcurateAABB(const Vector3& translate) {
+AABB Player::CalculateAABB(const Vector3& translate) {
 	AABB ret;
 	ret.min = {
-		{translate.x - (mTransform.scale.x)},
-		{translate.y - (mTransform.scale.y)},
-		{translate.z - (mTransform.scale.z)}
+		{translate.x - (2.0f / 2.0f)},
+		{translate.y - (2.0f / 2.0f)},
+		{translate.z - (2.0f / 2.0f)}
 	};
 	ret.max = {
-		{translate.x + (mTransform.scale.x)},
-		{translate.y + (mTransform.scale.y)},
-		{translate.z + (mTransform.scale.z)}
+		{translate.x + (2.0f / 2.0f)},
+		{translate.y + (2.0f / 2.0f)},
+		{translate.z + (2.0f / 2.0f)}
 	};
 	return ret;
 }

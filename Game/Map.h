@@ -28,7 +28,7 @@ public:
 	void Draw(ID3D12GraphicsCommandList* commandList,Camera* camera);
 	void Finalize();
 	//translateとscaleを渡すとmin,maxを求めてくれる関数
-	AABB CalcurateAABB(const Vector3& translate, const Vector3& scale);
+	AABB CalculateAABB(const Vector3& translate, const Vector3& scale);
 	
 	std::vector<Block*> GetBlock() { return mBlock; }
 	std::vector<AABB> GetInvisibleAABB() { return mInvisibleAABB; }

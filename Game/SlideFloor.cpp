@@ -31,7 +31,7 @@ void SlideFloor::Update(){
 			mRoundtripTime = now;
 		}
 	}
-	mAABB = CalcurateAABB(mTransform.translate);
+	mAABB = CalculateAABB(mTransform.translate);
 	mTransform.UpdateMatrix();
 }
 
@@ -39,7 +39,7 @@ void SlideFloor::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
 	mModel->Draw(commandList, camera, mTransform);
 }
 
-AABB SlideFloor::CalcurateAABB(const Vector3& translate){
+AABB SlideFloor::CalculateAABB(const Vector3& translate){
 	AABB ret;
 	ret.min = {
 		{translate.x - (10.0f / 2.0f)},

@@ -28,7 +28,7 @@ void Switch::Initialize(DirectXCommon* dxCommon){
 }
 
 void Switch::Update(){
-	mAABB = CalcurateAABB(mTransform.translate);
+	mAABB = CalculateAABB(mTransform.translate);
 	mTransform.UpdateMatrix();
 }
 
@@ -38,7 +38,7 @@ void Switch::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
 	mModel->Draw(commandList, camera, mTransform);
 }
 
-AABB Switch::CalcurateAABB(const Vector3& translate){
+AABB Switch::CalculateAABB(const Vector3& translate){
 	AABB ret;
 	ret.min = {
 		{translate.x - (1.0f / 2.0f)},

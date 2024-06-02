@@ -22,7 +22,7 @@ void Star::Initialize(DirectXCommon* dxCommon){
 
 void Star::Update(){
 	mTransform.rotate.y += 0.05f;
-	mAABB = CalcurateAABB(mTransform.translate);
+	mAABB = CalculateAABB(mTransform.translate);
 	ImGui::Begin("Debug");
 	ImGui::DragFloat3("Star", &mTransform.translate.x, 0.01f);
 	ImGui::End();
@@ -33,7 +33,7 @@ void Star::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
 	mModel->Draw(commandList, camera, mTransform);
 }
 
-AABB Star::CalcurateAABB(const Vector3& translate){
+AABB Star::CalculateAABB(const Vector3& translate){
 	AABB ret;
 	ret.min = {
 		{translate.x - (2.0f / 2.0f)},

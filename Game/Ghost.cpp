@@ -29,7 +29,7 @@ void Ghost::Initialize(DirectXCommon* dxCommon){
 }
 
 void Ghost::Update(){
-	mAABB = CalcurateAABB(mTransform.translate);
+	mAABB = CalculateAABB(mTransform.translate);
 	mTransform.UpdateMatrix();
 }
 
@@ -103,7 +103,7 @@ void Ghost::TrackPlayer(Player* player){
 	}
 }
 
-AABB Ghost::CalcurateAABB(const Vector3& translate){
+AABB Ghost::CalculateAABB(const Vector3& translate){
 	AABB ret;
 	ret.min = {
 		{translate.x - (4.0f / 2.0f)},

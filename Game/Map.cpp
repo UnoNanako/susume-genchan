@@ -103,7 +103,7 @@ void Map::Update(){
 		newTransform.rotate.z = 0.0f;
 	
 		AABB newAABB;
-		newAABB = CalcurateAABB(newTransform.translate, newTransform.scale);
+		newAABB = CalculateAABB(newTransform.translate, newTransform.scale);
 	}
 	int i = 0;
 	for (auto iter = mBlock.begin(); iter != mBlock.end();) {
@@ -189,7 +189,7 @@ void Map::Finalize(){
 	delete mTerrainTexture;
 }
 
-AABB Map::CalcurateAABB(const Vector3& translate, const Vector3& scale){
+AABB Map::CalculateAABB(const Vector3& translate, const Vector3& scale){
 	AABB ret;
 	ret.min = {
 		{ translate.x - (scale.x / 2.0f) },

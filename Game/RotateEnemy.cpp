@@ -40,7 +40,7 @@ void RotateEnemy::Update(){
 	ImGui::DragFloat3("enemy translate", &mTransform.translate.x, 0.01f);
 	ImGui::End();
 
-	mAABB = CalcurateAABB(mTransform.translate);
+	mAABB = CalculateAABB(mTransform.translate);
 
 	//現在の時間を取得
 	auto now = std::chrono::steady_clock::now();
@@ -117,7 +117,7 @@ void RotateEnemy::TrackPlayer(Player* player){
 	}
 }
 
-AABB RotateEnemy::CalcurateAABB(const Vector3& translate){
+AABB RotateEnemy::CalculateAABB(const Vector3& translate){
 	AABB ret;
 	ret.min = {
 		{ translate.x - (4.0f / 2.0f) },

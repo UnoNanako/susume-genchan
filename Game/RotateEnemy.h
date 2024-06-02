@@ -18,7 +18,7 @@ public:
 	bool DetectPlayer(Player* player);
 	void TrackPlayer(Player* player);
 	//minとmaxを求める関数
-	AABB CalcurateAABB(const Vector3& translate);
+	AABB CalculateAABB(const Vector3& translate);
 
 	/// <summary>
 	/// アクセッサ

@@ -67,7 +67,7 @@ void WalkEnemy::Update(){
 		break;
 	}
 	mTransform.UpdateMatrix();
-	mAABB = CalcurateAABB(mTransform.translate);
+	mAABB = CalculateAABB(mTransform.translate);
 }
 
 void WalkEnemy::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
@@ -77,7 +77,7 @@ void WalkEnemy::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
 	}
 }
 
-AABB WalkEnemy::CalcurateAABB(const Vector3& translate){
+AABB WalkEnemy::CalculateAABB(const Vector3& translate){
 	AABB ret;
 	ret.min = {
 		{translate.x - (2.0f / 2.0f)},

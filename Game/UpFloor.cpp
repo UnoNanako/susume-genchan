@@ -22,7 +22,7 @@ void UpFloor::Initialize(DirectXCommon* dxCommon){
 }
 
 void UpFloor::Update(){
-	mAABB = CalcurateAABB(mTransform.translate);
+	mAABB = CalculateAABB(mTransform.translate);
 	mTransform.UpdateMatrix();
 }
 
@@ -39,7 +39,7 @@ void UpFloor::Move(){
 	mTransform.UpdateMatrix();
 }
 
-AABB UpFloor::CalcurateAABB(const Vector3& translate){
+AABB UpFloor::CalculateAABB(const Vector3& translate){
 	AABB ret;
 	ret.min = {
 		{translate.x - (5.0f / 2.0f)},

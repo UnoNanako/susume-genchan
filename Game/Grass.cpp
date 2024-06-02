@@ -24,7 +24,7 @@ void Grass::Initialize(DirectXCommon* dxCommon){
 }
 
 void Grass::Update(){
-	mAABB = CalcurateAABB(mTransform.translate);
+	mAABB = CalculateAABB(mTransform.translate);
 	mTransform.UpdateMatrix();
 }
 
@@ -33,7 +33,7 @@ void Grass::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
 	mModel->Draw(commandList, camera, mTransform);
 }
 
-AABB Grass::CalcurateAABB(const Vector3& translate){
+AABB Grass::CalculateAABB(const Vector3& translate){
 	AABB ret;
 	ret.min = {
 		{translate.x - (3.0f / 2.0f)},

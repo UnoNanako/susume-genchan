@@ -14,7 +14,7 @@ public:
 	void Update()override;
 	void Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)override;
 	//minとmaxを求める関数
-	AABB CalcurateAABB(const Vector3& translate);
+	AABB CalculateAABB(const Vector3& translate);
 	//プレイヤーが視野角内に収まっているか判定する関数
 	bool DetectPlayer(Player* player);
 	bool TrackPlayer(Player* player);

@@ -3,7 +3,6 @@
 #include "Engine/2D/Texture.h"
 #include "Engine/DirectXCommon.h"
 #include "Engine/3D/Model.h"
-#include "Easing.h"
 
 Gem::~Gem(){
 	delete mTexture;
@@ -19,11 +18,12 @@ void Gem::Initialize(DirectXCommon* dxCommon){
 	mModel = new Model();
 	mModel->Create(mDxCommon, "resources/Model/Gem", "Gem_gltf.gltf");
 	mModel->SetAnimation(mModel->LoadAnimationFile("resources/Model/Gem", "Gem_gltf.gltf"));
+	mModel->Update();
 }
 
 void Gem::Update(){
 	mTransform.rotate.y += 0.05f;
-	mAABB = CalcurateAABB(mTransform.translate);
+	mAABB = CalculateAABB(mTransform.translate);
 	mTransform.UpdateMatrix();
 	if (mIsHit) {
 		mModel->Update();
@@ -35,7 +35,7 @@ void Gem::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
 	mModel->Draw(commandList, camera, mTransform);
 }
 
-AABB Gem::CalcurateAABB(const Vector3& translate){
+AABB Gem::CalculateAABB(const Vector3& translate){
 	AABB ret;
 	ret.min = {
 		{translate.x - (5.0f / 2.0f)},

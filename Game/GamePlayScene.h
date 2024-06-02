@@ -25,6 +25,8 @@
 #include "Engine/Light/LightList.h"
 #include "Game/CollisionWall.h"
 #include "Game/TitleScene.h"
+#include "Game/MiniBridge.h"
+#include "Game/Fence.h"
 
 class DirectXCommon;
 class Sprite;
@@ -100,19 +102,6 @@ private:
 	std::vector<std::unique_ptr<CollisionWall>> mCollisionWalls;
 
 	/// <summary>
-	/// フラグ
-	/// </summary>
-	bool mIsDirectionalLight = true;
-	bool mIsPlayerCamera = false;
-	bool mSlideFloorIsHit = false;
-	bool mUpFloorIsHit = false;
-	bool mSwitchIsHit = false; //UI(Aボタン)を出すために使う
-	bool mIsClear = false;
-	bool mIsGameover = false;
-	bool mLadderIsHit = false; //はしごに当たっているか
-	bool mIsTitleScene = true; //タイトルシーンか、そうでないか
-
-	/// <summary>
 	/// オブジェクト
 	/// </summary>
 	std::unique_ptr<Map> mMap; //マップ
@@ -127,6 +116,12 @@ private:
 	//草
 	const uint32_t mGRASS_MAX = 1;
 	std::vector<std::unique_ptr<Grass>> mGrasses;
+	//小さい橋
+	const uint32_t mMINIBRIDGE_MAX = 3;
+	std::vector<std::unique_ptr<MiniBridge>> mMiniBridges;
+	//フェンス
+	const uint32_t mFENCE_MAX = 13;
+	std::vector<std::unique_ptr<Fence>> mFences;
 
 	/// <summary>
 	/// スプライト
@@ -139,5 +134,18 @@ private:
 	/// シーン
 	/// <summary>
 	std::unique_ptr<TitleScene> mTitleScene;
+
+	/// <summary>
+	/// フラグ
+	/// </summary>
+	bool mIsDirectionalLight = true;
+	bool mIsPlayerCamera = false;
+	bool mSlideFloorIsHit = false;
+	bool mUpFloorIsHit = false;
+	bool mSwitchIsHit = false; //UI(Aボタン)を出すために使う
+	bool mIsClear = false;
+	bool mIsGameover = false;
+	bool mLadderIsHit = false; //はしごに当たっているか
+	bool mIsTitleScene = true; //タイトルシーンか、そうでないか
 };
 

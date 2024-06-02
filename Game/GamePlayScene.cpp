@@ -80,6 +80,43 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon){
 		mGems[i]->Initialize(dxCommon);
 	}
 	mGems[0]->SetTranslate({ 22.0f,5.0f,-22.5f });
+	//小さい橋
+	mMiniBridges.resize(mMINIBRIDGE_MAX);
+	for (uint32_t i = 0; i < mMiniBridges.size(); ++i) {
+		mMiniBridges[i] = std::make_unique<MiniBridge>();
+		mMiniBridges[i]->Initialize(dxCommon);
+	}
+	mMiniBridges[0]->SetTranslate({ 7.5f,17.0f,-15.0f });
+	mMiniBridges[1]->SetTranslate({ 22.5f,17.0f,-15.0f});
+	mMiniBridges[2]->SetTranslate({ 2.5f,17.0f,0.0f });
+	//フェンス
+	mFences.resize(mFENCE_MAX);
+	for (uint32_t i = 0; i < mFences.size(); ++i) {
+		mFences[i] = std::make_unique<Fence>();
+		mFences[i]->Initialize(dxCommon);
+	}
+	mFences[0]->SetTranslate({ -7.5f,20.0f,-10.5f });
+	mFences[1]->SetTranslate({ -2.5f,20.0f,-10.5f });
+	mFences[2]->SetTranslate({ 2.5f,20.0f,-10.5f });
+	mFences[3]->SetTranslate({ -7.5f,20.0f,-4.5f });
+	mFences[3]->SetRotate({ 0.0f,kPi,0.0f });
+	mFences[4]->SetTranslate({ -2.5f,20.0f,-4.5 });
+	mFences[4]->SetRotate({ 0.0f,kPi,0.0f });
+	mFences[5]->SetTranslate({ 32.0f,20.0f,-15.0f });
+	mFences[5]->SetRotate({ 0.0f,kPi / 2.0f,0.0f });
+	mFences[6]->SetTranslate({ 32.0f,15.0f,-20.0f }); //これ高さが足りないので修正
+	mFences[6]->SetRotate({ 0.0f,kPi / 2.0f,0.0f });
+	mFences[7]->SetTranslate({ 32.0f,10.0f,-25.0f });
+	mFences[7]->SetRotate({ 0.0f,kPi / 2.0f,0.0f });
+	mFences[8]->SetTranslate({ 27.5f,10.0f,-30.0f });
+	mFences[8]->SetRotate({ 0.0f,kPi,0.0f });
+	mFences[9]->SetTranslate({ -2.5f,20.0f,19.5f });
+	mFences[10]->SetTranslate({ 2.5f,20.0f,19.5f });
+	mFences[11]->SetTranslate({ 7.5f,20.0f,15.0f });
+	mFences[11]->SetRotate({ 0.0f,kPi / 2.0f,0.0f });
+	mFences[12]->SetTranslate({ 7.5f,20.0f,10.0f });
+	mFences[12]->SetRotate({ 0.0f,kPi / 2.0f,0.0f });
+	
 	//スター
 	mStar = std::make_unique<Star>();
 	mStar->Initialize(dxCommon);
@@ -158,7 +195,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon){
 	//草
 	mCollisionWalls[4]->SetTransform({ {5.5f,5.5f,40.0f},{0.0f,0.0f,0.0f},{-17.5f,5.0f,-7.5f} });
 	mCollisionWalls[5]->SetTransform({ {5.5f,5.0f,15.0f},{0.0f,0.0f,0.0f},{-22.5f,5.0f,15.0f} });
-	mCollisionWalls[6]->SetTransform({ {15.5f,5.0f,10.5f},{0.0f,0.0f,0.0f},{-2.5f,5.0f,-17.5f} });
+	mCollisionWalls[6]->SetTransform({ {15.5f,15.5f,10.5f},{0.0f,0.0f,0.0f},{-2.5f,5.0f,-17.5f} });
 	mCollisionWalls[7]->SetTransform({ {5.5f,5.0f,10.5f},{0.0f,0.0f,0.0f},{-7.5f,5.0f,-7.5f} });
 }
 
@@ -238,15 +275,22 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon){
 			mGhosts[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 		}
 	}
-
+	//ジェム
 	for (uint32_t i = 0; i < mGems.size(); ++i) {
 		mGems[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	}
-
+	//草
 	for (uint32_t i = 0; i < mGrasses.size(); ++i) {
 		mGrasses[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	}
-
+	//小さい橋
+	for (uint32_t i = 0; i < mMiniBridges.size(); ++i) {
+		mMiniBridges[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
+	}
+	//フェンス
+	for (uint32_t i = 0; i < mFences.size(); ++i) {
+		mFences[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
+	}
 	mStar->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mSlideFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mSlideSwitch->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
@@ -361,6 +405,14 @@ void GamePlayScene::ObjectUpdate(Input* input) {
 	for (uint32_t i = 0; i < mGrasses.size(); ++i) {
 		mGrasses[i]->Update();
 	}
+	//小さい橋
+	for (uint32_t i = 0; i < mMiniBridges.size(); ++i) {
+		mMiniBridges[i]->Update();
+	}
+	//フェンス
+	for (uint32_t i = 0; i < mFences.size(); ++i) {
+		mFences[i]->Update();
+	}
 	mStar->Update();
 	mSlideFloor->Update();
 	mSlideSwitch->Update();
@@ -396,11 +448,30 @@ void GamePlayScene::Collision(Input *input){
 	}
 
 	//当たり判定用の壁とプレイヤー
-	for (uint32_t i = 0; i < mCOLLISIONWALL_MAX; ++i) {
+	for (uint32_t i = 0; i < mCollisionWalls.size(); ++i) {
 		if (IsCollision(mPlayer->GetAABB(), mCollisionWalls[i]->GetAABB(), collisionResult)) {
 			ImGui::Begin("Debug");
 			ImGui::Text("Hit");
 			ImGui::End();
+			Vector3 pos = mPlayer->GetTranslate();
+			pos += collisionResult.normal * collisionResult.depth;
+			mPlayer->SetTranslate(pos);
+		}
+	}
+
+	//小さい橋
+	for (uint32_t i = 0; i < mMiniBridges.size(); ++i) {
+		if (IsCollision(mPlayer->GetAABB(), mMiniBridges[i]->GetAABB(), collisionResult)) {
+			mPlayer->SetIsHit(true);
+			Vector3 pos = mPlayer->GetTranslate();
+			pos += collisionResult.normal * collisionResult.depth;
+			mPlayer->SetTranslate(pos);
+		}
+	}
+
+	//フェンス
+	for (uint32_t i = 0; i < mFences.size(); ++i) {
+		if (IsCollision(mPlayer->GetAABB(), mFences[i]->GetAABB(), collisionResult)) {
 			Vector3 pos = mPlayer->GetTranslate();
 			pos += collisionResult.normal * collisionResult.depth;
 			mPlayer->SetTranslate(pos);

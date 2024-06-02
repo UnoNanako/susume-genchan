@@ -17,7 +17,7 @@ public:
 	void Update() override;
 	void Draw(ID3D12GraphicsCommandList* commandList, Camera* camera);
 	//minとmaxを求める関数
-	AABB CalcurateAABB(const Vector3& translate);
+	AABB CalculateAABB(const Vector3& translate);
 
 	/// <summary>
 	/// アクセッサ
