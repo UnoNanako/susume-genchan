@@ -17,6 +17,7 @@ public:
 	Matrix4x4 GetViewMatrix() { return mViewMatrix; }
 	bool GetIsHit() { return mIsHit; }
 	void SetIsHit(bool isHit) { mIsHit = isHit; }
+
 private:
 	float mRadius; //球の半径
 	float mLat; //緯度

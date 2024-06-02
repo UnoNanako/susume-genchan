@@ -23,7 +23,7 @@ void BirdEyeCamera::Update(Input* input, Vector3 playerTranslate,bool isTitleSce
 	ImGui::DragFloat3("Rotate", &mTransform.rotate.x, 0.05f);
 	ImGui::End();
 
-	if (mIsHit == false) {
+	if (mIsHit == false && isTitleScene == false) {
 		//ゲームパッドの右スティックの入力を取得
 		Vector2 rSttick = input->GetRStick();
 		//カメラの方位角と仰角を更新

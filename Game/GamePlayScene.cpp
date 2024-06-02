@@ -194,6 +194,7 @@ void GamePlayScene::Update(Input* input){
 
 	if (input->GetButton(XINPUT_GAMEPAD_A) || input->PushKey(DIK_SPACE)) {
 		mIsTitleScene = false;
+		mPlayer->SetIsOperatable(true);
 	}
 
 	ObjectUpdate(input); //オブジェクトの更新
@@ -347,8 +348,10 @@ void GamePlayScene::ObjectUpdate(Input* input) {
 	}
 	//ゴースト(テレサ)
 	for (uint32_t i = 0; i < mGhosts.size(); ++i) {
-		mGhosts[i]->Update();
-		mGhosts[i]->TrackPlayer(mPlayer.get());
+		if (mIsTitleScene == false) {
+			mGhosts[i]->Update();
+			mGhosts[i]->TrackPlayer(mPlayer.get());
+		}
 	}
 	//ジェム
 	for (uint32_t i = 0; i < mGems.size(); ++i) {
@@ -406,11 +409,20 @@ void GamePlayScene::Collision(Input *input){
 
 	//rotateEnemyとプレイヤー
 	for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
-		if (IsCollision(mPlayer->GetAABB(), mRotateEnemies[i]->GetAABB(), collisionResult)) {
-			if (mPlayer->GetIsEnemyHit() == false) {
-				mPlayer->SetHp(mPlayer->GetHp() - 1);
+		if (mRotateEnemies[i]->GetIsAlive() == true) {
+			if (IsCollision(mPlayer->GetAABB(), mRotateEnemies[i]->GetAABB(), collisionResult)) {
+				if (mPlayer->GetIsAttack() == false) {
+					if (mPlayer->GetIsEnemyHit() == false) {
+						mPlayer->SetHp(mPlayer->GetHp() - 1);
+					}
+					mPlayer->SetIsEnemyHit(true);
+				}
 			}
-			mPlayer->SetIsEnemyHit(true);
+			if (IsCollision(mPlayer->GetAABB(), mRotateEnemies[i]->GetAABB(), collisionResult)) {
+				if (mPlayer->GetIsAttack() == true) {
+					mRotateEnemies[i]->SetIsAlive(false);
+				}
+			}
 		}
 	}
 
@@ -428,11 +440,20 @@ void GamePlayScene::Collision(Input *input){
 
 	//walkEnemyとプレイヤー
 	for (uint32_t i = 0; i < mWalkEnemies.size(); ++i) {
-		if (IsCollision(mWalkEnemies[i]->GetAABB(), mPlayer->GetAABB(),collisionResult)) {
-			if (mPlayer->GetIsEnemyHit() == false) {
-				mPlayer->SetHp(mPlayer->GetHp() - 1);
+		if (mWalkEnemies[i]->GetIsAlive() == true) {
+			if (IsCollision(mWalkEnemies[i]->GetAABB(), mPlayer->GetAABB(), collisionResult)) {
+				if (mPlayer->GetIsAttack() == false) {
+					if (mPlayer->GetIsEnemyHit() == false) {
+						mPlayer->SetHp(mPlayer->GetHp() - 1);
+					}
+					mPlayer->SetIsEnemyHit(true);
+				}
 			}
-			mPlayer->SetIsEnemyHit(true);
+			if (IsCollision(mWalkEnemies[i]->GetAABB(), mPlayer->GetAABB(), collisionResult)) {
+				if (mPlayer->GetIsAttack() == true) {
+					mWalkEnemies[i]->SetIsAlive(false);
+				}
+			}
 		}
 	}
 

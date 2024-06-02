@@ -25,7 +25,7 @@ void Ghost::Initialize(DirectXCommon* dxCommon){
 		{0.0f,0.0f,0.0f} //transfrom
 	};
 	mModel = new Model();
-	mModel->Create(mDxCommon, "resources/Model/Enemies/Ghost", "ghost.obj");
+	mModel->Create(mDxCommon, "resources/Model/Enemies/Ghost", "Ghost.obj");
 }
 
 void Ghost::Update(){
@@ -106,14 +106,14 @@ void Ghost::TrackPlayer(Player* player){
 AABB Ghost::CalcurateAABB(const Vector3& translate){
 	AABB ret;
 	ret.min = {
-		{translate.x - (mTransform.scale.x / 2.0f)},
-		{translate.y - (mTransform.scale.y / 2.0f)},
-		{translate.z - (mTransform.scale.z / 2.0f)}
+		{translate.x - (4.0f / 2.0f)},
+		{translate.y - (4.0f / 2.0f)},
+		{translate.z - (4.0f / 2.0f)}
 	};
 	ret.max = {
-		{translate.x + (mTransform.scale.x / 2.0f)},
-		{translate.y + (mTransform.scale.y / 2.0f)},
-		{translate.z + (mTransform.scale.z / 2.0f)}
+		{translate.x + (4.0f / 2.0f)},
+		{translate.y + (4.0f / 2.0f)},
+		{translate.z + (4.0f / 2.0f)}
 	};
 	return ret;
 }

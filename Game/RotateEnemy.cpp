@@ -10,6 +10,7 @@
 RotateEnemy::RotateEnemy()
 	:mRotateTimer(180)
 	, mIsRotate(false)
+	,mIsAlive(true)
 	, mFovAngle(kPi / 2.0f) //90°
 	,mIsPlayerInView(false)
 	,mLength(20.0f){
@@ -55,7 +56,9 @@ void RotateEnemy::Update(){
 
 void RotateEnemy::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
 	mTexture->Bind(commandList);
-	mModel->Draw(commandList, camera, mTransform);
+	if (mIsAlive == true) {
+		mModel->Draw(commandList, camera, mTransform);
+	}
 }
 
 //プレイヤーが視野角内に収まっているか判定する関数
@@ -117,14 +120,14 @@ void RotateEnemy::TrackPlayer(Player* player){
 AABB RotateEnemy::CalcurateAABB(const Vector3& translate){
 	AABB ret;
 	ret.min = {
-		{ translate.x - (5.0f / 2.0f) },
-		{ translate.y - (5.0f / 2.0f) },
-		{ translate.z - (5.0f / 2.0f) }
+		{ translate.x - (4.0f / 2.0f) },
+		{ translate.y - (4.0f / 2.0f) },
+		{ translate.z - (4.0f / 2.0f) }
 	};
 	ret.max = {
-		{ translate.x + (5.0f / 2.0f) },
-		{ translate.y + (5.0f / 2.0f) },
-		{ translate.z + (5.0f / 2.0f) }
+		{ translate.x + (4.0f / 2.0f) },
+		{ translate.y + (4.0f / 2.0f) },
+		{ translate.z + (4.0f / 2.0f) }
 	};
 	return ret;
 }

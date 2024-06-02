@@ -24,6 +24,7 @@ public:
 	/// </summary>
 	int GetHp() { return mHp; }
 	bool GetIsEnemyHit() { return mIsEnemyHit; }
+	bool GetIsAttack() { return mIsAttack; }
 	AABB GetAABB() { return mAABBtranslate; }
 	Vector3 GetVelocity() { return mVelocity; }
 	Vector3 GetWorldPosition() { return Vector3{ mTransform.mMatWorld.m[3][0],mTransform.mMatWorld.m[3][1],mTransform.mMatWorld.m[3][2] }; }
@@ -31,6 +32,7 @@ public:
 	Transform* GetParent() { return mTransform.mParent; }
 	void SetHp(uint32_t hp) { mHp = hp; }
 	void SetIsEnemyHit(bool isEnemyHit) { mIsEnemyHit = isEnemyHit; }
+	void SetIsOperatable(bool isOperatable) { mIsOperatable = isOperatable; }
 	void SetVelocity(Vector3 velocity) { mVelocity = velocity; }
 	void SetIsHit(bool isHit) { mIsHit = isHit; }
 	void SetLightList(LightList* lightList) { mLightList = lightList; }
@@ -51,6 +53,7 @@ private:
 	bool mIsHit; //壁や床に当たったかどうかを管理するフラグ
 	bool mIsEnemyHit; //敵と当たったかどうかを管理するフラグ
 	bool mIsAttack; //攻撃しているかどうかを管理するフラグ
+	bool mIsOperatable; //操作できるかどうかを管理するフラグ
 	float mSpeed; 
 	float mRotateSpeed; //回転スピード
 	float mGravity; //重力

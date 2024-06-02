@@ -10,6 +10,7 @@
 WalkEnemy::WalkEnemy()
 	:mFovAngle(kPi / 2.0f) //90°
 	, mIsPlayerInView(false)
+	,mIsAlive(true)
 	, mLength(20.0f)
 	, mVelocity({ 0.05f,0.0f,0.05f })
 	,mGravity(0.05f){
@@ -71,7 +72,9 @@ void WalkEnemy::Update(){
 
 void WalkEnemy::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
 	mTexture->Bind(commandList);
-	mModel->Draw(commandList, camera, mTransform);
+	if (mIsAlive == true) {
+		mModel->Draw(commandList, camera, mTransform);
+	}
 }
 
 AABB WalkEnemy::CalcurateAABB(const Vector3& translate){

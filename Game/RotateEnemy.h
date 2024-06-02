@@ -24,6 +24,8 @@ public:
 	/// アクセッサ
 	/// </summary>
 	AABB GetAABB() { return mAABB; }
+	bool GetIsAlive() { return mIsAlive; }
+	void SetIsAlive(bool isAlive) { mIsAlive = isAlive; }
 
 private:
 	uint32_t mRotateTimer;
@@ -32,6 +34,7 @@ private:
 	float mFovAngle; //視野角
 	float mLength;
 	bool mIsPlayerInView; //プレイヤーが視野内にいるか
+	bool mIsAlive; //生きているか
 	std::chrono::steady_clock::time_point mLastRotationTime; //最後の回転時間
 };
 

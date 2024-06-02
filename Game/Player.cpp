@@ -11,8 +11,9 @@
 
 Player::Player()
 	:mIsHit(false)
-	,mIsEnemyHit(false)
-	,mIsAttack(false)
+	, mIsEnemyHit(false)
+	, mIsAttack(false)
+	, mIsOperatable(false)
 	, mAABBtranslate({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} })
 	, mLightList(nullptr)
 	, mRotateSpeed(0.05f)
@@ -20,18 +21,18 @@ Player::Player()
 	, mTexture(nullptr)
 	, mVelocity({ 0.1f,0.0f,0.1f })
 	, mGravity(0.05f)
-	,mHp(2)
-	,mInvincibleTime(120)
-	,mProgressTimer(5)
-	,mBackTimer(5){
+	, mHp(2)
+	, mInvincibleTime(120)
+	, mProgressTimer(5)
+	, mBackTimer(5) {
 }
 
-Player::~Player(){
+Player::~Player() {
 	delete mTexture;
 	delete mModel;
 }
 
-void Player::Initialize(DirectXCommon* dxCommon){
+void Player::Initialize(DirectXCommon* dxCommon) {
 	mDxCommon = dxCommon;
 	mTransform = {
 		{1.0f,1.0f,1.0f}, //scale
@@ -49,7 +50,7 @@ void Player::Initialize(DirectXCommon* dxCommon){
 	mModel->SetTexture(mTexture);
 }
 
-void Player::Update(Input* input, float theta){
+void Player::Update(Input* input, float theta) {
 	if (mIsHit == true) { //地面に当たったら
 		//mTransform.translate.y = 3.0f;
 		mVelocity.y = 0.0f;
@@ -81,71 +82,75 @@ void Player::Update(Input* input, float theta){
 	//2つのベクトルをそれぞれビュー行列で変換。ビューに対して前方と右方向のベクトルが求まる
 	frontVec = Multiply(frontVec, mTransposeViewMatrix);
 	rightVec = Multiply(rightVec, mTransposeViewMatrix);
-
 	//ここまで
 
 	//キーボード
-	if (input->PushKey(DIK_W)) {
+	if (mIsOperatable == true) {
+		if (input->PushKey(DIK_W)) {
+			mTransform.translate.x += frontVec.x;
+			mTransform.translate.y += frontVec.y;
+			mTransform.translate.z += frontVec.z;
+		}
+		if (input->PushKey(DIK_S)) {
+			mTransform.translate.x -= frontVec.x;
+			mTransform.translate.y -= frontVec.y;
+			mTransform.translate.z -= frontVec.z;
+		}
+		if (input->PushKey(DIK_A)) {
+			mTransform.translate.x -= rightVec.x;
+			mTransform.translate.y -= rightVec.y;
+			mTransform.translate.z -= rightVec.z;
+		}
+		if (input->PushKey(DIK_D)) {
+			mTransform.translate.x += rightVec.x;
+			mTransform.translate.y += rightVec.y;
+			mTransform.translate.z += rightVec.z;
+		}
+
+		//ゲームパッド
+		//Lスティック
+		Vector2 lStick = input->GetLStick();
+		frontVec.x *= lStick.y;
+		frontVec.y *= lStick.y;
+		frontVec.z *= lStick.y;
+		rightVec.x *= lStick.x;
+		rightVec.y *= lStick.x;
+		rightVec.z *= lStick.x;
 		mTransform.translate.x += frontVec.x;
 		mTransform.translate.y += frontVec.y;
 		mTransform.translate.z += frontVec.z;
-	}
-	if (input->PushKey(DIK_S)) {
-		mTransform.translate.x -= frontVec.x;
-		mTransform.translate.y -= frontVec.y;
-		mTransform.translate.z -= frontVec.z;
-	}
-	if (input->PushKey(DIK_A)) {
-		mTransform.translate.x -= rightVec.x;
-		mTransform.translate.y -= rightVec.y;
-		mTransform.translate.z -= rightVec.z;
-	}
-	if (input->PushKey(DIK_D)) {
 		mTransform.translate.x += rightVec.x;
 		mTransform.translate.y += rightVec.y;
 		mTransform.translate.z += rightVec.z;
-	}
 
-	//ゲームパッド
-	//Lスティック
-	Vector2 lStick = input->GetLStick();
-	frontVec.x *= lStick.y;
-	frontVec.y *= lStick.y;
-	frontVec.z *= lStick.y;
-	rightVec.x *= lStick.x;
-	rightVec.y *= lStick.x;
-	rightVec.z *= lStick.x;
-	mTransform.translate.x += frontVec.x;
-	mTransform.translate.y += frontVec.y;
-	mTransform.translate.z += frontVec.z;
-	mTransform.translate.x += rightVec.x;
-	mTransform.translate.y += rightVec.y;
-	mTransform.translate.z += rightVec.z;
-	//Rスティック
-	Vector2 rStick = input->GetRStick();
-	//Bボタン
-	if (input->GetButtonDown(XINPUT_GAMEPAD_B)) {
-		mIsAttack = true;
-	}
-	if (mIsAttack == true && mProgressTimer > 0) {
-		--mProgressTimer;
-		Vector3 frontVec;
-		frontVec = { 0.0f,0.0f,1.0f };
-		frontVec = Multiply(frontVec, MakeRotateYMatrix(mTransform.rotate.y));
-		mTransform.translate += frontVec;
-	}else if(mIsAttack == true && mProgressTimer <= 0){
-		Vector3 frontVec;
-		frontVec = { 0.0f,0.0f,1.0f };
-		frontVec = Multiply(frontVec, MakeRotateYMatrix(mTransform.rotate.y));
-		mTransform.translate -= frontVec;
-		--mBackTimer;
-		if (mBackTimer <= 0) {
-			mIsAttack = false;
-			mProgressTimer = 5;
-			mBackTimer = 5;
+		//Rスティック
+		Vector2 rStick = input->GetRStick();
+		mTransform.rotate.y = -theta - kPi / 2.0f;
+
+		//Bボタン
+		if (input->GetButtonDown(XINPUT_GAMEPAD_B)) {
+			mIsAttack = true;
+		}
+		if (mIsAttack == true && mProgressTimer > 0) {
+			--mProgressTimer;
+			Vector3 frontVec;
+			frontVec = { 0.0f,0.0f,1.0f };
+			frontVec = Multiply(frontVec, MakeRotateYMatrix(mTransform.rotate.y));
+			mTransform.translate += frontVec;
+		} else if (mIsAttack == true && mProgressTimer <= 0) {
+			Vector3 frontVec;
+			frontVec = { 0.0f,0.0f,1.0f };
+			frontVec = Multiply(frontVec, MakeRotateYMatrix(mTransform.rotate.y));
+			mTransform.translate -= frontVec;
+			--mBackTimer;
+			if (mBackTimer <= 0) {
+				mIsAttack = false;
+				mProgressTimer = 5;
+				mBackTimer = 5;
+			}
 		}
 	}
-	mTransform.rotate.y = -theta - kPi/2.0f;
+
 	mTransform.UpdateMatrix();
 	Vector3 worldPos = GetWorldPosition();
 	mAABBtranslate = CalcurateAABB(worldPos);
@@ -169,7 +174,7 @@ void Player::Update(Input* input, float theta){
 	ImGui::End();
 }
 
-void Player::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
+void Player::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera) {
 	mLightList->SetSpotLightPos(mTransform.translate);
 	Matrix4x4 rotationX = MakeRotateXMatrix(mTransform.rotate.x);
 	Matrix4x4 rotationY = MakeRotateYMatrix(mTransform.rotate.y);
@@ -186,7 +191,7 @@ void Player::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
 	}
 }
 
-AABB Player::CalcurateAABB(const Vector3& translate){
+AABB Player::CalcurateAABB(const Vector3& translate) {
 	AABB ret;
 	ret.min = {
 		{translate.x - (mTransform.scale.x)},
