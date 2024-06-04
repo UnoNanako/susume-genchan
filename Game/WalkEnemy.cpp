@@ -40,28 +40,28 @@ void WalkEnemy::Update(){
 	case UP:
 		mTransform.rotate = { 0.0f,0.0f,0.0f };
 		mTransform.translate.z += mVelocity.z;
-		if (mTransform.translate.z > 25.0f) {
+		if (mTransform.translate.z > mMoveMax.z) {
 			mDirection = RIGHT;
 		}
 		break;
 	case DOWN:
 		mTransform.rotate = { 0.0f,kPi,0.0f };
 		mTransform.translate.z -= mVelocity.z;
-		if (mTransform.translate.z < 15.0f) {
+		if (mTransform.translate.z < mMoveMin.z) {
 			mDirection = LEFT;
 		}
 		break;
 	case LEFT:
 		mTransform.rotate = { 0.0f,-kPi / 2.0f,0.0f };
 		mTransform.translate.x -= mVelocity.x;
-		if (mTransform.translate.x < -17.5f) {
+		if (mTransform.translate.x < mMoveMin.x) {
 			mDirection = UP;
 		}
 		break;
 	case RIGHT:
 		mTransform.rotate = { 0.0f,kPi/2.0f,0.0f };
 		mTransform.translate.x += mVelocity.x;
-		if (mTransform.translate.x > -7.5f) {
+		if (mTransform.translate.x > mMoveMax.x) {
 			mDirection = DOWN;
 		}
 		break;

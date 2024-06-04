@@ -25,6 +25,8 @@ public:
 	AABB GetAABB() { return mAABB; }
 	bool GetIsAlive() { return mIsAlive; }
 	void SetIsAlive(bool isAlive) { mIsAlive = isAlive; }
+	void SetMoveMax(Vector3 moveMax) { mMoveMax = moveMax; }
+	void SetMoveMin(Vector3 moveMin) { mMoveMin = moveMin; }
 
 private:
 	float mFovAngle; //視野角
@@ -34,6 +36,8 @@ private:
 	float mGravity; //重力
 	Vector3 mVelocity;
 	AABB mAABB; //当たり判定
+	Vector3 mMoveMax; //移動範囲の最大
+	Vector3 mMoveMin; //移動範囲の最小
 
 	enum Direction {
 		UP,
