@@ -315,7 +315,10 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon){
 	//----------モデルここまで----------
 
 	mGame->GetParticleCommon()->Bind(dxCommon);
-	//mParticle->Draw(dxCommon->GetCommandList(), camera, { 0.0f,0.0f,0.0f });
+	for (uint32_t i = 0; i < mParticles.size(); ++i) {
+		mParticles[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get(), { {1.0f,1.0f,1.0f} ,{0.0f,0.0f,0.0f},{-30.0f,10.0f,-30.0f} });
+	}
+	
 	mGame->GetModelCommon()->Bind(dxCommon);
 	mCrosshair->Draw(dxCommon->GetCommandList());
 	if (mIsTitleScene) {
@@ -400,7 +403,7 @@ void GamePlayScene::ObjectUpdate(Input* input) {
 	mMap->Update(); //マップ
 	mSkydome->Update(); //天球
 	for (uint32_t i = 0; i < mParticles.size(); ++i) {
-		mParticles[i]->Update(mPlayerCamera.get()); //パーティクル
+		mParticles[i]->Update(); //パーティクル
 	}
 	//回転する敵
 	for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {

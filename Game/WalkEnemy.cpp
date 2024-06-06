@@ -24,7 +24,7 @@ WalkEnemy::~WalkEnemy(){
 void WalkEnemy::Initialize(DirectXCommon* dxCommon){
 	mDxCommon = dxCommon;
 	mTransform = {
-		{1.0f,1.0f,1.0f},
+		{1.5f,1.5f,1.5f},
 		{0.0f,0.0f,0.0f},
 		{0.0f,0.0f,0.0f} 
 	};

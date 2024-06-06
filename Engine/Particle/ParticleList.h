@@ -3,9 +3,9 @@
 #include <string>
 #include "Transform.h"
 #include <wrl.h>
+#include "Particle.h"
 
 class DirectXCommon;
-struct Particle;
 struct ParticleForGPU;
 class Camera;
 class Texture;
@@ -19,9 +19,11 @@ class ParticleList
 public:
 	~ParticleList();
 	void Create(DirectXCommon* dxCommon);
-	void Update(Camera* camera);
-	void Draw(ID3D12GraphicsCommandList* commandList,Camera* camera,const Transform &mTransform);
-
+	void Update();
+	void Draw(ID3D12GraphicsCommandList* commandList, Camera* camera, const Transform& mTransform);
+	/// <summary>
+	/// アクセッサ
+	/// </summary>
 private:
 	const float kDeltaTime = 1.0f / 60.0f;
 	Microsoft::WRL::ComPtr<ID3D12Resource> instancingResourse;
@@ -33,6 +35,6 @@ private:
 	Material* materialData;
 	Texture* texture;
 	D3D12_GPU_DESCRIPTOR_HANDLE instancingSrvHandleGPU;
-	Transform transforms[kNumInstance];
+	Particle mParticles[kNumInstance];
 };
 

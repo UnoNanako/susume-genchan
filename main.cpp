@@ -63,24 +63,6 @@ int WINAPI WinMain(
 	Game* game = new Game;
 	game->Initialize();
 
-	//Instancing用にTransformationMatrixを10コ格納できるResourceを作る
-	const uint32_t kNumMaxInstance = 10; //インスタンス数
-	//Instancing用のTransformationMatrixリソースを作る
-	Microsoft::WRL::ComPtr<ID3D12Resource> instancingResource =
-		game->GetDxCommon()->CreateBufferResource(game->GetDxCommon()->GetDevice(), sizeof(ParticleForGPU) * kNumMaxInstance);
-	//書き込むためのアドレスを取得
-	ParticleForGPU* instancingData = nullptr;
-	instancingResource->Map(0, nullptr, reinterpret_cast<void**>(&instancingData));
-	//単位行列を書き込んでおく
-	for (uint32_t index = 0; index < kNumMaxInstance; ++index) {
-		instancingData[index].WVP = MakeIdentity4x4();
-		instancingData[index].color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-		//instancingData[index].World = MakeIdentity4x4();
-	}
-
-	//tを定義。とりあえず60fps固定してあるが、実時間を計測して可変fpsで動かせるようにしておくとなお良い。
-	const float kDeltaTime = 1.0f / 60.0f;
-
 	MSG msg{};
 	//--------------------10. GPUの実行を待つ(fenceは実行を待つものではなく、GPUの処理が終わったかを調べるもの)	//ウィンドウの×ボタンが押されるまでループ
 	while (msg.message != WM_QUIT) {

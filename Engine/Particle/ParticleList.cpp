@@ -22,9 +22,10 @@ void ParticleList::Create(DirectXCommon* dxCommon){
 		instancingData[index].color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 		//instancingData[index].World = MakeIdentity4x4();
 
-		transforms[index].scale = { 1.0f,1.0f,1.0f };
-		transforms[index].rotate = { 0.0f,0.0f,0.0f };
-		transforms[index].translate = { index * 0.1f, index * 0.1f, index * 0.1f };
+		mParticles[index].mTransform.scale = { 1.0f,1.0f,1.0f };
+		mParticles[index].mTransform.rotate = { 0.0f,0.0f,0.0f };
+		mParticles[index].mTransform.translate = { index * 0.1f, index * 0.1f, index * 0.1f };
+		mParticles[index].velocity = { 0.0f,1.0f,0.0f };
 	}
 
 	//SRVの作成
@@ -74,25 +75,14 @@ void ParticleList::Create(DirectXCommon* dxCommon){
 	materialData->color = { 1.0f,1.0f,1.0f,1.0f };
 }
 
-void ParticleList::Update(Camera* camera){
-	/*for (uint32_t index = 0; index < kNumInstance; ++index) {
-		Matrix4x4 worldMatrix = MakeAffineMatrix(transforms[index].scale, transforms[index].rotate, transforms[index].translate);
-		Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix,Multiply(camera->GetViewMatrix(),camera->GetProjectionMatrix()));
-		instancingData[index].WVP = worldViewProjectionMatrix;
-		instancingData[index].World = worldMatrix;
-	}*/
+void ParticleList::Update(){
+
 }
 
 void ParticleList::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera,const Transform &mTransform){
 	//Particle用のWorldViewProjectionMatrixをつくる
-	/*Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
-	Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(camera->GetViewMatrix(), camera->GetProjectionMatrix()));
 	for (uint32_t index = 0; index < kNumInstance; ++index) {
-		instancingData[index].WVP = worldViewProjectionMatrix;
-		instancingData[index].World = worldMatrix;
-	}*/
-	for (uint32_t index = 0; index < kNumInstance; ++index) {
-		Matrix4x4 worldMatrix = MakeAffineMatrix(transforms[index].scale, transforms[index].rotate, transforms[index].translate);
+		Matrix4x4 worldMatrix = MakeAffineMatrix(mParticles[index].mTransform.scale, mParticles[index].mTransform.rotate, mParticles[index].mTransform.translate);
 		Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(camera->GetViewMatrix(), camera->GetProjectionMatrix()));
 		instancingData[index].WVP = worldViewProjectionMatrix;
 		instancingData[index].World = worldMatrix;
