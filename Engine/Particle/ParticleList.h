@@ -3,6 +3,7 @@
 #include <string>
 #include "Transform.h"
 #include <wrl.h>
+#include <random>
 #include "Particle.h"
 
 class DirectXCommon;
@@ -12,7 +13,7 @@ class Texture;
 struct VertexData;
 struct Material;
 
-const uint32_t kNumInstance = 10; //インスタンス数
+const uint32_t kNumMaxInstance = 10; //インスタンス数
 
 class ParticleList
 {
@@ -21,11 +22,12 @@ public:
 	void Create(DirectXCommon* dxCommon);
 	void Update();
 	void Draw(ID3D12GraphicsCommandList* commandList, Camera* camera, const Transform& mTransform);
+	Particle MakeNewParticle();
 	/// <summary>
 	/// アクセッサ
 	/// </summary>
 private:
-	const float kDeltaTime = 1.0f / 60.0f;
+	const float kDeltaTime = 1.0f / 60.0f; //tを定義。とりあえず60fps
 	Microsoft::WRL::ComPtr<ID3D12Resource> instancingResourse;
 	ParticleForGPU* instancingData;
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource;
@@ -35,6 +37,7 @@ private:
 	Material* materialData;
 	Texture* texture;
 	D3D12_GPU_DESCRIPTOR_HANDLE instancingSrvHandleGPU;
-	Particle mParticles[kNumInstance];
+	Particle mParticles[kNumMaxInstance];
+	uint32_t mNumInstance = 0; //描画すべきインスタンス数
 };
 

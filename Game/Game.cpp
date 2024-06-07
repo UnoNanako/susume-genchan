@@ -13,6 +13,7 @@
 #include "WinApiManager.h"
 #include "Engine/3D/ModelCommon.h"
 #include "Engine/Particle/ParticleCommon.h"
+#include "Math/Random.h"
 
 void Game::Initialize(){
 	//ポインタ
@@ -45,6 +46,7 @@ void Game::Initialize(){
 	mParticleCommon = new ParticleCommon();
 	mModelCommon->Initialize(mDxCommon);
 	mParticleCommon->Initialize(mDxCommon);
+	Random::Initialize();
 }
 
 void Game::Finalize(){

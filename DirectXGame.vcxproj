@@ -155,6 +155,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Math\Quaternion.cpp" />
     <ClCompile Include="Game\TitleScene.cpp" />
     <ClCompile Include="Game\MiniBridge.cpp" />
+    <ClCompile Include="Math\Random.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Game\UpFloor.cpp" />
   </ItemGroup>
@@ -222,6 +223,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Math\Quaternion.h" />
     <ClInclude Include="Game\TitleScene.h" />
     <ClInclude Include="Game\MiniBridge.h" />
+    <ClInclude Include="Math\Random.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

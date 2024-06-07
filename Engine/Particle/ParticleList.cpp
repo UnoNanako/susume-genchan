@@ -7,25 +7,22 @@
 #include "Transform.h"
 #include "VertexData.h"
 #include "Material.h"
+#include "Math//Random.h"
 
 ParticleList::~ParticleList()
 {
 	delete texture;
 }
 
-void ParticleList::Create(DirectXCommon* dxCommon){
-	instancingResourse = dxCommon->CreateBufferResource(dxCommon->GetDevice(), sizeof(ParticleForGPU) * kNumInstance);
+void ParticleList::Create(DirectXCommon* dxCommon) {
+	instancingResourse = dxCommon->CreateBufferResource(dxCommon->GetDevice(), sizeof(ParticleForGPU) * kNumMaxInstance);
 	instancingResourse->Map(0, nullptr, reinterpret_cast<void**>(&instancingData));
 	//単位行列を書き込んでおく
-	for (uint32_t index = 0; index < kNumInstance; ++index) {
+	for (uint32_t index = 0; index < kNumMaxInstance; ++index) {
+		mParticles[index] = MakeNewParticle();
 		instancingData[index].WVP = MakeIdentity4x4();
-		instancingData[index].color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+		instancingData[index].color = mParticles[index].color;
 		//instancingData[index].World = MakeIdentity4x4();
-
-		mParticles[index].mTransform.scale = { 1.0f,1.0f,1.0f };
-		mParticles[index].mTransform.rotate = { 0.0f,0.0f,0.0f };
-		mParticles[index].mTransform.translate = { index * 0.1f, index * 0.1f, index * 0.1f };
-		mParticles[index].velocity = { 0.0f,1.0f,0.0f };
 	}
 
 	//SRVの作成
@@ -35,8 +32,8 @@ void ParticleList::Create(DirectXCommon* dxCommon){
 	instancingSrvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
 	instancingSrvDesc.Buffer.FirstElement = 0;
 	instancingSrvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
-	instancingSrvDesc.Buffer.NumElements = kNumInstance;
-	instancingSrvDesc.Buffer.StructureByteStride = sizeof(TransformationMatrix);
+	instancingSrvDesc.Buffer.NumElements = kNumMaxInstance;
+	instancingSrvDesc.Buffer.StructureByteStride = sizeof(ParticleForGPU);
 	D3D12_CPU_DESCRIPTOR_HANDLE instancingSrvHandleCPU = dxCommon->GetCPUDescriptorHandle();
 	instancingSrvHandleGPU = dxCommon->GetGPUDescriptorHandle();
 	dxCommon->GetDevice()->CreateShaderResourceView(instancingResourse.Get(), &instancingSrvDesc, instancingSrvHandleCPU);
@@ -45,7 +42,7 @@ void ParticleList::Create(DirectXCommon* dxCommon){
 	texture = new Texture();
 	texture->Create(dxCommon, "resources/uvChecker.png");
 
-	vertexResource = dxCommon->CreateBufferResource(dxCommon->GetDevice(), sizeof(VertexData)*6);
+	vertexResource = dxCommon->CreateBufferResource(dxCommon->GetDevice(), sizeof(VertexData) * 6);
 	vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
 	vertexBufferView.BufferLocation = vertexResource->GetGPUVirtualAddress();
 	vertexBufferView.SizeInBytes = sizeof(VertexData) * 6;
@@ -75,22 +72,43 @@ void ParticleList::Create(DirectXCommon* dxCommon){
 	materialData->color = { 1.0f,1.0f,1.0f,1.0f };
 }
 
-void ParticleList::Update(){
-
+void ParticleList::Update() {
 }
 
-void ParticleList::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera,const Transform &mTransform){
+void ParticleList::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera, const Transform& mTransform) {
 	//Particle用のWorldViewProjectionMatrixをつくる
-	for (uint32_t index = 0; index < kNumInstance; ++index) {
+	for (uint32_t index = 0; index < kNumMaxInstance; ++index) {
+		if (mParticles[index].lifeTime <= mParticles[index].currentTime) { //生存時間を過ぎていたら更新せず描画対象にしない
+			continue;
+		}
 		Matrix4x4 worldMatrix = MakeAffineMatrix(mParticles[index].mTransform.scale, mParticles[index].mTransform.rotate, mParticles[index].mTransform.translate);
 		Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(camera->GetViewMatrix(), camera->GetProjectionMatrix()));
 		instancingData[index].WVP = worldViewProjectionMatrix;
 		instancingData[index].World = worldMatrix;
+		mParticles[index].mTransform.translate += mParticles[index].velocity * kDeltaTime;
+		mParticles[index].currentTime += kDeltaTime; //経過時間を足す
+		instancingData[mNumInstance].WVP = worldViewProjectionMatrix;
+		instancingData[mNumInstance].World = worldMatrix;
+		instancingData[mNumInstance].color = mParticles[index].color;
+		++mNumInstance; //生きているParticleの数を1つカウントする
 	}
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	commandList->SetGraphicsRootConstantBufferView(0, materialResource->GetGPUVirtualAddress());
 	commandList->SetGraphicsRootDescriptorTable(1, instancingSrvHandleGPU);
 	commandList->IASetVertexBuffers(0, 1, &vertexBufferView);
 	texture->Bind(commandList);
-	commandList->DrawInstanced(6, kNumInstance, 0, 0);
+	commandList->DrawInstanced(6, mNumInstance, 0, 0);
+}
+
+Particle ParticleList::MakeNewParticle()
+{
+	Particle particle;
+	particle.mTransform.scale = { 1.0f,1.0f,1.0f };
+	particle.mTransform.rotate = { 0.0f,0.0f,0.0f };
+	particle.mTransform.translate = { Random::Rand(-1.0f,1.0f), Random::Rand(-1.0f,1.0f), Random::Rand(-1.0f,1.0f) };
+	particle.velocity = { Random::Rand(-1.0f,1.0f), Random::Rand(-1.0f,1.0f), Random::Rand(-1.0f,1.0f) };
+	particle.color = { Random::Rand(0.0f,1.0f),  Random::Rand(0.0f,1.0f), Random::Rand(0.0f,1.0f), 1.0f };
+	particle.lifeTime = Random::Rand(1.0f, 3.0f);
+	particle.currentTime = 0;
+	return particle;
 }
