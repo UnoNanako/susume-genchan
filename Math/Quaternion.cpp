@@ -83,11 +83,11 @@ Quaternion Pow(const Quaternion& q, float e) {
 	if (fabs(q.w) > 0.999f) {
 		return q;
 	}
-	float alpha = acosf(q.w);
-	float newAlpha = alpha * e;
+	float mAlpha = acosf(q.w);
+	float newAlpha = mAlpha * e;
 	Quaternion ret;
 	ret.w = cosf(newAlpha);
-	float a = sinf(newAlpha) / sinf(alpha);
+	float a = sinf(newAlpha) / sinf(mAlpha);
 	ret.x = q.x * a;
 	ret.y = q.y * a;
 	ret.z = q.z * a;

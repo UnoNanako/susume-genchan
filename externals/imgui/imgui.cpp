@@ -6462,19 +6462,19 @@ void ImGui::RenderWindowDecorations(ImGuiWindow* window, const ImRect& title_bar
             {
                 // Adjust alpha. For docking
                 bool override_alpha = false;
-                float alpha = 1.0f;
+                float mAlpha = 1.0f;
                 if (g.NextWindowData.Flags & ImGuiNextWindowDataFlags_HasBgAlpha)
                 {
-                    alpha = g.NextWindowData.BgAlphaVal;
+                    mAlpha = g.NextWindowData.BgAlphaVal;
                     override_alpha = true;
                 }
                 if (is_docking_transparent_payload)
                 {
-                    alpha *= DOCKING_TRANSPARENT_PAYLOAD_ALPHA; // FIXME-DOCK: Should that be an override?
+                    mAlpha *= DOCKING_TRANSPARENT_PAYLOAD_ALPHA; // FIXME-DOCK: Should that be an override?
                     override_alpha = true;
                 }
                 if (override_alpha)
-                    bg_col = (bg_col & ~IM_COL32_A_MASK) | (IM_F32_TO_INT8_SAT(alpha) << IM_COL32_A_SHIFT);
+                    bg_col = (bg_col & ~IM_COL32_A_MASK) | (IM_F32_TO_INT8_SAT(mAlpha) << IM_COL32_A_SHIFT);
             }
 
             // Render, for docked windows and host windows we ensure bg goes before decorations
@@ -8353,11 +8353,11 @@ void ImGui::SetNextWindowFocus()
     g.NextWindowData.Flags |= ImGuiNextWindowDataFlags_HasFocus;
 }
 
-void ImGui::SetNextWindowBgAlpha(float alpha)
+void ImGui::SetNextWindowBgAlpha(float mAlpha)
 {
     ImGuiContext& g = *GImGui;
     g.NextWindowData.Flags |= ImGuiNextWindowDataFlags_HasBgAlpha;
-    g.NextWindowData.BgAlphaVal = alpha;
+    g.NextWindowData.BgAlphaVal = mAlpha;
 }
 
 void ImGui::SetNextWindowViewport(ImGuiID id)

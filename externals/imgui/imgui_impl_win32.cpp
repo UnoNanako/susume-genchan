@@ -1201,16 +1201,16 @@ static void ImGui_ImplWin32_SetWindowTitle(ImGuiViewport* viewport, const char* 
     ::SetWindowTextW(vd->Hwnd, title_w.Data);
 }
 
-static void ImGui_ImplWin32_SetWindowAlpha(ImGuiViewport* viewport, float alpha)
+static void ImGui_ImplWin32_SetWindowAlpha(ImGuiViewport* viewport, float mAlpha)
 {
     ImGui_ImplWin32_ViewportData* vd = (ImGui_ImplWin32_ViewportData*)viewport->PlatformUserData;
     IM_ASSERT(vd->Hwnd != 0);
-    IM_ASSERT(alpha >= 0.0f && alpha <= 1.0f);
-    if (alpha < 1.0f)
+    IM_ASSERT(mAlpha >= 0.0f && mAlpha <= 1.0f);
+    if (mAlpha < 1.0f)
     {
         DWORD style = ::GetWindowLongW(vd->Hwnd, GWL_EXSTYLE) | WS_EX_LAYERED;
         ::SetWindowLongW(vd->Hwnd, GWL_EXSTYLE, style);
-        ::SetLayeredWindowAttributes(vd->Hwnd, 0, (BYTE)(255 * alpha), LWA_ALPHA);
+        ::SetLayeredWindowAttributes(vd->Hwnd, 0, (BYTE)(255 * mAlpha), LWA_ALPHA);
     }
     else
     {

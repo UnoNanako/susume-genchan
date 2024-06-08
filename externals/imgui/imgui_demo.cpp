@@ -2076,14 +2076,14 @@ static void ShowDemoWindowWidgets()
 
         IMGUI_DEMO_MARKER("Widgets/Color/ColorPicker");
         ImGui::SeparatorText("Color picker");
-        static bool alpha = true;
+        static bool mAlpha = true;
         static bool alpha_bar = true;
         static bool side_preview = true;
         static bool ref_color = false;
         static ImVec4 ref_color_v(1.0f, 0.0f, 1.0f, 0.5f);
         static int display_mode = 0;
         static int picker_mode = 0;
-        ImGui::Checkbox("With Alpha", &alpha);
+        ImGui::Checkbox("With Alpha", &mAlpha);
         ImGui::Checkbox("With Alpha Bar", &alpha_bar);
         ImGui::Checkbox("With Side Preview", &side_preview);
         if (side_preview)
@@ -2103,7 +2103,7 @@ static void ShowDemoWindowWidgets()
             "if you don't specify a display mode.\n\nYou can change the defaults using SetColorEditOptions().");
         ImGui::SameLine(); HelpMarker("When not specified explicitly (Auto/Current mode), user can right-click the picker to change mode.");
         ImGuiColorEditFlags flags = misc_flags;
-        if (!alpha)            flags |= ImGuiColorEditFlags_NoAlpha;        // This is by default if you call ColorPicker3() instead of ColorPicker4()
+        if (!mAlpha)            flags |= ImGuiColorEditFlags_NoAlpha;        // This is by default if you call ColorPicker3() instead of ColorPicker4()
         if (alpha_bar)         flags |= ImGuiColorEditFlags_AlphaBar;
         if (!side_preview)     flags |= ImGuiColorEditFlags_NoSidePreview;
         if (picker_mode == 1)  flags |= ImGuiColorEditFlags_PickerHueBar;

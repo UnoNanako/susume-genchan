@@ -945,14 +945,14 @@ bool ImGui::ScrollbarEx(const ImRect& bb_frame, ImGuiID id, ImGuiAxis axis, ImS6
         return false;
 
     // When we are too small, start hiding and disabling the grab (this reduce visual noise on very small window and facilitate using the window resize grab)
-    float alpha = 1.0f;
+    float mAlpha = 1.0f;
     if ((axis == ImGuiAxis_Y) && bb_frame_height < g.FontSize + g.Style.FramePadding.y * 2.0f)
-        alpha = ImSaturate((bb_frame_height - g.FontSize) / (g.Style.FramePadding.y * 2.0f));
-    if (alpha <= 0.0f)
+        mAlpha = ImSaturate((bb_frame_height - g.FontSize) / (g.Style.FramePadding.y * 2.0f));
+    if (mAlpha <= 0.0f)
         return false;
 
     const ImGuiStyle& style = g.Style;
-    const bool allow_interaction = (alpha >= 1.0f);
+    const bool allow_interaction = (mAlpha >= 1.0f);
 
     ImRect bb = bb_frame;
     bb.Expand(ImVec2(-ImClamp(IM_TRUNC((bb_frame_width - 2.0f) * 0.5f), 0.0f, 3.0f), -ImClamp(IM_TRUNC((bb_frame_height - 2.0f) * 0.5f), 0.0f, 3.0f)));
@@ -1011,7 +1011,7 @@ bool ImGui::ScrollbarEx(const ImRect& bb_frame, ImGuiID id, ImGuiAxis axis, ImS6
 
     // Render
     const ImU32 bg_col = GetColorU32(ImGuiCol_ScrollbarBg);
-    const ImU32 grab_col = GetColorU32(held ? ImGuiCol_ScrollbarGrabActive : hovered ? ImGuiCol_ScrollbarGrabHovered : ImGuiCol_ScrollbarGrab, alpha);
+    const ImU32 grab_col = GetColorU32(held ? ImGuiCol_ScrollbarGrabActive : hovered ? ImGuiCol_ScrollbarGrabHovered : ImGuiCol_ScrollbarGrab, mAlpha);
     window->DrawList->AddRectFilled(bb_frame.Min, bb_frame.Max, bg_col, window->WindowRounding, flags);
     ImRect grab_rect;
     if (axis == ImGuiAxis_X)
@@ -5190,15 +5190,15 @@ bool ImGui::ColorEdit4(const char* label, float col[4], ImGuiColorEditFlags flag
     IM_ASSERT(ImIsPowerOfTwo(flags & ImGuiColorEditFlags_DisplayMask_)); // Check that only 1 is selected
     IM_ASSERT(ImIsPowerOfTwo(flags & ImGuiColorEditFlags_InputMask_));   // Check that only 1 is selected
 
-    const bool alpha = (flags & ImGuiColorEditFlags_NoAlpha) == 0;
+    const bool mAlpha = (flags & ImGuiColorEditFlags_NoAlpha) == 0;
     const bool hdr = (flags & ImGuiColorEditFlags_HDR) != 0;
-    const int components = alpha ? 4 : 3;
+    const int components = mAlpha ? 4 : 3;
     const float w_button = (flags & ImGuiColorEditFlags_NoSmallPreview) ? 0.0f : (square_sz + style.ItemInnerSpacing.x);
     const float w_inputs = ImMax(w_full - w_button, 1.0f);
     w_full = w_inputs + w_button;
 
     // Convert to the formats we need
-    float f[4] = { col[0], col[1], col[2], alpha ? col[3] : 1.0f };
+    float f[4] = { col[0], col[1], col[2], mAlpha ? col[3] : 1.0f };
     if ((flags & ImGuiColorEditFlags_InputHSV) && (flags & ImGuiColorEditFlags_DisplayRGB))
         ColorConvertHSVtoRGB(f[0], f[1], f[2], f[0], f[1], f[2]);
     else if ((flags & ImGuiColorEditFlags_InputRGB) && (flags & ImGuiColorEditFlags_DisplayHSV))
@@ -5264,7 +5264,7 @@ bool ImGui::ColorEdit4(const char* label, float col[4], ImGuiColorEditFlags flag
     {
         // RGB Hexadecimal Input
         char buf[64];
-        if (alpha)
+        if (mAlpha)
             ImFormatString(buf, IM_ARRAYSIZE(buf), "#%02X%02X%02X%02X", ImClamp(i[0], 0, 255), ImClamp(i[1], 0, 255), ImClamp(i[2], 0, 255), ImClamp(i[3], 0, 255));
         else
             ImFormatString(buf, IM_ARRAYSIZE(buf), "#%02X%02X%02X", ImClamp(i[0], 0, 255), ImClamp(i[1], 0, 255), ImClamp(i[2], 0, 255));
@@ -5278,7 +5278,7 @@ bool ImGui::ColorEdit4(const char* label, float col[4], ImGuiColorEditFlags flag
             i[0] = i[1] = i[2] = 0;
             i[3] = 0xFF; // alpha default to 255 is not parsed by scanf (e.g. inputting #FFFFFF omitting alpha)
             int r;
-            if (alpha)
+            if (mAlpha)
                 r = sscanf(p, "%02X%02X%02X%02X", (unsigned int*)&i[0], (unsigned int*)&i[1], (unsigned int*)&i[2], (unsigned int*)&i[3]); // Treat at unsigned (%X is unsigned)
             else
                 r = sscanf(p, "%02X%02X%02X", (unsigned int*)&i[0], (unsigned int*)&i[1], (unsigned int*)&i[2]);
@@ -5294,7 +5294,7 @@ bool ImGui::ColorEdit4(const char* label, float col[4], ImGuiColorEditFlags flag
         const float button_offset_x = ((flags & ImGuiColorEditFlags_NoInputs) || (style.ColorButtonPosition == ImGuiDir_Left)) ? 0.0f : w_inputs + style.ItemInnerSpacing.x;
         window->DC.CursorPos = ImVec2(pos.x + button_offset_x, pos.y);
 
-        const ImVec4 col_v4(col[0], col[1], col[2], alpha ? col[3] : 1.0f);
+        const ImVec4 col_v4(col[0], col[1], col[2], mAlpha ? col[3] : 1.0f);
         if (ColorButton("##ColorButton", col_v4, flags))
         {
             if (!(flags & ImGuiColorEditFlags_NoPicker))
@@ -5356,7 +5356,7 @@ bool ImGui::ColorEdit4(const char* label, float col[4], ImGuiColorEditFlags flag
         col[0] = f[0];
         col[1] = f[1];
         col[2] = f[2];
-        if (alpha)
+        if (mAlpha)
             col[3] = f[3];
     }
 
@@ -5407,9 +5407,9 @@ bool ImGui::ColorPicker3(const char* label, float col[3], ImGuiColorEditFlags fl
 }
 
 // Helper for ColorPicker4()
-static void RenderArrowsForVerticalBar(ImDrawList* draw_list, ImVec2 pos, ImVec2 half_sz, float bar_w, float alpha)
+static void RenderArrowsForVerticalBar(ImDrawList* draw_list, ImVec2 pos, ImVec2 half_sz, float bar_w, float mAlpha)
 {
-    ImU32 alpha8 = IM_F32_TO_INT8_SAT(alpha);
+    ImU32 alpha8 = IM_F32_TO_INT8_SAT(mAlpha);
     ImGui::RenderArrowPointingAt(draw_list, ImVec2(pos.x + half_sz.x + 1,         pos.y), ImVec2(half_sz.x + 2, half_sz.y + 1), ImGuiDir_Right, IM_COL32(0,0,0,alpha8));
     ImGui::RenderArrowPointingAt(draw_list, ImVec2(pos.x + half_sz.x,             pos.y), half_sz,                              ImGuiDir_Right, IM_COL32(255,255,255,alpha8));
     ImGui::RenderArrowPointingAt(draw_list, ImVec2(pos.x + bar_w - half_sz.x - 1, pos.y), ImVec2(half_sz.x + 2, half_sz.y + 1), ImGuiDir_Left,  IM_COL32(0,0,0,alpha8));
@@ -5766,11 +5766,11 @@ bool ImGui::ColorPicker4(const char* label, float col[4], ImGuiColorEditFlags fl
     // Render alpha bar
     if (alpha_bar)
     {
-        float alpha = ImSaturate(col[3]);
+        float mAlpha = ImSaturate(col[3]);
         ImRect bar1_bb(bar1_pos_x, picker_pos.y, bar1_pos_x + bars_width, picker_pos.y + sv_picker_size);
         RenderColorRectWithAlphaCheckerboard(draw_list, bar1_bb.Min, bar1_bb.Max, 0, bar1_bb.GetWidth() / 2.0f, ImVec2(0.0f, 0.0f));
         draw_list->AddRectFilledMultiColor(bar1_bb.Min, bar1_bb.Max, user_col32_striped_of_alpha, user_col32_striped_of_alpha, user_col32_striped_of_alpha & ~IM_COL32_A_MASK, user_col32_striped_of_alpha & ~IM_COL32_A_MASK);
-        float bar1_line_y = IM_ROUND(picker_pos.y + (1.0f - alpha) * sv_picker_size);
+        float bar1_line_y = IM_ROUND(picker_pos.y + (1.0f - mAlpha) * sv_picker_size);
         RenderFrameBorder(bar1_bb.Min, bar1_bb.Max, 0.0f);
         RenderArrowsForVerticalBar(draw_list, ImVec2(bar1_pos_x - 1, bar1_line_y), ImVec2(bars_triangles_half_sz + 1, bars_triangles_half_sz), bars_width + 2.0f, style.Alpha);
     }

@@ -90,7 +90,7 @@ void ParticleCommon::Initialize(DirectXCommon* dxCommon)
 	particleBlendDesc.RenderTarget[0].BlendEnable = TRUE;
 	particleBlendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
 	particleBlendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
-	particleBlendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	particleBlendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
 	particleBlendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
 	particleBlendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
 	particleBlendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
@@ -128,8 +128,8 @@ void ParticleCommon::Initialize(DirectXCommon* dxCommon)
 	// Depthの機能を有効化する
 	particleDepthStencilDesc.DepthEnable = true;
 	// 書き込みします
-	particleDepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-	//particleDepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO; //Depthの書き込みを行わない
+	//particleDepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	particleDepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO; //Depthの書き込みを行わない
 	// 比較関数はLessEqual。つまり、近ければ描画される
 	particleDepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 

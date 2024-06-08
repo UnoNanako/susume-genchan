@@ -8,6 +8,7 @@
 #include "VertexData.h"
 #include "Material.h"
 #include "Math//Random.h"
+#include "imgui/imgui.h"
 
 ParticleList::~ParticleList()
 {
@@ -18,12 +19,12 @@ void ParticleList::Create(DirectXCommon* dxCommon) {
 	instancingResourse = dxCommon->CreateBufferResource(dxCommon->GetDevice(), sizeof(ParticleForGPU) * kNumMaxInstance);
 	instancingResourse->Map(0, nullptr, reinterpret_cast<void**>(&instancingData));
 	//単位行列を書き込んでおく
-	for (uint32_t index = 0; index < kNumMaxInstance; ++index) {
-		mParticles[index] = MakeNewParticle();
-		instancingData[index].WVP = MakeIdentity4x4();
-		instancingData[index].color = mParticles[index].color;
-		//instancingData[index].World = MakeIdentity4x4();
-	}
+	//for (uint32_t index = 0; index < kNumMaxInstance; ++index) {
+	//	mParticles[index] = MakeNewParticle();
+	//	instancingData[index].WVP = MakeIdentity4x4();
+	//	instancingData[index].color = mParticles[index].color;
+	//	//instancingData[index].World = MakeIdentity4x4();
+	//}
 
 	//SRVの作成
 	D3D12_SHADER_RESOURCE_VIEW_DESC instancingSrvDesc{};
@@ -40,7 +41,7 @@ void ParticleList::Create(DirectXCommon* dxCommon) {
 
 	//Texture
 	texture = new Texture();
-	texture->Create(dxCommon, "resources/uvChecker.png");
+	texture->Create(dxCommon, "resources/Particle/circle.png");
 
 	vertexResource = dxCommon->CreateBufferResource(dxCommon->GetDevice(), sizeof(VertexData) * 6);
 	vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
@@ -70,39 +71,62 @@ void ParticleList::Create(DirectXCommon* dxCommon) {
 	materialResource = dxCommon->CreateBufferResource(dxCommon->GetDevice(), sizeof(Material));
 	materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
 	materialData->color = { 1.0f,1.0f,1.0f,1.0f };
+	mEmitter.count = 3; //発生数
+	mEmitter.frequency = 0.5f; //0.5秒ごとに発生
+	mEmitter.frequencyTime = 0.0f; //発生頻度用の時刻、0で初期化
+	mEmitter.transform.translate = { -25.0f,5.0f,-25.0f };
+	mEmitter.transform.rotate = { 0.0f,0.0f,0.0f };
+	mEmitter.transform.scale = { 1.0f,1.0f,1.0f };
 }
 
 void ParticleList::Update() {
-	for (uint32_t index = 0; index < kNumMaxInstance; ++index) {
-		alpha = 1.0f - (mParticles[index].currentTime / mParticles[index].lifeTime);
+	ImGui::Begin("Debug");
+	if (ImGui::Button("AddParticle")) {
+		mParticles.splice(mParticles.end(), Emit(mEmitter));
+		mParticles.splice(mParticles.end(), Emit(mEmitter));
+		mParticles.splice(mParticles.end(), Emit(mEmitter));
+	}
+	ImGui::End();
+	mEmitter.frequencyTime += kDeltaTime; //時刻を進める
+	if (mEmitter.frequency <= mEmitter.frequencyTime) { //頻度より大きいなら発生
+		mParticles.splice(mParticles.end(), Emit(mEmitter)); //発生処理
+		mEmitter.frequencyTime -= mEmitter.frequency; //余計に過ぎた時間も加味して頻度計算する
+	}
+	for (std::list<Particle>::iterator particleIterator = mParticles.begin(); particleIterator != mParticles.end(); ++particleIterator) {
+		mAlpha = 1.0f - ((*particleIterator).currentTime / (*particleIterator).lifeTime);
 	}
 }
 
 void ParticleList::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera, const Transform& mTransform) {
 	//Particle用のWorldViewProjectionMatrixをつくる
-	for (uint32_t index = 0; index < kNumMaxInstance; ++index) {
-		if (mParticles[index].lifeTime <= mParticles[index].currentTime) { //生存時間を過ぎていたら更新せず描画対象にしない
+	mNumInstance = 0;
+	for (std::list<Particle>::iterator particleIterator = mParticles.begin(); particleIterator != mParticles.end();) {
+		if ((*particleIterator).lifeTime <= (*particleIterator).currentTime) {
+			particleIterator = mParticles.erase(particleIterator); //生存時間がすぎたparticleはlistから消す。戻り値が次のイテレータになる
 			continue;
 		}
-		//ビルボード
-		Matrix4x4 backToFrontMatrix = MakeRotateYMatrix(std::numbers::pi_v<float>);
-		Matrix4x4 scaleMatrix = MakeScaleMatrix(mParticles[index].mTransform.scale);
-		Matrix4x4 translateMatrix = MakeTranslateMatrix(mParticles[index].mTransform.translate);
-		Matrix4x4 worldMatrix = MakeAffineMatrix(mParticles[index].mTransform.scale, mParticles[index].mTransform.rotate, mParticles[index].mTransform.translate);
-		Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(camera->GetViewMatrix(), camera->GetProjectionMatrix()));
-		Matrix4x4 billboardMatrix = Multiply(backToFrontMatrix, camera->GetMatrix());
-		instancingData[index].WVP = worldViewProjectionMatrix;
-		instancingData[index].World = worldMatrix;
-		mParticles[index].mTransform.translate += mParticles[index].velocity * kDeltaTime;
-		mParticles[index].currentTime += kDeltaTime; //経過時間を足す
-		instancingData[mNumInstance].WVP = worldViewProjectionMatrix;
-		instancingData[mNumInstance].World = worldMatrix;
-		instancingData[mNumInstance].color = mParticles[index].color;
-		instancingData[mNumInstance].color.w = alpha; //算出したaをGPUに送る
-		++mNumInstance; //生きているParticleの数を1つカウントする
-		billboardMatrix.m[3][0] = 0.0f; //平行移動成分はいらない
-		billboardMatrix.m[3][1] = 0.0f;
-		billboardMatrix.m[3][2] = 0.0f;
+		(*particleIterator).mTransform.translate += (*particleIterator).velocity * kDeltaTime;
+		(*particleIterator).currentTime += kDeltaTime; //経過時間を足す
+		if (mNumInstance < kNumMaxInstance) {
+			//ビルボード
+			Matrix4x4 backToFrontMatrix = MakeRotateYMatrix(0.0f);
+			Matrix4x4 scaleMatrix = MakeScaleMatrix((*particleIterator).mTransform.scale);
+			Matrix4x4 translateMatrix = MakeTranslateMatrix((*particleIterator).mTransform.translate);
+			Matrix4x4 billboardMatrix = Multiply(backToFrontMatrix, Inverse(camera->GetViewMatrix()));
+			billboardMatrix.m[3][0] = 0.0f; //平行移動成分はいらない
+			billboardMatrix.m[3][1] = 0.0f;
+			billboardMatrix.m[3][2] = 0.0f;
+			Matrix4x4 worldMatrix = Multiply(scaleMatrix, Multiply(billboardMatrix, translateMatrix));
+			//worldMatrix = MakeAffineMatrix((*particleIterator).mTransform.scale, (*particleIterator).mTransform.rotate, (*particleIterator).mTransform.translate);
+			Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(camera->GetViewMatrix(), camera->GetProjectionMatrix()));
+			instancingData[mNumInstance].WVP = worldViewProjectionMatrix;
+			instancingData[mNumInstance].World = worldMatrix;
+			instancingData[mNumInstance].color = (*particleIterator).color;
+			mAlpha = 1.0f - ((*particleIterator).currentTime / (*particleIterator).lifeTime);
+			instancingData[mNumInstance].color.w = mAlpha; //算出したaをGPUに送る
+			++mNumInstance; //生きているParticleの数を1つカウントする
+		}
+		++particleIterator; //次のイテレータに進める
 	}
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	commandList->SetGraphicsRootConstantBufferView(0, materialResource->GetGPUVirtualAddress());
@@ -112,15 +136,24 @@ void ParticleList::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera, 
 	commandList->DrawInstanced(6, mNumInstance, 0, 0);
 }
 
-Particle ParticleList::MakeNewParticle()
-{
+Particle ParticleList::MakeNewParticle(const Vector3& translate) {
 	Particle particle;
-	particle.mTransform.scale = { 1.0f,1.0f,1.0f };
+	particle.mTransform.scale = { 5.0f,5.0f,5.0f };
 	particle.mTransform.rotate = { 0.0f,0.0f,0.0f };
 	particle.mTransform.translate = { Random::Rand(-1.0f,1.0f), Random::Rand(-1.0f,1.0f), Random::Rand(-1.0f,1.0f) };
-	particle.velocity = { Random::Rand(-1.0f,1.0f), Random::Rand(-1.0f,1.0f), Random::Rand(-1.0f,1.0f) };
+	particle.velocity = { Random::Rand(-5.0f,5.0f), Random::Rand(5.0f,50.0f), Random::Rand(-5.0f,5.0f) };
 	particle.color = { Random::Rand(0.0f,1.0f),  Random::Rand(0.0f,1.0f), Random::Rand(0.0f,1.0f), 1.0f };
-	particle.lifeTime = Random::Rand(1.0f, 3.0f);
+	particle.lifeTime = Random::Rand(5.0f, 10.0f);
 	particle.currentTime = 0;
+	Vector3 randomTranslate{ Random::Rand(0.0f,1.0f),Random::Rand(0.0f,1.0f),Random::Rand(0.0f,1.0f) };
+	particle.mTransform.translate = translate + randomTranslate;
 	return particle;
+}
+
+std::list<Particle> ParticleList::Emit(const Emitter& mEmitter) {
+	std::list<Particle> particles;
+	for (uint32_t count = 0; count < mEmitter.count; ++count) {
+		particles.push_back(MakeNewParticle(mEmitter.transform.translate));
+	}
+	return particles;
 }
