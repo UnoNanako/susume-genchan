@@ -2,9 +2,10 @@
 #include <d3d12.h>
 #include <string>
 #include "Transform.h"
+#include "Particle.h"
 #include <wrl.h>
 #include <random>
-#include "Particle.h"
+#include <numbers>
 
 class DirectXCommon;
 struct ParticleForGPU;
@@ -39,5 +40,6 @@ private:
 	D3D12_GPU_DESCRIPTOR_HANDLE instancingSrvHandleGPU;
 	Particle mParticles[kNumMaxInstance];
 	uint32_t mNumInstance = 0; //描画すべきインスタンス数
+	float alpha; //透明度
 };
 

@@ -73,6 +73,9 @@ void ParticleList::Create(DirectXCommon* dxCommon) {
 }
 
 void ParticleList::Update() {
+	for (uint32_t index = 0; index < kNumMaxInstance; ++index) {
+		alpha = 1.0f - (mParticles[index].currentTime / mParticles[index].lifeTime);
+	}
 }
 
 void ParticleList::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera, const Transform& mTransform) {
@@ -81,8 +84,13 @@ void ParticleList::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera, 
 		if (mParticles[index].lifeTime <= mParticles[index].currentTime) { //生存時間を過ぎていたら更新せず描画対象にしない
 			continue;
 		}
+		//ビルボード
+		Matrix4x4 backToFrontMatrix = MakeRotateYMatrix(std::numbers::pi_v<float>);
+		Matrix4x4 scaleMatrix = MakeScaleMatrix(mParticles[index].mTransform.scale);
+		Matrix4x4 translateMatrix = MakeTranslateMatrix(mParticles[index].mTransform.translate);
 		Matrix4x4 worldMatrix = MakeAffineMatrix(mParticles[index].mTransform.scale, mParticles[index].mTransform.rotate, mParticles[index].mTransform.translate);
 		Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(camera->GetViewMatrix(), camera->GetProjectionMatrix()));
+		Matrix4x4 billboardMatrix = Multiply(backToFrontMatrix, camera->GetMatrix());
 		instancingData[index].WVP = worldViewProjectionMatrix;
 		instancingData[index].World = worldMatrix;
 		mParticles[index].mTransform.translate += mParticles[index].velocity * kDeltaTime;
@@ -90,7 +98,11 @@ void ParticleList::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera, 
 		instancingData[mNumInstance].WVP = worldViewProjectionMatrix;
 		instancingData[mNumInstance].World = worldMatrix;
 		instancingData[mNumInstance].color = mParticles[index].color;
+		instancingData[mNumInstance].color.w = alpha; //算出したaをGPUに送る
 		++mNumInstance; //生きているParticleの数を1つカウントする
+		billboardMatrix.m[3][0] = 0.0f; //平行移動成分はいらない
+		billboardMatrix.m[3][1] = 0.0f;
+		billboardMatrix.m[3][2] = 0.0f;
 	}
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	commandList->SetGraphicsRootConstantBufferView(0, materialResource->GetGPUVirtualAddress());

@@ -13,6 +13,7 @@ public:
 	void Bind(ID3D12GraphicsCommandList* commandList);
 
 	void SetTransform(Transform mTransform) { this->mTransform = mTransform; }
+	Matrix4x4 GetMatrix() { return mMatrix; }
 	Transform GetTransform() { return mTransform; }
 	Matrix4x4 GetViewMatrix() { return mViewMatrix; }
 	Matrix4x4 GetProjectionMatrix() { return mProjectionMatrix; }
