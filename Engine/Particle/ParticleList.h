@@ -30,6 +30,7 @@ public:
 	/// アクセッサ
 	/// </summary>
 	void SetEmitTransform(Transform transform) { mEmitter.transform = transform; }
+	void SetParticleScale(Vector3 scale) { mScaleInit = scale; }
 private:
 	const float kDeltaTime = 1.0f / 60.0f; //tを定義。とりあえず60fps
 	Microsoft::WRL::ComPtr<ID3D12Resource> instancingResourse;
@@ -46,5 +47,6 @@ private:
 	uint32_t mNumInstance = 0; //描画すべきインスタンス数
 	float mAlpha; //透明度
 	Emitter mEmitter{};
+	Vector3 mScaleInit; //セットスケール用のメンバ
 };
 

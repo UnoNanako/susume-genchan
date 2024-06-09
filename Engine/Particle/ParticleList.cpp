@@ -18,13 +18,6 @@ ParticleList::~ParticleList()
 void ParticleList::Create(DirectXCommon* dxCommon) {
 	instancingResourse = dxCommon->CreateBufferResource(dxCommon->GetDevice(), sizeof(ParticleForGPU) * kNumMaxInstance);
 	instancingResourse->Map(0, nullptr, reinterpret_cast<void**>(&instancingData));
-	//単位行列を書き込んでおく
-	//for (uint32_t index = 0; index < kNumMaxInstance; ++index) {
-	//	mParticles[index] = MakeNewParticle();
-	//	instancingData[index].WVP = MakeIdentity4x4();
-	//	instancingData[index].color = mParticles[index].color;
-	//	//instancingData[index].World = MakeIdentity4x4();
-	//}
 
 	//SRVの作成
 	D3D12_SHADER_RESOURCE_VIEW_DESC instancingSrvDesc{};
@@ -74,7 +67,7 @@ void ParticleList::Create(DirectXCommon* dxCommon) {
 	mEmitter.count = 3; //発生数
 	mEmitter.frequency = 0.5f; //0.5秒ごとに発生
 	mEmitter.frequencyTime = 0.0f; //発生頻度用の時刻、0で初期化
-	mEmitter.transform.translate = { -25.0f,5.0f,-25.0f };
+	mEmitter.transform.translate = { 0.0f,0.0f,0.0f };
 	mEmitter.transform.rotate = { 0.0f,0.0f,0.0f };
 	mEmitter.transform.scale = { 1.0f,1.0f,1.0f };
 }
@@ -138,7 +131,7 @@ void ParticleList::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera, 
 
 Particle ParticleList::MakeNewParticle(const Vector3& translate) {
 	Particle particle;
-	particle.mTransform.scale = { 5.0f,5.0f,5.0f };
+	particle.mTransform.scale = { mScaleInit.x,mScaleInit.y,mScaleInit.z };
 	particle.mTransform.rotate = { 0.0f,0.0f,0.0f };
 	particle.mTransform.translate = { Random::Rand(-1.0f,1.0f), Random::Rand(-1.0f,1.0f), Random::Rand(-1.0f,1.0f) };
 	particle.velocity = { Random::Rand(-5.0f,5.0f), Random::Rand(5.0f,50.0f), Random::Rand(-5.0f,5.0f) };

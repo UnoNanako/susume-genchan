@@ -49,6 +49,8 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon){
 		mParticles[i] = std::make_unique<ParticleList>();
 		mParticles[i]->Create(dxCommon);
 	}
+	mParticles[0]->SetEmitTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{22.0f,5.0f,-22.5f} });
+	mParticles[0]->SetParticleScale({ 1.0f,1.0f,1.0f });
 	//タイトルシーン
 	mTitleScene = std::make_unique<TitleScene>();
 	mTitleScene->Initialize(dxCommon);
