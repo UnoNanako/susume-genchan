@@ -31,6 +31,8 @@ public:
 	/// </summary>
 	void SetEmitTransform(Transform transform) { mEmitter.transform = transform; }
 	void SetParticleScale(Vector3 scale) { mScaleInit = scale; }
+	void SetIsPlaying(bool isPlaying) { mIsPlaying = isPlaying; }
+	bool GetIsPlaying() { return mIsPlaying; }
 private:
 	const float kDeltaTime = 1.0f / 60.0f; //tを定義。とりあえず60fps
 	Microsoft::WRL::ComPtr<ID3D12Resource> instancingResourse;
@@ -48,5 +50,6 @@ private:
 	float mAlpha; //透明度
 	Emitter mEmitter{};
 	Vector3 mScaleInit; //セットスケール用のメンバ
+	bool mIsPlaying; //パーティクルが出ているか
 };
 

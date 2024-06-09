@@ -31,6 +31,6 @@ private:
 	std::unique_ptr<Texture> mGetColor;
 	AABB mAABB;
 	bool mIsHit = false;
-	//std::unique_ptr<ParticleList> mParticle;
+	std::unique_ptr<ParticleList> mParticle;
 };
 

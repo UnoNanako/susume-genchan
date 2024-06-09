@@ -70,6 +70,7 @@ void ParticleList::Create(DirectXCommon* dxCommon) {
 	mEmitter.transform.translate = { 0.0f,0.0f,0.0f };
 	mEmitter.transform.rotate = { 0.0f,0.0f,0.0f };
 	mEmitter.transform.scale = { 1.0f,1.0f,1.0f };
+	mIsPlaying = true;
 }
 
 void ParticleList::Update() {
@@ -80,13 +81,12 @@ void ParticleList::Update() {
 		mParticles.splice(mParticles.end(), Emit(mEmitter));
 	}
 	ImGui::End();
-	mEmitter.frequencyTime += kDeltaTime; //時刻を進める
+	if (mIsPlaying == true) {
+		mEmitter.frequencyTime += kDeltaTime; //時刻を進める
+	}
 	if (mEmitter.frequency <= mEmitter.frequencyTime) { //頻度より大きいなら発生
 		mParticles.splice(mParticles.end(), Emit(mEmitter)); //発生処理
 		mEmitter.frequencyTime -= mEmitter.frequency; //余計に過ぎた時間も加味して頻度計算する
-	}
-	for (std::list<Particle>::iterator particleIterator = mParticles.begin(); particleIterator != mParticles.end(); ++particleIterator) {
-		mAlpha = 1.0f - ((*particleIterator).currentTime / (*particleIterator).lifeTime);
 	}
 }
 
@@ -134,9 +134,9 @@ Particle ParticleList::MakeNewParticle(const Vector3& translate) {
 	particle.mTransform.scale = { mScaleInit.x,mScaleInit.y,mScaleInit.z };
 	particle.mTransform.rotate = { 0.0f,0.0f,0.0f };
 	particle.mTransform.translate = { Random::Rand(-1.0f,1.0f), Random::Rand(-1.0f,1.0f), Random::Rand(-1.0f,1.0f) };
-	particle.velocity = { Random::Rand(-5.0f,5.0f), Random::Rand(5.0f,50.0f), Random::Rand(-5.0f,5.0f) };
+	particle.velocity = { Random::Rand(-5.0f,5.0f), Random::Rand(5.0f,6.0f), Random::Rand(-5.0f,5.0f) };
 	particle.color = { Random::Rand(0.0f,1.0f),  Random::Rand(0.0f,1.0f), Random::Rand(0.0f,1.0f), 1.0f };
-	particle.lifeTime = Random::Rand(5.0f, 10.0f);
+	particle.lifeTime = Random::Rand(0.5f, 1.0f);
 	particle.currentTime = 0;
 	Vector3 randomTranslate{ Random::Rand(0.0f,1.0f),Random::Rand(0.0f,1.0f),Random::Rand(0.0f,1.0f) };
 	particle.mTransform.translate = translate + randomTranslate;
