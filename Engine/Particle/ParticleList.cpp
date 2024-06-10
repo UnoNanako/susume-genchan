@@ -131,7 +131,7 @@ void ParticleList::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera, 
 
 Particle ParticleList::MakeNewParticle(const Vector3& translate) {
 	Particle particle;
-	particle.mTransform.scale = { mScaleInit.x,mScaleInit.y,mScaleInit.z };
+	particle.mTransform.scale = { mTransformInit.scale.x,mTransformInit.scale.y,mTransformInit.scale.z };
 	particle.mTransform.rotate = { 0.0f,0.0f,0.0f };
 	particle.mTransform.translate = { Random::Rand(-1.0f,1.0f), Random::Rand(-1.0f,1.0f), Random::Rand(-1.0f,1.0f) };
 	particle.velocity = { Random::Rand(-5.0f,5.0f), Random::Rand(5.0f,6.0f), Random::Rand(-5.0f,5.0f) };

@@ -29,8 +29,17 @@ public:
 	/// <summary>
 	/// アクセッサ
 	/// </summary>
+	//エミッタ
 	void SetEmitTransform(Transform transform) { mEmitter.transform = transform; }
-	void SetParticleScale(Vector3 scale) { mScaleInit = scale; }
+	void SetEmitScale(Vector3 scale) { mEmitter.transform.scale = scale; }
+	void SetEmitRotate(Vector3 rotate) { mEmitter.transform.rotate = rotate; }
+	void SetEmitTranslate(Vector3 translate) { mEmitter.transform.translate = translate; }
+	
+	//パーティクル
+	void SetParticleTransform(Transform transform) { mTransformInit = transform; }
+	void SetParticleScale(Vector3 scale) { mTransformInit.scale = scale; }
+	void SetParticleRotate(Vector3 rotate) { mTransformInit.rotate = rotate; }
+	void SetParticleTranslate(Vector3 translate) { mTransformInit.translate = translate; }
 	void SetIsPlaying(bool isPlaying) { mIsPlaying = isPlaying; }
 	bool GetIsPlaying() { return mIsPlaying; }
 private:
@@ -49,7 +58,7 @@ private:
 	uint32_t mNumInstance = 0; //描画すべきインスタンス数
 	float mAlpha; //透明度
 	Emitter mEmitter{};
-	Vector3 mScaleInit; //セットスケール用のメンバ
+	Transform mTransformInit; //パーティクルセッター用のメンバ
 	bool mIsPlaying; //パーティクルが出ているか
 };
 

@@ -3,6 +3,7 @@
 #include "Engine/2D/Texture.h"
 #include "Engine/DirectXCommon.h"
 #include "Engine/3D/Model.h"
+#include "Engine/Particle/ParticleList.h"
 
 Gem::~Gem(){
 	delete mTexture;
@@ -19,6 +20,7 @@ void Gem::Initialize(DirectXCommon* dxCommon){
 	mModel->Create(mDxCommon, "resources/Model/Gem", "Gem_gltf.gltf");
 	mModel->SetAnimation(mModel->LoadAnimationFile("resources/Model/Gem", "Gem_gltf.gltf"));
 	mModel->Update();
+	mParticle->Create(mDxCommon);
 }
 
 void Gem::Update(){
@@ -28,11 +30,13 @@ void Gem::Update(){
 	if (mIsHit) {
 		mModel->Update();
 	}
+	mParticle->Update();
 }
 
 void Gem::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
 	mGetColor->Bind(commandList);
 	mModel->Draw(commandList, camera, mTransform);
+	mParticle->Draw(commandList, camera, {{1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f}});
 }
 
 AABB Gem::CalculateAABB(const Vector3& translate){
