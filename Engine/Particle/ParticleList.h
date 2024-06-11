@@ -23,7 +23,7 @@ public:
 	~ParticleList();
 	void Create(DirectXCommon* dxCommon);
 	void Update();
-	void Draw(ID3D12GraphicsCommandList* commandList, Camera* camera, const Transform& mTransform);
+	void Draw(ID3D12GraphicsCommandList* commandList, Camera* camera);
 	Particle MakeNewParticle(const Vector3& translate);
 	std::list<Particle> Emit(const Emitter& emitter);
 	/// <summary>
@@ -40,6 +40,7 @@ public:
 	void SetParticleScale(Vector3 scale) { mTransformInit.scale = scale; }
 	void SetParticleRotate(Vector3 rotate) { mTransformInit.rotate = rotate; }
 	void SetParticleTranslate(Vector3 translate) { mTransformInit.translate = translate; }
+
 	void SetIsPlaying(bool isPlaying) { mIsPlaying = isPlaying; }
 	bool GetIsPlaying() { return mIsPlaying; }
 private:

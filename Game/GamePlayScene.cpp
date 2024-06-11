@@ -43,14 +43,9 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon){
 	//ライト
 	mLightList = std::make_unique<LightList>();
 	mLightList->Create(dxCommon);
-	//パーティクル
-	mParticles.resize(mPARTICLE_MAX);
-	for (uint32_t i = 0; i < mParticles.size(); ++i) {
-		mParticles[i] = std::make_unique<ParticleList>();
-		mParticles[i]->Create(dxCommon);
-	}
-	mParticles[0]->SetEmitTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{22.0f,5.0f,-22.5f} });
-	mParticles[0]->SetParticleScale({ 1.0f,1.0f,1.0f });
+
+	//mParticles[0]->SetEmitTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{22.0f,5.0f,-22.5f} });
+	//mParticles[0]->SetParticleScale({ 1.0f,1.0f,1.0f });
 	//タイトルシーン
 	mTitleScene = std::make_unique<TitleScene>();
 	mTitleScene->Initialize(dxCommon);
@@ -317,8 +312,8 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon){
 	//----------モデルここまで----------
 
 	mGame->GetParticleCommon()->Bind(dxCommon);
-	for (uint32_t i = 0; i < mParticles.size(); ++i) {
-		mParticles[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get(), { {1.0f,1.0f,1.0f} ,{0.0f,0.0f,0.0f},{-30.0f,10.0f,-30.0f} });
+	for (uint32_t i = 0; i < mGems.size(); ++i) {
+		mGems[i]->ParticleDraw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	}
 	
 	mGame->GetModelCommon()->Bind(dxCommon);
@@ -348,6 +343,8 @@ void GamePlayScene::LadderInitialize(DirectXCommon* dxCommon){
 	mLadderModel_height15_02->Create(dxCommon, "resources/Model/Ladder", "inFront.obj");
 	mLadderModel_height15_03 = std::make_unique<Model>();
 	mLadderModel_height15_03->Create(dxCommon, "resources/Model/Ladder", "inFront.obj");
+	mLadderModel_height05 = std::make_unique<Model>();
+	mLadderModel_height05->Create(dxCommon, "resources/Model/Ladder", "height1.obj");
 	//離島にあるはしご
 	mLadders[0]->SetScale({ 0.5f,0.5f,0.5f });
 	mLadders[0]->SetTranslate({ -3.0f,13.0f,87.5f });
@@ -372,6 +369,12 @@ void GamePlayScene::LadderInitialize(DirectXCommon* dxCommon){
 	mLadders[3]->SetTranslate({ 22.5f,10.0f,102.5f });
 	mLadders[3]->SetHeight(15.0f);
 	mLadders[3]->SetDirection(Ladder::RIGHT); //右向き
+	//離島高さ1のはしご
+	mLadders[4]->SetModel(mLadderModel_height05.get());
+	mLadders[4]->SetScale({ 1.0f,1.0f,1.0f });
+	mLadders[4]->SetTranslate({ -3.5f,5.0f,122.5f });
+	mLadders[4]->SetHeight(5.0f);
+	mLadders[4]->SetDirection(Ladder::RIGHT); //右向き
 	for (uint32_t i = 0; i < mLadders.size(); ++i) {
 		switch (mLadders[i]->GetDirection()) {
 		case Ladder::FRONT:
@@ -404,9 +407,7 @@ void GamePlayScene::ObjectUpdate(Input* input) {
 	}
 	mMap->Update(); //マップ
 	mSkydome->Update(); //天球
-	for (uint32_t i = 0; i < mParticles.size(); ++i) {
-		mParticles[i]->Update(); //パーティクル
-	}
+	
 	//回転する敵
 	for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
 		mRotateEnemies[i]->Update();

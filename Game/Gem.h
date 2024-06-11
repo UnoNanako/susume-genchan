@@ -16,6 +16,7 @@ public:
 	void Initialize(DirectXCommon* dxCommon) override;
 	void Update() override;
 	void Draw(ID3D12GraphicsCommandList* commandList, Camera* camera);
+	void ParticleDraw(ID3D12GraphicsCommandList* commandList, Camera* camera);
 	//minとmaxを求める関数
 	AABB CalculateAABB(const Vector3& translate);
 

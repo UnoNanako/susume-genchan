@@ -12,7 +12,7 @@ Gem::~Gem(){
 
 void Gem::Initialize(DirectXCommon* dxCommon){
 	mDxCommon = dxCommon;
-	mTransform = { {1.0f,1.0f,1.0f} ,{0.0f,0.0f,0.0f},{1.0f,1.0f,1.0f} };
+	mTransform = { {1.0f,1.0f,1.0f} ,{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 	mTexture = new Texture;
 	mGetColor = std::make_unique<Texture>();
 	mGetColor->Create(mDxCommon, "resources/Model/Gem/gemGet.png");
@@ -20,6 +20,7 @@ void Gem::Initialize(DirectXCommon* dxCommon){
 	mModel->Create(mDxCommon, "resources/Model/Gem", "Gem_gltf.gltf");
 	mModel->SetAnimation(mModel->LoadAnimationFile("resources/Model/Gem", "Gem_gltf.gltf"));
 	mModel->Update();
+	mParticle = std::make_unique<ParticleList>();
 	mParticle->Create(mDxCommon);
 }
 
@@ -31,12 +32,17 @@ void Gem::Update(){
 		mModel->Update();
 	}
 	mParticle->Update();
+	mParticle->SetEmitTranslate({ mTransform.translate.x,mTransform.translate.y,mTransform.translate.z });
+	mParticle->SetParticleScale({ 1.0f,1.0f,1.0f });
 }
 
 void Gem::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
 	mGetColor->Bind(commandList);
 	mModel->Draw(commandList, camera, mTransform);
-	mParticle->Draw(commandList, camera, {{1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f}});
+}
+
+void Gem::ParticleDraw(ID3D12GraphicsCommandList* commandList, Camera* camera) {
+	mParticle->Draw(commandList, camera);
 }
 
 AABB Gem::CalculateAABB(const Vector3& translate){

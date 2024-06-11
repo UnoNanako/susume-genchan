@@ -53,8 +53,6 @@ private:
 	std::unique_ptr<PlayerCamera> mPlayerCamera;
 	std::unique_ptr<BirdEyeCamera> mBirdEyeCamera; //俯瞰カメラ
 	std::unique_ptr<LightList> mLightList; //ライト
-	const uint32_t mPARTICLE_MAX = 1;
-	std::vector<std::unique_ptr<ParticleList>> mParticles; //パーティクル
 
 	/// <summary>
 	/// プレイヤー
@@ -108,13 +106,14 @@ private:
 	std::unique_ptr<Map> mMap; //マップ
 	std::unique_ptr<Skydome> mSkydome; //天球
 	//はしご
-	const uint32_t mLADDER_MAX = 4;
+	const uint32_t mLADDER_MAX = 5;
 	std::vector<std::unique_ptr<Ladder>> mLadders;
 	//はしご用のモデル、テクスチャ
 	std::unique_ptr<Model> mLadderModel0; //離島にあるはしご
 	std::unique_ptr<Model> mLadderModel_height15_01; //縦15(3マス分)のはしご
 	std::unique_ptr<Model> mLadderModel_height15_02; //縦15のはしご2つ目
 	std::unique_ptr<Model> mLadderModel_height15_03; //離島1つめのはしご
+	std::unique_ptr<Model> mLadderModel_height05; //離島高さ1のはしご
 	//草
 	const uint32_t mGRASS_MAX = 1;
 	std::vector<std::unique_ptr<Grass>> mGrasses;

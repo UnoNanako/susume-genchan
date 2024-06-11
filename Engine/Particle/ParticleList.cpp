@@ -90,7 +90,7 @@ void ParticleList::Update() {
 	}
 }
 
-void ParticleList::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera, const Transform& mTransform) {
+void ParticleList::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera) {
 	//Particle用のWorldViewProjectionMatrixをつくる
 	mNumInstance = 0;
 	for (std::list<Particle>::iterator particleIterator = mParticles.begin(); particleIterator != mParticles.end();) {
