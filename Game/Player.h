@@ -2,13 +2,14 @@
 #include "GameObject.h"
 #include "Transform.h"
 #include <d3d12.h>
+#include <memory>
 
 class Input;
 class Texture;
 class LightList;
 struct AABB;
 class MovingFloor;
-
+class ParticleList;
 
 class Player : public GameObject{
 public:
@@ -17,6 +18,7 @@ public:
 	void Initialize(DirectXCommon* dxCommon);
 	void Update(Input* input, float theta);
 	void Draw(ID3D12GraphicsCommandList* commandList,Camera* camera);
+	void ParticleDraw(ID3D12GraphicsCommandList* commandList, Camera* camera);
 	AABB CalculateAABB(const Vector3& translate);
 	
 	/// <summary>
@@ -62,5 +64,7 @@ private:
 
 	Matrix4x4 mTransposeViewMatrix;
 	MovingFloor* mMovingFloor; //動く床
+
+	std::unique_ptr<ParticleList> mParticle;
 };
 

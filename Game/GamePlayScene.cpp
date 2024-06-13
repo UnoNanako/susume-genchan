@@ -74,12 +74,13 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon){
 	}
 	mGrasses[0]->SetTranslate({ -12.5f,2.0f,20.0f });
 	//ジェム
-	mGems.resize(1);
+	mGems.resize(2);
 	for (uint32_t i = 0; i < mGems.size(); ++i) {
 		mGems[i] = std::make_unique<Gem>();
 		mGems[i]->Initialize(dxCommon);
 	}
 	mGems[0]->SetTranslate({ 22.0f,5.0f,-22.5f });
+	mGems[1]->SetTranslate( {5.0f,5.0f,115.0f} );
 	//小さい橋
 	mMiniBridges.resize(mMINIBRIDGE_MAX);
 	for (uint32_t i = 0; i < mMiniBridges.size(); ++i) {
@@ -315,7 +316,8 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon){
 	for (uint32_t i = 0; i < mGems.size(); ++i) {
 		mGems[i]->ParticleDraw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	}
-	
+	mPlayer->ParticleDraw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
+
 	mGame->GetModelCommon()->Bind(dxCommon);
 	mCrosshair->Draw(dxCommon->GetCommandList());
 	if (mIsTitleScene) {

@@ -7,6 +7,7 @@
 #include "Input/Input.h"
 #include "Light/LightList.h"
 #include "externals/imgui/imgui.h"
+#include "Engine/Particle/ParticleList.h"
 #include <format>
 
 Player::Player()
@@ -48,6 +49,16 @@ void Player::Initialize(DirectXCommon* dxCommon) {
 	mModel = new Model();
 	mModel->Create(mDxCommon, "resources/Model/Player/Chick", "Chick.obj");
 	mModel->SetTexture(mTexture);
+	mParticle = std::make_unique<ParticleList>();
+	mParticle->Create(mDxCommon);
+	mParticle->SetTranslateMin({ -1.0f,-1.0f,-1.0f });
+	mParticle->SetTranslateMax({ 1.0f,1.0f,1.0f });
+	mParticle->SetVelocityMin({ -5.0f,5.0f,-5.0f });
+	mParticle->SetVelocityMax({ 5.0f,6.0f,5.0f });
+	mParticle->SetColorMin({ 0.0f,0.0f,0.0f });
+	mParticle->SetColorMax({ 1.0f,1.0f,1.0f });
+	mParticle->SetLifeTImeMin(0.5f);
+	mParticle->SetLifeTimeMax(1.0f);
 }
 
 void Player::Update(Input* input, float theta) {
@@ -122,6 +133,12 @@ void Player::Update(Input* input, float theta) {
 		mTransform.translate.x += rightVec.x;
 		mTransform.translate.y += rightVec.y;
 		mTransform.translate.z += rightVec.z;
+		if (lStick.x >= 0.1f || lStick.y >= 0.1f) {
+			//パーティクル(砂煙)
+			mParticle->Update();
+			mParticle->SetEmitTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{mTransform.translate.x,mTransform.translate.y,mTransform.translate.z} });
+			mParticle->SetParticleScale({ 1.0f,1.0f,1.0f });
+		}
 
 		//Rスティック
 		Vector2 rStick = input->GetRStick();
@@ -189,6 +206,10 @@ void Player::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera) {
 	if ((mInvincibleTime / 5) % 2 == 0) {
 		mModel->Draw(commandList, camera, mTransform);
 	}
+}
+
+void Player::ParticleDraw(ID3D12GraphicsCommandList* commandList, Camera* camera){
+	mParticle->Draw(commandList, camera);
 }
 
 AABB Player::CalculateAABB(const Vector3& translate) {

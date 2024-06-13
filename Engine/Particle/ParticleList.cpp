@@ -133,12 +133,11 @@ Particle ParticleList::MakeNewParticle(const Vector3& translate) {
 	Particle particle;
 	particle.mTransform.scale = { mTransformInit.scale.x,mTransformInit.scale.y,mTransformInit.scale.z };
 	particle.mTransform.rotate = { 0.0f,0.0f,0.0f };
-	particle.mTransform.translate = { Random::Rand(-1.0f,1.0f), Random::Rand(-1.0f,1.0f), Random::Rand(-1.0f,1.0f) };
-	particle.velocity = { Random::Rand(-5.0f,5.0f), Random::Rand(5.0f,6.0f), Random::Rand(-5.0f,5.0f) };
-	particle.color = { Random::Rand(0.0f,1.0f),  Random::Rand(0.0f,1.0f), Random::Rand(0.0f,1.0f), 1.0f };
-	particle.lifeTime = Random::Rand(0.5f, 1.0f);
+	particle.velocity = { Random::Rand(mVelocityMin.x,mVelocityMax.x), Random::Rand(mVelocityMin.y,mVelocityMax.y), Random::Rand(mVelocityMin.z,mVelocityMax.z) };
+	particle.color = { Random::Rand(mColorMin.x,mColorMax.x),  Random::Rand(mColorMin.y,mColorMax.y), Random::Rand(mColorMin.z,mColorMax.z), 1.0f };
+	particle.lifeTime = Random::Rand(mLifeTimeMin, mLifeTimeMax);
 	particle.currentTime = 0;
-	Vector3 randomTranslate{ Random::Rand(0.0f,1.0f),Random::Rand(0.0f,1.0f),Random::Rand(0.0f,1.0f) };
+	Vector3 randomTranslate{ Random::Rand(mTranslateMin.x,mTranslateMax.x),Random::Rand(mTranslateMin.y,mTranslateMax.y),Random::Rand(mTranslateMin.z,mTranslateMax.z) };
 	particle.mTransform.translate = translate + randomTranslate;
 	return particle;
 }

@@ -31,10 +31,12 @@ private:
 	uint32_t mRotateTimer;
 	bool mIsRotate;
 	AABB mAABB;
+	float mMoveSpeed;
 	float mFovAngle; //視野角
 	float mLength;
 	bool mIsPlayerInView; //プレイヤーが視野内にいるか
 	bool mIsAlive; //生きているか
 	std::chrono::steady_clock::time_point mLastRotationTime; //最後の回転時間
+	Vector3 mInitTranslate; //初期位置
 };
 

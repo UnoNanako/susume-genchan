@@ -22,6 +22,14 @@ void Gem::Initialize(DirectXCommon* dxCommon){
 	mModel->Update();
 	mParticle = std::make_unique<ParticleList>();
 	mParticle->Create(mDxCommon);
+	mParticle->SetTranslateMin({ -1.0f,-1.0f,-1.0f });
+	mParticle->SetTranslateMax({ 1.0f,1.0f,1.0f });
+	mParticle->SetVelocityMin({ -5.0f,5.0f,-5.0f });
+	mParticle->SetVelocityMax({ 5.0f,6.0f,5.0f });
+	mParticle->SetColorMin({ 0.0f,0.0f,0.0f });
+	mParticle->SetColorMax({ 1.0f,1.0f,1.0f });
+	mParticle->SetLifeTImeMin(0.5f);
+	mParticle->SetLifeTimeMax(1.0f);
 }
 
 void Gem::Update(){

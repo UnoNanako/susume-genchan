@@ -40,9 +40,17 @@ public:
 	void SetParticleScale(Vector3 scale) { mTransformInit.scale = scale; }
 	void SetParticleRotate(Vector3 rotate) { mTransformInit.rotate = rotate; }
 	void SetParticleTranslate(Vector3 translate) { mTransformInit.translate = translate; }
-
+	void SetTranslateMin(Vector3 translateMin) { mTranslateMin = translateMin; }
+	void SetTranslateMax(Vector3 translateMax) { mTranslateMax = translateMax; }
+	void SetVelocityMin(Vector3 velocityMin) { mVelocityMin = velocityMin; }
+	void SetVelocityMax(Vector3 velocityMax) { mVelocityMax = velocityMax; }
+	void SetColorMin(Vector3 colorMin) { mColorMin = colorMin; }
+	void SetColorMax(Vector3 colorMax) { mColorMax = colorMax; }
+	void SetLifeTImeMin(float lifeTimeMin) { mLifeTimeMin = lifeTimeMin; }
+	void SetLifeTimeMax(float lifeTimeMax) { mLifeTimeMax = lifeTimeMax; }
 	void SetIsPlaying(bool isPlaying) { mIsPlaying = isPlaying; }
 	bool GetIsPlaying() { return mIsPlaying; }
+
 private:
 	const float kDeltaTime = 1.0f / 60.0f; //tを定義。とりあえず60fps
 	Microsoft::WRL::ComPtr<ID3D12Resource> instancingResourse;
@@ -61,5 +69,14 @@ private:
 	Emitter mEmitter{};
 	Transform mTransformInit; //パーティクルセッター用のメンバ
 	bool mIsPlaying; //パーティクルが出ているか
+	//ランダム範囲の最小、最大
+	Vector3 mTranslateMin;
+	Vector3 mTranslateMax;
+	Vector3 mVelocityMin;
+	Vector3 mVelocityMax;
+	Vector3 mColorMin;
+	Vector3 mColorMax;
+	float mLifeTimeMin;
+	float mLifeTimeMax;
 };
 

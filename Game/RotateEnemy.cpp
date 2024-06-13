@@ -33,6 +33,7 @@ void RotateEnemy::Initialize(DirectXCommon* dxCommon){
 	mModel = new Model();
 	mModel->Create(mDxCommon, "resources/Model/Enemies/RotateEnemy", "Giant.obj");
 	mModel->SetTexture(mTexture);
+	mInitTranslate = mTransform.translate; //初期位置を保存
 }
 
 void RotateEnemy::Update(){
@@ -51,6 +52,18 @@ void RotateEnemy::Update(){
 			mLastRotationTime = now;
 		}
 	}
+
+	//プレイヤーが視野内にいなければ初期位置に戻る
+	if (mIsPlayerInView == false) {
+		Vector3 vec = mInitTranslate - mTransform.translate;
+		float len = Length(vec);
+		if (len != 0.0f) {
+			vec /= len;
+		}
+		vec *= mMoveSpeed;
+		mTransform.translate += vec;
+	}
+
 	mTransform.UpdateMatrix();
 }
 
@@ -79,9 +92,11 @@ bool RotateEnemy::DetectPlayer(Player* player){
 	float fovCosine = cosf(mFovAngle * 0.5f);
 	//内積が視野角の余弦以上であれば、プレイヤーは視野角内に収まっている
 	if (dotProduct >= fovCosine) {
+		mIsPlayerInView = true;
 		return true;
 	}
 	else {
+		mIsPlayerInView = false;
 		return false;
 	}
 }
@@ -106,8 +121,8 @@ void RotateEnemy::TrackPlayer(Player* player){
 			mTransform.rotate.z = 0.0f;
 
 			//敵をプレイヤーの方向に移動させる
-			float moveSpeed = 0.1f;
-			Vector3 moveDirection = toPlayer * moveSpeed;
+			mMoveSpeed = 0.1f;
+			Vector3 moveDirection = toPlayer * mMoveSpeed;
 			mTransform.translate.x += moveDirection.x;
 			mTransform.translate.z += moveDirection.z;
 		}
