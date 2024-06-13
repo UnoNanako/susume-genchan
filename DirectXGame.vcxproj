@@ -162,6 +162,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClInclude Include="Block.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="EnemyState.h" />
     <ClInclude Include="Game\Fence.h" />
     <ClInclude Include="Game\CollisionWall.h" />
     <ClInclude Include="externals\imgui\imgui_stdlib.h" />

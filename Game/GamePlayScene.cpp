@@ -412,8 +412,7 @@ void GamePlayScene::ObjectUpdate(Input* input) {
 	
 	//回転する敵
 	for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
-		mRotateEnemies[i]->Update();
-		mRotateEnemies[i]->TrackPlayer(mPlayer.get());
+		mRotateEnemies[i]->Update(mPlayer.get());
 	}
 	//歩く敵
 	for (uint32_t i = 0; i < mWalkEnemies.size(); ++i) {

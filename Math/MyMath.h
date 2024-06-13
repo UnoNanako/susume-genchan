@@ -116,9 +116,11 @@ struct Vector3 {
 	}
 	void Normalize() {
 		float length = sqrtf((x * x) + (y * y) + (z * z));
-		x /= length;
-		y /= length;
-		z /= length;
+		if (length != 0.0f) {
+			x /= length;
+			y /= length;
+			z /= length;
+		}
 	}
 	static const Vector3 kZero;
 	static const Vector3 kOne;
