@@ -56,6 +56,13 @@ void Map::Create(DirectXCommon* dxCommon){
 				block->mModel->SetModelIndex(2);
 				block->mModel->Create(mDxCommon, "resources/Model/Blocks/Wall", "wall.obj");
 				break;
+
+			case HOUSE:
+				//家のモデルを読み込む
+				block->mModel = new Model();
+				block->mModel->SetModelIndex(3);
+				block->mModel->Create(mDxCommon, "resources/Model/House", "House1.obj");
+				break;
 			}
 
 			///jsonの初期化に使用
@@ -134,6 +141,13 @@ void Map::Update(){
 				(*iter)->mModel = new Model();
 				(*iter)->mModel->SetModelIndex(2);
 				(*iter)->mModel->Create(mDxCommon, "resources/Model/Blocks/Wall", "wall.obj");
+				break;
+
+			case HOUSE:
+				//家のモデルを読み込む
+				(*iter)->mModel = new Model();
+				(*iter)->mModel->SetModelIndex(3);
+				(*iter)->mModel->Create(mDxCommon, "resources/Model/House", "House1.obj");
 				break;
 			}
 		}

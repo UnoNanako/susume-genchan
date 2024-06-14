@@ -177,7 +177,7 @@ void Player::Update(Input* input, float theta) {
 	}
 
 	//敵と当たっているとき
-	if (mIsEnemyHit) {
+	if (mIsEnemyHit == true) {
 		--mInvincibleTime;
 		if (mInvincibleTime <= 0) {
 			mIsEnemyHit = false;

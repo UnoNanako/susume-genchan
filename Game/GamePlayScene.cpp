@@ -632,16 +632,6 @@ void GamePlayScene::Collision(Input *input){
 		mBirdEyeCamera->SetIsHit(false);
 	}
 
-	//回転する床とプレイヤー
-	if (IsCollision(mPlayer->GetAABB(), mRotateFloor->GetOBB(), collisionResult)) {
-		mPlayer->SetIsHit(true);
-		Vector3 pos = mPlayer->GetTranslate();
-		pos.x += collisionResult.normal.x * collisionResult.depth / 2;
-		pos.y += collisionResult.normal.y * collisionResult.depth / 2;
-		pos.z += collisionResult.normal.z * collisionResult.depth / 2;
-		mPlayer->SetTranslate(pos);
-	}
-
 	//プレイヤーとはしご
 	for (uint32_t i = 0; i < mLadders.size(); ++i) {
 		if (IsCollision(mPlayer->GetAABB(), mLadders[i]->GetAABB(), collisionResult)) {
@@ -654,6 +644,16 @@ void GamePlayScene::Collision(Input *input){
 		}else {
 			mLadders[i]->SetIsHit(false);
 		}
+	}
+
+	//回転する床とプレイヤー
+	if (IsCollision(mPlayer->GetAABB(), mRotateFloor->GetOBB(), collisionResult)) {
+		mPlayer->SetIsHit(true);
+		Vector3 pos = mPlayer->GetTranslate();
+		pos.x += collisionResult.normal.x * collisionResult.depth / 2;
+		pos.y += collisionResult.normal.y * collisionResult.depth / 2;
+		pos.z += collisionResult.normal.z * collisionResult.depth / 2;
+		mPlayer->SetTranslate(pos);
 	}
 	bool isHitLadder = false;
 

@@ -21,6 +21,7 @@ public:
 		FLOOR, //0
 		GRASS, //1
 		Wall, //2
+		HOUSE //3
 	};
 
 	void Create(DirectXCommon* dxCommon);
