@@ -63,6 +63,10 @@ void Map::Create(DirectXCommon* dxCommon){
 				block->mModel->SetModelIndex(3);
 				block->mModel->Create(mDxCommon, "resources/Model/House", "House1.obj");
 				break;
+			case COLLISION:
+				block->mModel = new Model();
+				block->mModel->SetModelIndex(4);
+				break;
 			}
 
 			///jsonの初期化に使用
@@ -149,6 +153,11 @@ void Map::Update(){
 				(*iter)->mModel->SetModelIndex(3);
 				(*iter)->mModel->Create(mDxCommon, "resources/Model/House", "House1.obj");
 				break;
+
+			case COLLISION:
+				(*iter)->mModel = new Model();
+				(*iter)->mModel->SetModelIndex(4);
+				break;
 			}
 		}
 		if (ImGui::Button(std::format("Erase##{}",i).c_str())) {
@@ -169,7 +178,9 @@ void Map::Update(){
 
 void Map::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
 	for (uint32_t i = 0; i < mBlock.size(); ++i) {
-		mBlock[i]->mModel->Draw(commandList, camera, mBlock[i]->mTransform);
+		if (mBlock[i]->mModel->GetModelIndex() != 4) {
+			mBlock[i]->mModel->Draw(commandList, camera, mBlock[i]->mTransform);
+		}
 	}
 }
 

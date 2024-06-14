@@ -64,7 +64,6 @@ void Player::Initialize(DirectXCommon* dxCommon) {
 void Player::Update(Input* input, float theta) {
 	mVelocity.y -= mGravity; //毎フレーム重力をかけている
 	if (mIsHit == true) { //地面に当たったら
-		//mTransform.translate.y = 3.0f;
 		mVelocity.y = 0.0f;
 	}
 	mTransform.translate.y += mVelocity.y;

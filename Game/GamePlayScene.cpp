@@ -79,8 +79,8 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon){
 		mGems[i] = std::make_unique<Gem>();
 		mGems[i]->Initialize(dxCommon);
 	}
-	mGems[0]->SetTranslate({ 22.0f,5.0f,-22.5f });
-	mGems[1]->SetTranslate( {5.0f,5.0f,115.0f} );
+	mGems[0]->SetTranslate( { 22.0f,5.0f,-22.5f } );
+	mGems[1]->SetTranslate( { 17.5f,5.0f,97.5f } );
 	//小さい橋
 	mMiniBridges.resize(mMINIBRIDGE_MAX);
 	for (uint32_t i = 0; i < mMiniBridges.size(); ++i) {
@@ -191,21 +191,21 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon){
 	/// <summary>
 	/// 当たり判定の壁
 	/// <summary>
-	mCollisionWalls.resize(mCOLLISIONWALL_MAX);
-	for (uint32_t i = 0; i < mCOLLISIONWALL_MAX; ++i) {
-		mCollisionWalls[i] = std::make_unique<CollisionWall>();
-		mCollisionWalls[i]->Initialize();
-	}
-	//外周（左から時計回り）
-	mCollisionWalls[0]->SetTransform({{3.0f,5.0f,50.0f},{0.0f,0.0f,0.0f},{-30.0f,5.0f,0.0f}});
-	mCollisionWalls[1]->SetTransform({ {30.0f,5.0f,3.0f},{0.0f,0.0f,0.0f},{-15.0f,5.0f,27.5f}});
-	mCollisionWalls[2]->SetTransform({ {3.0f,5.0f,50.0f},{0.0f,0.0f,0.0f},{30.0f,5.0f,0.0f} });
-	mCollisionWalls[3]->SetTransform({ {60.0f,5.0f,3.0f},{0.0f,0.0f,0.0f},{0.0f,5.0f,-27.5f} });
-	//草
-	mCollisionWalls[4]->SetTransform({ {5.5f,5.5f,40.0f},{0.0f,0.0f,0.0f},{-17.5f,5.0f,-7.5f} });
-	mCollisionWalls[5]->SetTransform({ {5.5f,5.0f,15.0f},{0.0f,0.0f,0.0f},{-22.5f,5.0f,15.0f} });
-	mCollisionWalls[6]->SetTransform({ {15.5f,15.5f,10.5f},{0.0f,0.0f,0.0f},{-2.5f,5.0f,-17.5f} });
-	mCollisionWalls[7]->SetTransform({ {5.5f,5.0f,10.5f},{0.0f,0.0f,0.0f},{-7.5f,5.0f,-7.5f} });
+	//mCollisionWalls.resize(mCOLLISIONWALL_MAX);
+	//for (uint32_t i = 0; i < mCOLLISIONWALL_MAX; ++i) {
+	//	mCollisionWalls[i] = std::make_unique<CollisionWall>();
+	//	mCollisionWalls[i]->Initialize();
+	//}
+	////外周（左から時計回り）
+	//mCollisionWalls[0]->SetTransform({{3.0f,5.0f,50.0f},{0.0f,0.0f,0.0f},{-30.0f,5.0f,0.0f}});
+	//mCollisionWalls[1]->SetTransform({ {30.0f,5.0f,3.0f},{0.0f,0.0f,0.0f},{-15.0f,5.0f,27.5f}});
+	//mCollisionWalls[2]->SetTransform({ {3.0f,5.0f,50.0f},{0.0f,0.0f,0.0f},{30.0f,5.0f,0.0f} });
+	//mCollisionWalls[3]->SetTransform({ {60.0f,5.0f,3.0f},{0.0f,0.0f,0.0f},{0.0f,5.0f,-27.5f} });
+	////草
+	//mCollisionWalls[4]->SetTransform({ {5.5f,5.5f,40.0f},{0.0f,0.0f,0.0f},{-17.5f,5.0f,-7.5f} });
+	//mCollisionWalls[5]->SetTransform({ {5.5f,5.0f,15.0f},{0.0f,0.0f,0.0f},{-22.5f,5.0f,15.0f} });
+	//mCollisionWalls[6]->SetTransform({ {15.5f,15.5f,10.5f},{0.0f,0.0f,0.0f},{-2.5f,5.0f,-17.5f} });
+	//mCollisionWalls[7]->SetTransform({ {5.5f,5.0f,10.5f},{0.0f,0.0f,0.0f},{-7.5f,5.0f,-7.5f} });
 }
 
 void GamePlayScene::Finalize()
@@ -327,7 +327,7 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon){
 		mClearSprite->Draw(dxCommon->GetCommandList());
 	}
 	if (mPlayer->GetHp() <= 0) {
-		mGameoverSprite->Draw(dxCommon->GetCommandList());
+		//mGameoverSprite->Draw(dxCommon->GetCommandList());
 	}
 }
 
@@ -450,9 +450,9 @@ void GamePlayScene::ObjectUpdate(Input* input) {
 	for (uint32_t i = 0; i < mLadders.size(); ++i) {
 		mLadders[i]->Update();
 	}
-	for (uint32_t i = 0; i < mCOLLISIONWALL_MAX; ++i) {
-		mCollisionWalls[i]->Update();
-	}
+	//for (uint32_t i = 0; i < mCOLLISIONWALL_MAX; ++i) {
+	//	mCollisionWalls[i]->Update();
+	//}
 	mClearSprite->Update(); //クリアスプライト
 	mGameoverSprite->Update(); //ゲームオーバースプライト
 	mCrosshair->Update(); //クロスヘア
@@ -476,7 +476,7 @@ void GamePlayScene::Collision(Input *input){
 	}
 
 	//当たり判定用の壁とプレイヤー
-	for (uint32_t i = 0; i < mCollisionWalls.size(); ++i) {
+	/*for (uint32_t i = 0; i < mCollisionWalls.size(); ++i) {
 		if (IsCollision(mPlayer->GetAABB(), mCollisionWalls[i]->GetAABB(), collisionResult)) {
 			ImGui::Begin("Debug");
 			ImGui::Text("Hit");
@@ -485,7 +485,7 @@ void GamePlayScene::Collision(Input *input){
 			pos += collisionResult.normal * collisionResult.depth;
 			mPlayer->SetTranslate(pos);
 		}
-	}
+	}*/
 
 	//小さい橋
 	for (uint32_t i = 0; i < mMiniBridges.size(); ++i) {

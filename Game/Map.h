@@ -16,12 +16,13 @@ const std::string pathToAABBJSON("./resources/Json/mapAABB.json");
 
 class Map : public GameObject{
 public:
-	//モデル、テクスチャの種類を管理するenum(マップチップのアレ)
+	//モデル、テクスチャの種類を管理するenum
 	enum ModelIndex : unsigned int {
 		FLOOR, //0
 		GRASS, //1
 		Wall, //2
-		HOUSE //3
+		HOUSE, //3
+		COLLISION //4
 	};
 
 	void Create(DirectXCommon* dxCommon);
