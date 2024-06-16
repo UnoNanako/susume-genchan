@@ -22,8 +22,18 @@ void RotateFloor::Initialize(DirectXCommon* dxCommon){
 }
 
 void RotateFloor::Update(){
+	Vector3 sideLWorldPos = { 6.5f,0.0f,0.0f };
+	Vector3 sideRWorldPos = { -6.5f,0.0f,0.0f };
+	Matrix4x4 rotateX = MakeRotateXMatrix(mTransform.rotate.x);
+	Matrix4x4 rotateY = MakeRotateYMatrix(mTransform.rotate.y);
+	Matrix4x4 rotateZ = MakeRotateZMatrix(mTransform.rotate.z);
+	Matrix4x4 rotateMatrix = Multiply(Multiply(rotateX, rotateY), rotateZ);
+	sideLWorldPos = Multiply(sideLWorldPos,rotateMatrix);
+	sideRWorldPos = Multiply(sideRWorldPos, rotateMatrix);
 	Vector3 WorldPos = GetWorldPosition();
-	CalcurateOBB(WorldPos);
+	mSideLOBB = CalcurateOBB(sideLWorldPos + WorldPos, { 1.0f,10.0f,30.0f });
+	mSideROBB = CalcurateOBB(sideRWorldPos + WorldPos, { 1.0f,10.0f,30.0f });
+	mOBB = CalcurateOBB(WorldPos,{5.5f,0.1f,30.0f});
 	mTransform.UpdateMatrix();
 }
 
@@ -31,20 +41,22 @@ void RotateFloor::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
 	mModel->Draw(commandList, camera, mTransform);
 }
 
-void RotateFloor::CalcurateOBB(const Vector3& translate){
-	mOBB.center = translate;
-	mOBB.size = { 6.0f,0.1f,35.0f };
+OBB RotateFloor::CalcurateOBB(const Vector3& translate,const Vector3& size){
+	OBB ret;
+	ret.center = translate;
+	ret.size = size;
 	Matrix4x4 rotateX = MakeRotateXMatrix(mTransform.rotate.x);
 	Matrix4x4 rotateY = MakeRotateYMatrix(mTransform.rotate.y);
 	Matrix4x4 rotateZ = MakeRotateZMatrix(mTransform.rotate.z);
 	Matrix4x4 rotateMatrix = Multiply(Multiply(rotateX, rotateY), rotateZ);
-	mOBB.axis[0].x = rotateMatrix.m[0][0];
-	mOBB.axis[0].y = rotateMatrix.m[0][1];
-	mOBB.axis[0].z = rotateMatrix.m[0][2];
-	mOBB.axis[1].x = rotateMatrix.m[1][0];
-	mOBB.axis[1].y = rotateMatrix.m[1][1];
-	mOBB.axis[1].z = rotateMatrix.m[1][2];
-	mOBB.axis[2].x = rotateMatrix.m[2][0];
-	mOBB.axis[2].y = rotateMatrix.m[2][1];
-	mOBB.axis[2].z = rotateMatrix.m[2][2];
+	ret.axis[0].x = rotateMatrix.m[0][0];
+	ret.axis[0].y = rotateMatrix.m[0][1];
+	ret.axis[0].z = rotateMatrix.m[0][2];
+	ret.axis[1].x = rotateMatrix.m[1][0];
+	ret.axis[1].y = rotateMatrix.m[1][1];
+	ret.axis[1].z = rotateMatrix.m[1][2];
+ret.axis[2].x = rotateMatrix.m[2][0];
+	ret.axis[2].y = rotateMatrix.m[2][1];
+	ret.axis[2].z = rotateMatrix.m[2][2];
+	return ret;
 }

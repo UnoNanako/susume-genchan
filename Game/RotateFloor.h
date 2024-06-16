@@ -14,13 +14,17 @@ public:
 	void Draw(ID3D12GraphicsCommandList* commandList, Camera* camera)override;
 
 	Vector3 GetWorldPosition() { return Vector3{ mTransform.mMatWorld.m[3][0],mTransform.mMatWorld.m[3][1],mTransform.mMatWorld.m[3][2] }; }
-	void CalcurateOBB(const Vector3& translate);
+	OBB CalcurateOBB(const Vector3& translate,const Vector3& size);
 
 	/// <summary>
 	/// アクセッサ
 	/// </summary>
 	OBB GetOBB() { return mOBB; }
+	OBB GetSideLOBB() { return mSideLOBB; }
+	OBB GetSideROBB() { return mSideROBB; }
 private:
-	OBB mOBB;
+	OBB mOBB; 
+	OBB mSideLOBB;
+	OBB mSideROBB;
 };
 

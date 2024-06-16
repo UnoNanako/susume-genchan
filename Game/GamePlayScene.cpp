@@ -187,25 +187,6 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon){
 	mGameoverSprite = std::make_unique<Sprite>();
 	mGameoverSprite->Create(dxCommon, "resources/Sprite/Text/GAME_OVER.png");
 	mGameoverSprite->SetTransform({ {1.0f,1.0f,1.0f,},{0.0f,0.0f,0.0f},{200.0f,300.0f,0.0f} });
-
-	/// <summary>
-	/// 当たり判定の壁
-	/// <summary>
-	//mCollisionWalls.resize(mCOLLISIONWALL_MAX);
-	//for (uint32_t i = 0; i < mCOLLISIONWALL_MAX; ++i) {
-	//	mCollisionWalls[i] = std::make_unique<CollisionWall>();
-	//	mCollisionWalls[i]->Initialize();
-	//}
-	////外周（左から時計回り）
-	//mCollisionWalls[0]->SetTransform({{3.0f,5.0f,50.0f},{0.0f,0.0f,0.0f},{-30.0f,5.0f,0.0f}});
-	//mCollisionWalls[1]->SetTransform({ {30.0f,5.0f,3.0f},{0.0f,0.0f,0.0f},{-15.0f,5.0f,27.5f}});
-	//mCollisionWalls[2]->SetTransform({ {3.0f,5.0f,50.0f},{0.0f,0.0f,0.0f},{30.0f,5.0f,0.0f} });
-	//mCollisionWalls[3]->SetTransform({ {60.0f,5.0f,3.0f},{0.0f,0.0f,0.0f},{0.0f,5.0f,-27.5f} });
-	////草
-	//mCollisionWalls[4]->SetTransform({ {5.5f,5.5f,40.0f},{0.0f,0.0f,0.0f},{-17.5f,5.0f,-7.5f} });
-	//mCollisionWalls[5]->SetTransform({ {5.5f,5.0f,15.0f},{0.0f,0.0f,0.0f},{-22.5f,5.0f,15.0f} });
-	//mCollisionWalls[6]->SetTransform({ {15.5f,15.5f,10.5f},{0.0f,0.0f,0.0f},{-2.5f,5.0f,-17.5f} });
-	//mCollisionWalls[7]->SetTransform({ {5.5f,5.0f,10.5f},{0.0f,0.0f,0.0f},{-7.5f,5.0f,-7.5f} });
 }
 
 void GamePlayScene::Finalize()
@@ -450,9 +431,6 @@ void GamePlayScene::ObjectUpdate(Input* input) {
 	for (uint32_t i = 0; i < mLadders.size(); ++i) {
 		mLadders[i]->Update();
 	}
-	//for (uint32_t i = 0; i < mCOLLISIONWALL_MAX; ++i) {
-	//	mCollisionWalls[i]->Update();
-	//}
 	mClearSprite->Update(); //クリアスプライト
 	mGameoverSprite->Update(); //ゲームオーバースプライト
 	mCrosshair->Update(); //クロスヘア
@@ -468,24 +446,14 @@ void GamePlayScene::Collision(Input *input){
 	mPlayer->SetIsHit(false);
 	for (uint32_t i = 0; i < mMap->GetBlock().size(); ++i) {
 		if (IsCollision(mPlayer->GetAABB(), mMap->GetBlock()[i]->GetWorldAABB(), collisionResult)) {
-			mPlayer->SetIsHit(true);
+			if (collisionResult.normal.y >= 0.5f) {
+				mPlayer->SetIsHit(true);
+			}
 			Vector3 pos = mPlayer->GetTranslate();
 			pos += collisionResult.normal * collisionResult.depth;
 			mPlayer->SetTranslate(pos);
 		}
 	}
-
-	//当たり判定用の壁とプレイヤー
-	/*for (uint32_t i = 0; i < mCollisionWalls.size(); ++i) {
-		if (IsCollision(mPlayer->GetAABB(), mCollisionWalls[i]->GetAABB(), collisionResult)) {
-			ImGui::Begin("Debug");
-			ImGui::Text("Hit");
-			ImGui::End();
-			Vector3 pos = mPlayer->GetTranslate();
-			pos += collisionResult.normal * collisionResult.depth;
-			mPlayer->SetTranslate(pos);
-		}
-	}*/
 
 	//小さい橋
 	for (uint32_t i = 0; i < mMiniBridges.size(); ++i) {
@@ -603,9 +571,7 @@ void GamePlayScene::Collision(Input *input){
 		mPlayer->SetIsHit(true);
 		mSlideFloorIsHit = true;
 		Vector3 pos = mPlayer->GetTranslate();
-		pos.x += collisionResult.normal.x * collisionResult.depth;
-		pos.y += collisionResult.normal.y * collisionResult.depth;
-		pos.z += collisionResult.normal.z * collisionResult.depth;
+		pos += collisionResult.normal * collisionResult.depth / 2;
 		mPlayer->SetTranslate(pos);
 		if (mPlayer->GetParent() == nullptr) {
 			//プレイヤーとslideFloorの親子関係を結ぶ
@@ -637,9 +603,7 @@ void GamePlayScene::Collision(Input *input){
 		if (IsCollision(mPlayer->GetAABB(), mLadders[i]->GetAABB(), collisionResult)) {
 			mLadders[i]->SetIsHit(true);
 			Vector3 pos = mPlayer->GetTranslate();
-			pos.x += collisionResult.normal.x * collisionResult.depth / 2;
-			pos.y += collisionResult.normal.y * collisionResult.depth / 2;
-			pos.z += collisionResult.normal.z * collisionResult.depth / 2;
+			pos += collisionResult.normal * collisionResult.depth / 2;
 			mPlayer->SetTranslate(pos);
 		}else {
 			mLadders[i]->SetIsHit(false);
@@ -650,9 +614,19 @@ void GamePlayScene::Collision(Input *input){
 	if (IsCollision(mPlayer->GetAABB(), mRotateFloor->GetOBB(), collisionResult)) {
 		mPlayer->SetIsHit(true);
 		Vector3 pos = mPlayer->GetTranslate();
-		pos.x += collisionResult.normal.x * collisionResult.depth / 2;
-		pos.y += collisionResult.normal.y * collisionResult.depth / 2;
-		pos.z += collisionResult.normal.z * collisionResult.depth / 2;
+		pos += collisionResult.normal * collisionResult.depth / 2;
+		mPlayer->SetTranslate(pos);
+	}
+	if (IsCollision(mPlayer->GetAABB(), mRotateFloor->GetSideLOBB(), collisionResult)) {
+		mPlayer->SetIsHit(true);
+		Vector3 pos = mPlayer->GetTranslate();
+		pos += collisionResult.normal * collisionResult.depth / 2;
+		mPlayer->SetTranslate(pos);
+	}
+	if (IsCollision(mPlayer->GetAABB(), mRotateFloor->GetSideROBB(), collisionResult)) {
+		mPlayer->SetIsHit(true);
+		Vector3 pos = mPlayer->GetTranslate();
+		pos += collisionResult.normal * collisionResult.depth / 2;
 		mPlayer->SetTranslate(pos);
 	}
 	bool isHitLadder = false;

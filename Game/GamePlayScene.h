@@ -95,12 +95,6 @@ private:
 	std::unique_ptr<Star> mStar;
 
 	/// <summary>
-	/// 当たり判定の壁(透明)
-	/// <summary>
-	const uint32_t mCOLLISIONWALL_MAX = 8;
-	std::vector<std::unique_ptr<CollisionWall>> mCollisionWalls;
-
-	/// <summary>
 	/// オブジェクト
 	/// </summary>
 	std::unique_ptr<Map> mMap; //マップ

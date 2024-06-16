@@ -1060,8 +1060,8 @@ inline bool IsCollision(const OBB& a, const OBB& b, CollisionResult& result) {
 	Vector3 minAxis;
 	for (const auto& axis : axes) {
 		if (axis.x > -kEpsilon && axis.x < kEpsilon &&
-			axis.y > kEpsilon && axis.y < kEpsilon &&
-			axis.z > kEpsilon && axis.z < kEpsilon) {
+			axis.y > -kEpsilon && axis.y < kEpsilon &&
+			axis.z > -kEpsilon && axis.z < kEpsilon) {
 			continue;
 		}
 		float min1 = (std::numeric_limits<float>::max)();
