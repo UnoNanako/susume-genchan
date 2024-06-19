@@ -66,7 +66,7 @@ private:
 	const uint32_t mROTATEENEMY_MAX = 1;
 	std::vector<std::unique_ptr<RotateEnemy>> mRotateEnemies;
 	//歩く敵
-	const uint32_t mWALKENEMY_MAX = 3;
+	const uint32_t mWALKENEMY_MAX = 4;
 	std::vector<std::unique_ptr<WalkEnemy>> mWalkEnemies;
 	//幽霊(テレサ)
 	const uint32_t mGHOST_MAX = 1;

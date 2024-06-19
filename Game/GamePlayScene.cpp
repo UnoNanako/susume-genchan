@@ -164,6 +164,9 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon){
 	mWalkEnemies[2]->SetTranslate({ 27.5f,2.0f,5.0f });
 	mWalkEnemies[2]->SetMoveMax({ 27.5f,0.0f,5.0f });
 	mWalkEnemies[2]->SetMoveMin({ 2.5f,0.0f,-5.0f });
+	mWalkEnemies[3]->SetTranslate({ 22.5f,2.0f,90.5f });
+	mWalkEnemies[3]->SetMoveMax({ 23.5f,0.0f,113.0f });
+	mWalkEnemies[3]->SetMoveMin({ 1.5f,0.0f,90.5f });
 	//ghost(テレサ)
 	mGhosts.resize(mGHOST_MAX);
 	for (uint32_t i = 0; i < mGhosts.size(); ++i) {
