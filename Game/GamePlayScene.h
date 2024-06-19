@@ -100,7 +100,7 @@ private:
 	std::unique_ptr<Map> mMap; //マップ
 	std::unique_ptr<Skydome> mSkydome; //天球
 	//はしご
-	const uint32_t mLADDER_MAX = 5;
+	const uint32_t mLADDER_MAX = 6;
 	std::vector<std::unique_ptr<Ladder>> mLadders;
 	//はしご用のモデル、テクスチャ
 	std::unique_ptr<Model> mLadderModel0; //離島にあるはしご
@@ -108,6 +108,7 @@ private:
 	std::unique_ptr<Model> mLadderModel_height15_02; //縦15のはしご2つ目
 	std::unique_ptr<Model> mLadderModel_height15_03; //離島1つめのはしご
 	std::unique_ptr<Model> mLadderModel_height05; //離島高さ1のはしご
+	std::unique_ptr<Model> mLadderModel_height15_04; //離島高さ15のはしご
 	//草
 	const uint32_t mGRASS_MAX = 1;
 	std::vector<std::unique_ptr<Grass>> mGrasses;

@@ -165,8 +165,8 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon){
 	mWalkEnemies[2]->SetMoveMax({ 27.5f,0.0f,5.0f });
 	mWalkEnemies[2]->SetMoveMin({ 2.5f,0.0f,-5.0f });
 	mWalkEnemies[3]->SetTranslate({ 22.5f,2.0f,90.5f });
-	mWalkEnemies[3]->SetMoveMax({ 23.5f,0.0f,113.0f });
-	mWalkEnemies[3]->SetMoveMin({ 1.5f,0.0f,90.5f });
+	mWalkEnemies[3]->SetMoveMax({ 25.0f,0.0f,114.0f });
+	mWalkEnemies[3]->SetMoveMin({ 0.0f,0.0f,90.0f });
 	//ghost(テレサ)
 	mGhosts.resize(mGHOST_MAX);
 	for (uint32_t i = 0; i < mGhosts.size(); ++i) {
@@ -331,10 +331,12 @@ void GamePlayScene::LadderInitialize(DirectXCommon* dxCommon){
 	mLadderModel_height15_03->Create(dxCommon, "resources/Model/Ladder", "inFront.obj");
 	mLadderModel_height05 = std::make_unique<Model>();
 	mLadderModel_height05->Create(dxCommon, "resources/Model/Ladder", "height1.obj");
+	mLadderModel_height15_04 = std::make_unique<Model>();
+	mLadderModel_height15_04->Create(dxCommon, "resources/Model/Ladder", "inFront.obj");
 	//離島にあるはしご
 	mLadders[0]->SetScale({ 0.5f,0.5f,0.5f });
 	mLadders[0]->SetTranslate({ -3.0f,13.0f,87.5f });
-	mLadders[0]->SetHeight(30.0f);
+	mLadders[0]->SetHeight(27.5f);
 	mLadders[0]->SetDirection(Ladder::RIGHT); //右向き
 	//リス地に一番近いはしご
 	mLadders[1]->SetModel(mLadderModel_height15_01.get());
@@ -358,9 +360,16 @@ void GamePlayScene::LadderInitialize(DirectXCommon* dxCommon){
 	//離島高さ1のはしご
 	mLadders[4]->SetModel(mLadderModel_height05.get());
 	mLadders[4]->SetScale({ 1.0f,1.0f,1.0f });
-	mLadders[4]->SetTranslate({ -3.5f,5.0f,122.5f });
+	mLadders[4]->SetTranslate({ -3.5f,5.0f,132.5f });
 	mLadders[4]->SetHeight(5.0f);
 	mLadders[4]->SetDirection(Ladder::RIGHT); //右向き
+	//離島高さ15のはしご
+	mLadders[5]->SetModel(mLadderModel_height15_04.get());
+	mLadders[5]->SetScale({ 1.0f,1.0f,1.0f });
+	mLadders[5]->SetTranslate({ -15.0f,10.0f,110.0f });
+	mLadders[1]->SetRotate({ 0.0f,kPi / 2.0f,0.0f });
+	mLadders[5]->SetHeight(15.0f);
+	mLadders[5]->SetDirection(Ladder::BACK); //後ろ向き
 	for (uint32_t i = 0; i < mLadders.size(); ++i) {
 		switch (mLadders[i]->GetDirection()) {
 		case Ladder::FRONT:
@@ -654,7 +663,7 @@ void GamePlayScene::Collision(Input *input){
 							mPlayer->GetTranslate().y,
 							mLadders[i]->GetTranslate().z - 1.5f }
 						);
-						if (mPlayer->GetTranslate().y >= 17.5f) {
+						if (mPlayer->GetTranslate().y >= mLadders[i]->GetHeight()) {
 							mPlayer->SetTranslate({ mPlayer->GetTranslate().x,mPlayer->GetTranslate().y + 2.0f,mPlayer->GetTranslate().z + 2.0f });
 						}
 						break;
@@ -664,7 +673,7 @@ void GamePlayScene::Collision(Input *input){
 							mPlayer->GetTranslate().y,
 							mLadders[i]->GetTranslate().z + 1.5f }
 						);
-						if (mPlayer->GetTranslate().y >= 17.5) {
+						if (mPlayer->GetTranslate().y >= mLadders[i]->GetHeight()) {
 							mPlayer->SetTranslate({ mPlayer->GetTranslate().x,mPlayer->GetTranslate().y + 2.0f,mPlayer->GetTranslate().z - 2.0f });
 						}
 						break;
@@ -674,7 +683,7 @@ void GamePlayScene::Collision(Input *input){
 							mPlayer->GetTranslate().y,
 							mLadders[i]->GetTranslate().z }
 						);
-						if (mPlayer->GetTranslate().y >= 17.5f) {
+						if (mPlayer->GetTranslate().y >= mLadders[i]->GetHeight()) {
 							mPlayer->SetTranslate({ mPlayer->GetTranslate().x + 2.0f, mPlayer->GetTranslate().y + 2.0f,mPlayer->GetTranslate().z });
 						}
 						break;
@@ -684,7 +693,7 @@ void GamePlayScene::Collision(Input *input){
 							mPlayer->GetTranslate().y,
 							mLadders[i]->GetTranslate().z }
 						);
-						if (mPlayer->GetTranslate().y >= 17.5f) {
+						if (mPlayer->GetTranslate().y >= mLadders[i]->GetHeight()) {
 							mPlayer->SetTranslate({ mPlayer->GetTranslate().x - 2.0f, mPlayer->GetTranslate().y + 2.0f,mPlayer->GetTranslate().z });
 						}
 						break;
