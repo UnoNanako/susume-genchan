@@ -109,6 +109,7 @@ private:
 	std::unique_ptr<Model> mLadderModel_height15_03; //離島1つめのはしご
 	std::unique_ptr<Model> mLadderModel_height05; //離島高さ1のはしご
 	std::unique_ptr<Model> mLadderModel_height15_04; //離島高さ15のはしご
+	std::unique_ptr<Model> mLadderModel_height15_05; //離島高さ15のはしご
 	//草
 	const uint32_t mGRASS_MAX = 1;
 	std::vector<std::unique_ptr<Grass>> mGrasses;

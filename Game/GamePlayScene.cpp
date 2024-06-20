@@ -121,7 +121,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon){
 	//スター
 	mStar = std::make_unique<Star>();
 	mStar->Initialize(dxCommon);
-	mStar->SetTranslate({ -5.0f,30.0f,85.0f });
+	mStar->SetTranslate({ -15.0f,30.0f,90.0f });
 	//movingFloor(スイッチを押すとスライドし始める床)
 	mSlideFloor = std::make_unique<SlideFloor>();
 	mSlideFloor->Initialize(dxCommon);
@@ -333,43 +333,48 @@ void GamePlayScene::LadderInitialize(DirectXCommon* dxCommon){
 	mLadderModel_height05->Create(dxCommon, "resources/Model/Ladder", "height1.obj");
 	mLadderModel_height15_04 = std::make_unique<Model>();
 	mLadderModel_height15_04->Create(dxCommon, "resources/Model/Ladder", "inFront.obj");
-	//離島にあるはしご
-	mLadders[0]->SetScale({ 0.5f,0.5f,0.5f });
-	mLadders[0]->SetTranslate({ -3.0f,13.0f,87.5f });
-	mLadders[0]->SetHeight(27.5f);
-	mLadders[0]->SetDirection(Ladder::RIGHT); //右向き
+	mLadderModel_height15_05 = std::make_unique<Model>();
+	mLadderModel_height15_05->Create(dxCommon, "resources/Model/Ladder", "inFront.obj");
 	//リス地に一番近いはしご
-	mLadders[1]->SetModel(mLadderModel_height15_01.get());
-	mLadders[1]->SetScale({ 1.0f,1.0f,1.0f });
-	mLadders[1]->SetTranslate({ -2.5f,10.0f,-22.5f });
-	mLadders[1]->SetRotate({ 0.0f,-kPi / 2.0f,0.0f });
-	mLadders[1]->SetHeight(15.0f);
-	mLadders[1]->SetDirection(Ladder::FRONT); //手前向き
+	mLadders[0]->SetModel(mLadderModel_height15_01.get());
+	mLadders[0]->SetScale({ 1.0f,1.0f,1.0f });
+	mLadders[0]->SetTranslate({ -2.5f,10.0f,-22.5f });
+	mLadders[0]->SetRotate({ 0.0f,-kPi / 2.0f,0.0f });
+	mLadders[0]->SetHeight(15.0f);
+	mLadders[0]->SetDirection(Ladder::FRONT); //手前向き
 	//クランクを回すためのはしご
-	mLadders[2]->SetModel(mLadderModel_height15_02.get());
+	mLadders[1]->SetModel(mLadderModel_height15_02.get());
+	mLadders[1]->SetScale({ 1.0f,1.0f,1.0f });
+	mLadders[1]->SetTranslate({ 25.0f,10.0f,0.0f });
+	mLadders[1]->SetHeight(15.0f);
+	mLadders[1]->SetDirection(Ladder::RIGHT); //右向き
+	//離島1つめのはしご
+	mLadders[2]->SetModel(mLadderModel_height15_03.get());
 	mLadders[2]->SetScale({ 1.0f,1.0f,1.0f });
-	mLadders[2]->SetTranslate({ 25.0f,10.0f,0.0f });
+	mLadders[2]->SetTranslate({ 22.5f,10.0f,102.5f });
 	mLadders[2]->SetHeight(15.0f);
 	mLadders[2]->SetDirection(Ladder::RIGHT); //右向き
-	//離島1つめのはしご
-	mLadders[3]->SetModel(mLadderModel_height15_03.get());
-	mLadders[3]->SetScale({ 1.0f,1.0f,1.0f });
-	mLadders[3]->SetTranslate({ 22.5f,10.0f,102.5f });
-	mLadders[3]->SetHeight(15.0f);
-	mLadders[3]->SetDirection(Ladder::RIGHT); //右向き
 	//離島高さ1のはしご
-	mLadders[4]->SetModel(mLadderModel_height05.get());
-	mLadders[4]->SetScale({ 1.0f,1.0f,1.0f });
-	mLadders[4]->SetTranslate({ -3.5f,5.0f,132.5f });
-	mLadders[4]->SetHeight(5.0f);
-	mLadders[4]->SetDirection(Ladder::RIGHT); //右向き
+	mLadders[3]->SetModel(mLadderModel_height05.get());
+	mLadders[3]->SetScale({ 1.0f,1.0f,1.0f });
+	mLadders[3]->SetTranslate({ -3.5f,5.0f,132.5f });
+	mLadders[3]->SetHeight(5.0f);
+	mLadders[3]->SetDirection(Ladder::RIGHT); //右向き
 	//離島高さ15のはしご
-	mLadders[5]->SetModel(mLadderModel_height15_04.get());
+	mLadders[4]->SetModel(mLadderModel_height15_04.get());
+	mLadders[4]->SetScale({ 1.0f,1.0f,1.0f });
+	mLadders[4]->SetRotate({ 0.0f,kPi / 2.0f,0.0f });
+	mLadders[4]->SetTranslate({ -15.0f,10.0f,114.0f });
+	mLadders[4]->SetHeight(15.0f);
+	mLadders[4]->SetDirection(Ladder::BACK); //後ろ向き
+	//離島高さ15のはしご(1番ゴールに近い)
+	mLadders[5]->SetModel(mLadderModel_height15_05.get());
 	mLadders[5]->SetScale({ 1.0f,1.0f,1.0f });
-	mLadders[5]->SetTranslate({ -15.0f,10.0f,110.0f });
-	mLadders[1]->SetRotate({ 0.0f,kPi / 2.0f,0.0f });
-	mLadders[5]->SetHeight(15.0f);
+	mLadders[5]->SetRotate({ 0.0f,kPi / 2.0f,0.0f });
+	mLadders[5]->SetTranslate({ -15.0f,20.0f,108.0f });
+	mLadders[5]->SetHeight(27.5f);
 	mLadders[5]->SetDirection(Ladder::BACK); //後ろ向き
+
 	for (uint32_t i = 0; i < mLadders.size(); ++i) {
 		switch (mLadders[i]->GetDirection()) {
 		case Ladder::FRONT:
