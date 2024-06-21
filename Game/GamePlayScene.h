@@ -27,6 +27,7 @@
 #include "Game/TitleScene.h"
 #include "Game/MiniBridge.h"
 #include "Game/Fence.h"
+#include "Game/Seed.h"
 
 class DirectXCommon;
 class Sprite;
@@ -93,6 +94,8 @@ private:
 	/// </summary>
 	std::vector <std::unique_ptr<Gem>> mGems;
 	std::unique_ptr<Star> mStar;
+	const uint32_t mSEED_MAX = 1;
+	std::vector<std::unique_ptr<Seed>> mSeeds;
 
 	/// <summary>
 	/// オブジェクト

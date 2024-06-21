@@ -25,7 +25,9 @@ Player::Player()
 	, mHp(2)
 	, mInvincibleTime(120)
 	, mProgressTimer(5)
-	, mBackTimer(5) {
+	, mBackTimer(5) 
+	,mAttackTimes(0)
+{
 }
 
 Player::~Player() {
@@ -145,7 +147,10 @@ void Player::Update(Input* input, float theta) {
 
 		//Bボタン
 		if (input->GetButtonDown(XINPUT_GAMEPAD_B)) {
-			mIsAttack = true;
+			if (mAttackTimes > 0) {
+				mIsAttack = true;
+				--mAttackTimes;
+			}
 		}
 		if (mIsAttack == true && mProgressTimer > 0) {
 			--mProgressTimer;

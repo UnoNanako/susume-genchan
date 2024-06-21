@@ -32,6 +32,7 @@ public:
 	Vector3 GetWorldPosition() { return Vector3{ mTransform.mMatWorld.m[3][0],mTransform.mMatWorld.m[3][1],mTransform.mMatWorld.m[3][2] }; }
 	Matrix4x4 GetWorldMatrix() { return mTransform.mMatWorld; }
 	Transform* GetParent() { return mTransform.mParent; }
+	uint32_t GetmAttackTimes() { return mAttackTimes; }
 	void SetHp(uint32_t hp) { mHp = hp; }
 	void SetIsEnemyHit(bool isEnemyHit) { mIsEnemyHit = isEnemyHit; }
 	void SetIsOperatable(bool isOperatable) { mIsOperatable = isOperatable; }
@@ -43,6 +44,7 @@ public:
 	void SetParent(Transform* parent) { mTransform.mParent = parent; }
 	void SetVelocityY(float y) { mVelocity.y = y; }
 	void SetGravity(float gravity) { mGravity = gravity; }
+	void SetAttackTimes(uint32_t attackTImes) { mAttackTimes = attackTImes; }
 
 private:
 	uint32_t mHp; //最大2
@@ -61,6 +63,7 @@ private:
 	float mGravity; //重力
 	int32_t mProgressTimer; //前進タイマー
 	int32_t mBackTimer; //後退タイマー
+	uint32_t mAttackTimes; //攻撃できる回数
 
 	Matrix4x4 mTransposeViewMatrix;
 	MovingFloor* mMovingFloor; //動く床

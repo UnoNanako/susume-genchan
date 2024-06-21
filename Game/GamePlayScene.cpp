@@ -29,11 +29,11 @@
 #include "Block.h"
 #include "Engine//3D/Model.h"
 
-GamePlayScene::GamePlayScene(Game* game){
+GamePlayScene::GamePlayScene(Game* game) {
 	mGame = game;
 }
 
-void GamePlayScene::Initialize(DirectXCommon* dxCommon){
+void GamePlayScene::Initialize(DirectXCommon* dxCommon) {
 	//カメラの初期化
 	mPlayerCamera = std::make_unique<PlayerCamera>();
 	mPlayerCamera->Initialize(dxCommon);
@@ -79,8 +79,8 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon){
 		mGems[i] = std::make_unique<Gem>();
 		mGems[i]->Initialize(dxCommon);
 	}
-	mGems[0]->SetTranslate( { 22.0f,5.0f,-22.5f } );
-	mGems[1]->SetTranslate( { 17.5f,5.0f,97.5f } );
+	mGems[0]->SetTranslate({ 22.0f,5.0f,-22.5f });
+	mGems[1]->SetTranslate({ 17.5f,5.0f,97.5f });
 	//小さい橋
 	mMiniBridges.resize(mMINIBRIDGE_MAX);
 	for (uint32_t i = 0; i < mMiniBridges.size(); ++i) {
@@ -88,7 +88,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon){
 		mMiniBridges[i]->Initialize(dxCommon);
 	}
 	mMiniBridges[0]->SetTranslate({ 7.5f,17.0f,-15.0f });
-	mMiniBridges[1]->SetTranslate({ 22.5f,17.0f,-15.0f});
+	mMiniBridges[1]->SetTranslate({ 22.5f,17.0f,-15.0f });
 	mMiniBridges[2]->SetTranslate({ 2.5f,17.0f,0.0f });
 	//フェンス
 	mFences.resize(mFENCE_MAX);
@@ -117,11 +117,18 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon){
 	mFences[11]->SetRotate({ 0.0f,kPi / 2.0f,0.0f });
 	mFences[12]->SetTranslate({ 7.5f,20.0f,10.0f });
 	mFences[12]->SetRotate({ 0.0f,kPi / 2.0f,0.0f });
-	
+
 	//スター
 	mStar = std::make_unique<Star>();
 	mStar->Initialize(dxCommon);
 	mStar->SetTranslate({ -15.0f,30.0f,90.0f });
+	//種
+	mSeeds.resize(mSEED_MAX);
+	for (uint32_t i = 0; i < mSEED_MAX; ++i) {
+		mSeeds[i] = std::make_unique<Seed>();
+		mSeeds[i]->Initialize(dxCommon);
+	}
+	mSeeds[0]->SetTranslate({ -2.5f,5.0f,20.0f });
 	//movingFloor(スイッチを押すとスライドし始める床)
 	mSlideFloor = std::make_unique<SlideFloor>();
 	mSlideFloor->Initialize(dxCommon);
@@ -136,7 +143,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon){
 	//クランクを回すと回る床
 	mRotateFloor = std::make_unique<RotateFloor>();
 	mRotateFloor->Initialize(dxCommon);
-	
+
 	LadderInitialize(dxCommon); //はしごの初期化
 
 	/// <summary>
@@ -197,7 +204,7 @@ void GamePlayScene::Finalize()
 	mMap->Finalize();
 }
 
-void GamePlayScene::Update(Input* input){
+void GamePlayScene::Update(Input* input) {
 	/// <summary>
 	/// ImGui
 	/// <summary>
@@ -217,8 +224,7 @@ void GamePlayScene::Update(Input* input){
 
 	if (mIsDirectionalLight == false) {
 		mLightList->SetDirectionalLightIntensity(0.0f);
-	}
-	else {
+	} else {
 		mLightList->SetDirectionalLightIntensity(0.7f);
 	}
 
@@ -228,14 +234,14 @@ void GamePlayScene::Update(Input* input){
 	}
 
 	ObjectUpdate(input); //オブジェクトの更新
-	
+
 	Collision(input); //当たり判定の更新
 
 	//プレイヤーの行列を更新
 	mPlayer->GetTransform().UpdateMatrix();
 }
 
-void GamePlayScene::Draw(DirectXCommon* dxCommon){
+void GamePlayScene::Draw(DirectXCommon* dxCommon) {
 	mGame->GetModelCommon()->Bind(dxCommon);
 	mLightList->Bind(dxCommon->GetCommandList());
 	//----------モデルここから----------
@@ -253,8 +259,7 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon){
 		for (uint32_t i = 0; i < mGhosts.size(); ++i) {
 			mGhosts[i]->Draw(dxCommon->GetCommandList(), mPlayerCamera.get());
 		}
-	}
-	else {
+	} else {
 		mBirdEyeCamera->Bind(dxCommon->GetCommandList());
 		mPlayer->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 		mMap->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
@@ -271,6 +276,10 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon){
 	//ジェム
 	for (uint32_t i = 0; i < mGems.size(); ++i) {
 		mGems[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
+	}
+	//種
+	for (uint32_t i = 0; i < mSeeds.size(); ++i) {
+		mSeeds[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	}
 	//草
 	for (uint32_t i = 0; i < mGrasses.size(); ++i) {
@@ -315,7 +324,7 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon){
 	}
 }
 
-void GamePlayScene::LadderInitialize(DirectXCommon* dxCommon){
+void GamePlayScene::LadderInitialize(DirectXCommon* dxCommon) {
 	//はしご
 	mLadders.resize(mLADDER_MAX);
 	for (uint32_t i = 0; i < mLadders.size(); ++i) {
@@ -403,11 +412,11 @@ void GamePlayScene::ObjectUpdate(Input* input) {
 	if (mIsPlayerCamera == true) {
 		mPlayerCamera->Update();
 	} else {
-		mBirdEyeCamera->Update(input, mPlayer->GetWorldPosition(),mIsTitleScene);
+		mBirdEyeCamera->Update(input, mPlayer->GetWorldPosition(), mIsTitleScene);
 	}
 	mMap->Update(); //マップ
 	mSkydome->Update(); //天球
-	
+
 	//回転する敵
 	for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
 		mRotateEnemies[i]->Update(mPlayer.get());
@@ -426,6 +435,10 @@ void GamePlayScene::ObjectUpdate(Input* input) {
 	//ジェム
 	for (uint32_t i = 0; i < mGems.size(); ++i) {
 		mGems[i]->Update();
+	}
+	//種
+	for (uint32_t i = 0; i < mSeeds.size(); ++i) {
+		mSeeds[i]->Update();
 	}
 	//草オブジェクト
 	for (uint32_t i = 0; i < mGrasses.size(); ++i) {
@@ -457,7 +470,7 @@ void GamePlayScene::ObjectUpdate(Input* input) {
 }
 
 
-void GamePlayScene::Collision(Input *input){
+void GamePlayScene::Collision(Input* input) {
 	CollisionResult collisionResult;
 	//壁,床とプレイヤー
 	mPlayer->SetIsHit(false);
@@ -565,6 +578,16 @@ void GamePlayScene::Collision(Input *input){
 		}
 	}
 
+	//種とプレイヤー
+	for (uint32_t i = 0; i < mSeeds.size(); ++i) {
+		if (IsCollision(mPlayer->GetAABB(), mSeeds[i]->GetAABB(), collisionResult) && mSeeds[i]->GetIsHit() == false) {
+			if (mSeeds[i]->GetIsHit() == false) {
+				mPlayer->SetAttackTimes(mPlayer->GetmAttackTimes() + 1);
+			}
+			mSeeds[i]->SetIsHit(true);
+		}
+	}
+
 	//grassとプレイヤー
 	for (uint32_t i = 0; i < mGrasses.size(); ++i) {
 		if (IsCollision(mPlayer->GetAABB(), mGrasses[i]->GetAABB(), collisionResult)) {
@@ -579,7 +602,7 @@ void GamePlayScene::Collision(Input *input){
 	if (IsCollision(mPlayer->GetAABB(), mSlideSwitch->GetAABB(), collisionResult)) {
 		mSwitchIsHit = true;
 		mSlideFloor->SetIsMoving(true);
-	}else {
+	} else {
 		mSwitchIsHit = false;
 	}
 
@@ -597,7 +620,7 @@ void GamePlayScene::Collision(Input *input){
 		}
 		auto& tmp = mSlideFloor->GetTransform();
 		mPlayer->SetParent(&tmp);
-	}else {
+	} else {
 		if (mSlideFloorIsHit == true) {
 			mPlayer->SetParent(nullptr);
 			mSlideFloorIsHit = false;
@@ -610,7 +633,7 @@ void GamePlayScene::Collision(Input *input){
 	if (IsCollision(mPlayer->GetAABB(), mCrank->GetAABB(), collisionResult)) {
 		mCrank->SetIsHit(true);
 		mBirdEyeCamera->SetIsHit(true);
-	}else {
+	} else {
 		mCrank->SetIsHit(false);
 		mBirdEyeCamera->SetIsHit(false);
 	}
@@ -622,7 +645,7 @@ void GamePlayScene::Collision(Input *input){
 			Vector3 pos = mPlayer->GetTranslate();
 			pos += collisionResult.normal * collisionResult.depth / 2;
 			mPlayer->SetTranslate(pos);
-		}else {
+		} else {
 			mLadders[i]->SetIsHit(false);
 		}
 	}
@@ -713,7 +736,7 @@ void GamePlayScene::Collision(Input *input){
 	}
 	if (isHitLadder == true) {
 		mPlayer->SetGravity(0.0f);
-	}else {
+	} else {
 		mPlayer->SetGravity(0.05f);
 	}
 }

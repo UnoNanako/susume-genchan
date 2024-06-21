@@ -16,11 +16,14 @@ void Seed::Initialize(DirectXCommon* dxCommon){
 }
 
 void Seed::Update(){
-	mModel->Update();
+	mAABB = CalculateAABB(mTransform.translate);
+	mTransform.UpdateMatrix();
 }
 
 void Seed::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
-	mModel->Draw(commandList, camera, mTransform);
+	if (mIsHit == false) {
+		mModel->Draw(commandList, camera, mTransform);
+	}
 }
 
 AABB Seed::CalculateAABB(const Vector3& translate){

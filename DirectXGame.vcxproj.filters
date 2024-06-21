@@ -189,7 +189,7 @@
     <ClCompile Include="Math\Random.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Seed.cpp">
+    <ClCompile Include="Game\Seed.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -389,7 +389,7 @@
     <ClInclude Include="EnemyState.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Seed.h">
+    <ClInclude Include="Game\Seed.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

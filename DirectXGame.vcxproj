@@ -156,7 +156,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\TitleScene.cpp" />
     <ClCompile Include="Game\MiniBridge.cpp" />
     <ClCompile Include="Math\Random.cpp" />
-    <ClCompile Include="Seed.cpp" />
+    <ClCompile Include="Game\Seed.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Game\UpFloor.cpp" />
   </ItemGroup>
@@ -226,7 +226,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\TitleScene.h" />
     <ClInclude Include="Game\MiniBridge.h" />
     <ClInclude Include="Math\Random.h" />
-    <ClInclude Include="Seed.h" />
+    <ClInclude Include="Game\Seed.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />
