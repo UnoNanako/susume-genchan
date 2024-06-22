@@ -115,8 +115,8 @@ void ParticleList::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera) 
 			instancingData[mNumInstance].WVP = worldViewProjectionMatrix;
 			instancingData[mNumInstance].World = worldMatrix;
 			instancingData[mNumInstance].color = (*particleIterator).color;
-			mAlpha = 1.0f - ((*particleIterator).currentTime / (*particleIterator).lifeTime);
-			instancingData[mNumInstance].color.w = mAlpha; //算出したaをGPUに送る
+			//mAlpha = 1.0f - ((*particleIterator).currentTime / (*particleIterator).lifeTime);
+			//instancingData[mNumInstance].color.w = mAlpha; //算出したaをGPUに送る
 			++mNumInstance; //生きているParticleの数を1つカウントする
 		}
 		++particleIterator; //次のイテレータに進める

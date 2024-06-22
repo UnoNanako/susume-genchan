@@ -25,8 +25,8 @@ Player::Player()
 	, mHp(2)
 	, mInvincibleTime(120)
 	, mProgressTimer(5)
-	, mBackTimer(5) 
-	,mAttackTimes(0)
+	, mBackTimer(5)
+	, mAttackTimes(0)
 {
 }
 
@@ -138,7 +138,14 @@ void Player::Update(Input* input, float theta) {
 			//パーティクル(砂煙)
 			mParticle->Update();
 			mParticle->SetEmitTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{mTransform.translate.x,mTransform.translate.y,mTransform.translate.z} });
-			mParticle->SetParticleScale({ 1.0f,1.0f,1.0f });
+			mParticle->SetParticleScale({ 2.0f,2.0f,2.0f });
+			mParticle->SetParticleTranslate({ 0.0f,5.0f,0.0f });
+			mParticle->SetVelocityMax({ 1.0f,4.0f,0.0f });
+			mParticle->SetVelocityMin({ 0.1f,4.0f,-1.0f });
+			mParticle->SetLifeTimeMax(0.5f);
+			mParticle->SetLifeTImeMin(0.2f);
+			mParticle->SetColorMax({ 116.0f / 255.0f,80.0f / 255.0f,48.0f / 255.0f });
+			mParticle->SetColorMin({ 116.0f / 255.0f,80.0f / 255.0f,48.0f / 255.0f });
 		}
 
 		//Rスティック
@@ -212,7 +219,7 @@ void Player::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera) {
 	}
 }
 
-void Player::ParticleDraw(ID3D12GraphicsCommandList* commandList, Camera* camera){
+void Player::ParticleDraw(ID3D12GraphicsCommandList* commandList, Camera* camera) {
 	mParticle->Draw(commandList, camera);
 }
 
