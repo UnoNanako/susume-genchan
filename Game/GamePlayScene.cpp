@@ -73,6 +73,8 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon) {
 		mGrasses[i]->Initialize(dxCommon);
 	}
 	mGrasses[0]->SetTranslate({ -12.5f,2.0f,20.0f });
+	mGrasses[1]->SetTranslate({ -10.0f,7.5f,122.5f });
+	mGrasses[2]->SetTranslate({ -22.5f,7.5f,122.5f });
 	//ジェム
 	mGems.resize(2);
 	for (uint32_t i = 0; i < mGems.size(); ++i) {
@@ -129,6 +131,8 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon) {
 		mSeeds[i]->Initialize(dxCommon);
 	}
 	mSeeds[0]->SetTranslate({ -2.5f,5.0f,20.0f });
+	mSeeds[1]->SetTranslate({ -2.5f,5.0f,-10.0f });
+	mSeeds[2]->SetTranslate({ -2.5f,5.0f,-5.0f });
 	//movingFloor(スイッチを押すとスライドし始める床)
 	mSlideFloor = std::make_unique<SlideFloor>();
 	mSlideFloor->Initialize(dxCommon);
@@ -156,6 +160,9 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon) {
 		mRotateEnemies[i]->Initialize(dxCommon);
 	}
 	mRotateEnemies[0]->SetTranslate({ 15.0f,2.0f,12.5f });
+	mRotateEnemies[0]->SetInitTranslate({ 15.0f,2.0f,12.5f });
+	mRotateEnemies[1]->SetTranslate({ 12.5f,17.5f,102.5f });
+	mRotateEnemies[1]->SetInitTranslate({ 12.5f,17.5f,102.5f });
 	//walkEnemy(歩き回る敵)
 	mWalkEnemies.resize(mWALKENEMY_MAX);
 	for (uint32_t i = 0; i < mWalkEnemies.size(); ++i) {
@@ -174,6 +181,12 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon) {
 	mWalkEnemies[3]->SetTranslate({ 22.5f,2.0f,90.5f });
 	mWalkEnemies[3]->SetMoveMax({ 25.0f,0.0f,114.0f });
 	mWalkEnemies[3]->SetMoveMin({ 0.0f,0.0f,90.0f });
+	mWalkEnemies[4]->SetTranslate({ -5.0f,7.5f,117.5f });
+	mWalkEnemies[4]->SetMoveMax({ -5.0f,0.0f,127.5f });
+	mWalkEnemies[4]->SetMoveMin({ -15.0f,0.0f,117.5f });
+	mWalkEnemies[5]->SetTranslate({ -27.5f,7.5f,127.5f });
+	mWalkEnemies[5]->SetMoveMax({ -17.5f,0.0f,127.5f });
+	mWalkEnemies[5]->SetMoveMin({ -27.5f,0.0f,117.5f });
 	//ghost(テレサ)
 	mGhosts.resize(mGHOST_MAX);
 	for (uint32_t i = 0; i < mGhosts.size(); ++i) {
@@ -366,7 +379,7 @@ void GamePlayScene::LadderInitialize(DirectXCommon* dxCommon) {
 	//離島高さ1のはしご
 	mLadders[3]->SetModel(mLadderModel_height05.get());
 	mLadders[3]->SetScale({ 1.0f,1.0f,1.0f });
-	mLadders[3]->SetTranslate({ -3.5f,5.0f,132.5f });
+	mLadders[3]->SetTranslate({ -2.0f,5.0f,132.5f });
 	mLadders[3]->SetHeight(5.0f);
 	mLadders[3]->SetDirection(Ladder::RIGHT); //右向き
 	//離島高さ15のはしご

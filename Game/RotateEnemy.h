@@ -21,6 +21,7 @@ public:
 	void Rotate(Player* player);
 	void Chase(Player* player);
 	void Return(Player* player);
+	void SetInitTranslate(Vector3 initTranslate) { mInitTranslate = initTranslate; }
 	//minとmaxを求める関数
 	AABB CalculateAABB(const Vector3& translate);
 

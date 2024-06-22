@@ -64,10 +64,10 @@ private:
 	/// 敵
 	/// </summary>
 	//回転するだけの敵
-	const uint32_t mROTATEENEMY_MAX = 1;
+	const uint32_t mROTATEENEMY_MAX = 2;
 	std::vector<std::unique_ptr<RotateEnemy>> mRotateEnemies;
 	//歩く敵
-	const uint32_t mWALKENEMY_MAX = 4;
+	const uint32_t mWALKENEMY_MAX = 6;
 	std::vector<std::unique_ptr<WalkEnemy>> mWalkEnemies;
 	//幽霊(テレサ)
 	const uint32_t mGHOST_MAX = 1;
@@ -94,7 +94,7 @@ private:
 	/// </summary>
 	std::vector <std::unique_ptr<Gem>> mGems;
 	std::unique_ptr<Star> mStar;
-	const uint32_t mSEED_MAX = 1;
+	const uint32_t mSEED_MAX = 3;
 	std::vector<std::unique_ptr<Seed>> mSeeds;
 
 	/// <summary>
@@ -114,7 +114,7 @@ private:
 	std::unique_ptr<Model> mLadderModel_height15_04; //離島高さ15のはしご
 	std::unique_ptr<Model> mLadderModel_height15_05; //離島高さ15のはしご
 	//草
-	const uint32_t mGRASS_MAX = 1;
+	const uint32_t mGRASS_MAX = 3;
 	std::vector<std::unique_ptr<Grass>> mGrasses;
 	//小さい橋
 	const uint32_t mMINIBRIDGE_MAX = 3;
