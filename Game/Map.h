@@ -22,7 +22,8 @@ public:
 		GRASS, //1
 		Wall, //2
 		HOUSE, //3
-		COLLISION //4
+		COLLISION, //4
+		HOUSE2
 	};
 
 	void Create(DirectXCommon* dxCommon);

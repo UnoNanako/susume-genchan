@@ -8,6 +8,13 @@ struct AABB;
 
 class WalkEnemy : public GameObject {
 public:
+	enum Direction {
+		UP,
+		DOWN,
+		LEFT,
+		RIGHT
+	};
+
 	WalkEnemy();
 	~WalkEnemy();
 	void Initialize(DirectXCommon* dxCommon)override;
@@ -27,6 +34,7 @@ public:
 	void SetIsAlive(bool isAlive) { mIsAlive = isAlive; }
 	void SetMoveMax(Vector3 moveMax) { mMoveMax = moveMax; }
 	void SetMoveMin(Vector3 moveMin) { mMoveMin = moveMin; }
+	void SetDirection(Direction direction) { mDirection = direction; }
 
 private:
 	float mFovAngle; //視野角
@@ -39,12 +47,6 @@ private:
 	Vector3 mMoveMax; //移動範囲の最大
 	Vector3 mMoveMin; //移動範囲の最小
 
-	enum Direction {
-		UP,
-		DOWN,
-		LEFT,
-		RIGHT
-	};
 	Direction mDirection = DOWN;
 };
 

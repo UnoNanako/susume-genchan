@@ -27,7 +27,7 @@
 #include "Particle/ParticleCommon.h"
 #include "externals/imgui/imgui.h"
 #include "Block.h"
-#include "Engine//3D/Model.h"
+#include "Engine/3D/Model.h"
 
 GamePlayScene::GamePlayScene(Game* game) {
 	mGame = game;
@@ -43,9 +43,6 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon) {
 	//ライト
 	mLightList = std::make_unique<LightList>();
 	mLightList->Create(dxCommon);
-
-	//mParticles[0]->SetEmitTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{22.0f,5.0f,-22.5f} });
-	//mParticles[0]->SetParticleScale({ 1.0f,1.0f,1.0f });
 	//タイトルシーン
 	mTitleScene = std::make_unique<TitleScene>();
 	mTitleScene->Initialize(dxCommon);
@@ -130,17 +127,13 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon) {
 		mSeeds[i] = std::make_unique<Seed>();
 		mSeeds[i]->Initialize(dxCommon);
 	}
+	//本島
 	mSeeds[0]->SetTranslate({ -2.5f,5.0f,20.0f });
 	mSeeds[1]->SetTranslate({ -2.5f,5.0f,-10.0f });
 	mSeeds[2]->SetTranslate({ -2.5f,5.0f,-5.0f });
-	//movingFloor(スイッチを押すとスライドし始める床)
-	mSlideFloor = std::make_unique<SlideFloor>();
-	mSlideFloor->Initialize(dxCommon);
-	//スイッチ
-	mSlideSwitch = std::make_unique<Switch>();
-	mSlideSwitch->SetMoveFloor(mSlideFloor.get());
-	mSlideSwitch->Initialize(dxCommon);
-	mSlideSwitch->SetTransform({ {0.5f,0.5f,0.5f},{0.0f,0.0f,0.0f},{27.5f,2.5f,-20.0f} });
+	//離島
+	mSeeds[3]->SetTranslate({ -15.0f,7.5f,132.5f });
+	mSeeds[4]->SetTranslate({ -20.0f,7.5f,132.5f });
 	//クランクモデル
 	mCrank = std::make_unique<Crank>();
 	mCrank->Initialize(dxCommon);
@@ -184,9 +177,11 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon) {
 	mWalkEnemies[4]->SetTranslate({ -5.0f,7.5f,117.5f });
 	mWalkEnemies[4]->SetMoveMax({ -5.0f,0.0f,127.5f });
 	mWalkEnemies[4]->SetMoveMin({ -15.0f,0.0f,117.5f });
+	mWalkEnemies[4]->SetDirection(WalkEnemy::LEFT);
 	mWalkEnemies[5]->SetTranslate({ -27.5f,7.5f,127.5f });
 	mWalkEnemies[5]->SetMoveMax({ -17.5f,0.0f,127.5f });
 	mWalkEnemies[5]->SetMoveMin({ -27.5f,0.0f,117.5f });
+	mWalkEnemies[5]->SetDirection(WalkEnemy::RIGHT);
 	//ghost(テレサ)
 	mGhosts.resize(mGHOST_MAX);
 	for (uint32_t i = 0; i < mGhosts.size(); ++i) {
@@ -218,6 +213,22 @@ void GamePlayScene::Finalize()
 }
 
 void GamePlayScene::Update(Input* input) {
+	switch (mScene) {
+	case GAME:
+		if (input->GetButton(XINPUT_GAMEPAD_A) || input->PushKey(DIK_SPACE)) {
+			mIsTitleScene = false;
+			mPlayer->SetIsOperatable(true);
+		}
+		ObjectUpdate(input); //オブジェクトの更新
+		Collision(input); //当たり判定の更新
+		break;
+	case CLEAR:
+		break;
+	case OVER:
+		break;
+	}
+	
+#ifdef DEBUG
 	/// <summary>
 	/// ImGui
 	/// <summary>
@@ -234,21 +245,13 @@ void GamePlayScene::Update(Input* input) {
 		mLadders[i]->SetTranslate(pos);
 	}
 	ImGui::End();
+#endif // DEBUG
 
 	if (mIsDirectionalLight == false) {
 		mLightList->SetDirectionalLightIntensity(0.0f);
 	} else {
 		mLightList->SetDirectionalLightIntensity(0.7f);
 	}
-
-	if (input->GetButton(XINPUT_GAMEPAD_A) || input->PushKey(DIK_SPACE)) {
-		mIsTitleScene = false;
-		mPlayer->SetIsOperatable(true);
-	}
-
-	ObjectUpdate(input); //オブジェクトの更新
-
-	Collision(input); //当たり判定の更新
 
 	//プレイヤーの行列を更新
 	mPlayer->GetTransform().UpdateMatrix();
@@ -307,8 +310,6 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon) {
 		mFences[i]->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	}
 	mStar->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
-	mSlideFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
-	mSlideSwitch->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mCrank->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mRotateFloor->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 	mSkydome->Draw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
@@ -466,8 +467,6 @@ void GamePlayScene::ObjectUpdate(Input* input) {
 		mFences[i]->Update();
 	}
 	mStar->Update();
-	mSlideFloor->Update();
-	mSlideSwitch->Update();
 	mCrank->Update(input);
 	mRotateFloor->Update();
 	mRotateFloor->SetRotate(mCrank->GetRotate());
@@ -608,37 +607,6 @@ void GamePlayScene::Collision(Input* input) {
 			pos.x += collisionResult.normal.x * collisionResult.depth;
 			pos.z += collisionResult.normal.z * collisionResult.depth;
 			mPlayer->SetTranslate(pos);
-		}
-	}
-
-	//SlideSwitchとプレイヤー
-	if (IsCollision(mPlayer->GetAABB(), mSlideSwitch->GetAABB(), collisionResult)) {
-		mSwitchIsHit = true;
-		mSlideFloor->SetIsMoving(true);
-	} else {
-		mSwitchIsHit = false;
-	}
-
-	//slideFloorとプレイヤー
-	if (IsCollision(mPlayer->GetAABB(), mSlideFloor->GetAABB(), collisionResult)) {
-		mPlayer->SetIsHit(true);
-		mSlideFloorIsHit = true;
-		Vector3 pos = mPlayer->GetTranslate();
-		pos += collisionResult.normal * collisionResult.depth / 2;
-		mPlayer->SetTranslate(pos);
-		if (mPlayer->GetParent() == nullptr) {
-			//プレイヤーとslideFloorの親子関係を結ぶ
-			Matrix4x4 local = Multiply(mPlayer->GetWorldMatrix(), Inverse(mSlideFloor->GetWorldMatrix()));
-			mPlayer->SetTranslate(Vector3{ local.m[3][0],local.m[3][1],local.m[3][2] });
-		}
-		auto& tmp = mSlideFloor->GetTransform();
-		mPlayer->SetParent(&tmp);
-	} else {
-		if (mSlideFloorIsHit == true) {
-			mPlayer->SetParent(nullptr);
-			mSlideFloorIsHit = false;
-			Matrix4x4 world = mPlayer->GetWorldMatrix();
-			mPlayer->SetTranslate(Vector3{ world.m[3][0],world.m[3][1],world.m[3][2] });
 		}
 	}
 

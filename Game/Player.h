@@ -68,6 +68,7 @@ private:
 	Matrix4x4 mTransposeViewMatrix;
 	MovingFloor* mMovingFloor; //動く床
 
-	std::unique_ptr<ParticleList> mParticle;
+	std::unique_ptr<ParticleList> mSandsmokeParticle;
+	//std::unique_ptr<ParticleList> mFireParticle;
 };
 

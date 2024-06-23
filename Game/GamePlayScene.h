@@ -1,6 +1,5 @@
 #pragma once
 #include "Transform.h"
-#include <vector>
 #include "Game/Player.h"
 #include "Game/Map.h"
 #include "Game/Crosshair.h"
@@ -28,6 +27,7 @@
 #include "Game/MiniBridge.h"
 #include "Game/Fence.h"
 #include "Game/Seed.h"
+#include <vector>
 
 class DirectXCommon;
 class Sprite;
@@ -76,10 +76,6 @@ private:
 	/// <summary>
 	/// ギミック
 	/// </summary>
-	//動く床
-	std::unique_ptr<SlideFloor> mSlideFloor;
-	//スイッチ
-	std::unique_ptr<Switch> mSlideSwitch;
 	//スイッチを押すと上下に動く床
 	std::unique_ptr<UpFloor> mUpFloor;
 	//upスイッチ
@@ -94,7 +90,7 @@ private:
 	/// </summary>
 	std::vector <std::unique_ptr<Gem>> mGems;
 	std::unique_ptr<Star> mStar;
-	const uint32_t mSEED_MAX = 3;
+	const uint32_t mSEED_MAX = 5;
 	std::vector<std::unique_ptr<Seed>> mSeeds;
 
 	/// <summary>
@@ -147,5 +143,13 @@ private:
 	bool mIsGameover = false;
 	bool mLadderIsHit = false; //はしごに当たっているか
 	bool mIsTitleScene = true; //タイトルシーンか、そうでないか
+
+	//シーン
+	enum Scene {
+		GAME,
+		CLEAR,
+		OVER
+	};
+	Scene mScene = GAME;
 };
 

@@ -51,16 +51,25 @@ void Player::Initialize(DirectXCommon* dxCommon) {
 	mModel = new Model();
 	mModel->Create(mDxCommon, "resources/Model/Player/Chick", "Chick.obj");
 	mModel->SetTexture(mTexture);
-	mParticle = std::make_unique<ParticleList>();
-	mParticle->Create(mDxCommon);
-	mParticle->SetTranslateMin({ -1.0f,-1.0f,-1.0f });
-	mParticle->SetTranslateMax({ 1.0f,1.0f,1.0f });
-	mParticle->SetVelocityMin({ -5.0f,5.0f,-5.0f });
-	mParticle->SetVelocityMax({ 5.0f,6.0f,5.0f });
-	mParticle->SetColorMin({ 0.0f,0.0f,0.0f });
-	mParticle->SetColorMax({ 1.0f,1.0f,1.0f });
-	mParticle->SetLifeTImeMin(0.5f);
-	mParticle->SetLifeTimeMax(1.0f);
+	mSandsmokeParticle = std::make_unique<ParticleList>();
+	mSandsmokeParticle->Create(mDxCommon);
+	mSandsmokeParticle->SetTranslateMin({ -1.0f,-1.0f,-1.0f });
+	mSandsmokeParticle->SetTranslateMax({ 1.0f,1.0f,1.0f });
+	mSandsmokeParticle->SetVelocityMin({ -5.0f,5.0f,-5.0f });
+	mSandsmokeParticle->SetVelocityMax({ 5.0f,6.0f,5.0f });
+	mSandsmokeParticle->SetLifeTImeMin(0.5f);
+	mSandsmokeParticle->SetLifeTimeMax(1.0f);
+
+	/*mFireParticle = std::make_unique<ParticleList>();
+	mFireParticle->Create(mDxCommon);
+	mFireParticle->SetFrequency(0.01f);
+	mFireParticle->SetParticleTransform({ {2.0f,2.0f,2.0f},{0.0f,0.0f,0.0f},{0.0f,5.0f,0.0f} });
+	mFireParticle->SetVelocityMax({ 1.5f,5.0f,1.5f });
+	mFireParticle->SetVelocityMin({ -1.5f,2.0f,-1.5f });
+	mFireParticle->SetLifeTimeMax(1.0f);
+	mFireParticle->SetLifeTImeMin(0.5f);
+	mFireParticle->SetColorMax({ 1.0f,0.0f,0.0f });
+	mFireParticle->SetColorMin({ 1.0f,0.0f,0.0f });*/
 }
 
 void Player::Update(Input* input, float theta) {
@@ -136,16 +145,20 @@ void Player::Update(Input* input, float theta) {
 		mTransform.translate.z += rightVec.z;
 		if (lStick.x >= 0.1f || lStick.y >= 0.1f) {
 			//パーティクル(砂煙)
-			mParticle->Update();
-			mParticle->SetEmitTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{mTransform.translate.x,mTransform.translate.y,mTransform.translate.z} });
-			mParticle->SetParticleScale({ 2.0f,2.0f,2.0f });
-			mParticle->SetParticleTranslate({ 0.0f,5.0f,0.0f });
-			mParticle->SetVelocityMax({ 1.0f,4.0f,0.0f });
-			mParticle->SetVelocityMin({ 0.1f,4.0f,-1.0f });
-			mParticle->SetLifeTimeMax(0.5f);
-			mParticle->SetLifeTImeMin(0.2f);
-			mParticle->SetColorMax({ 116.0f / 255.0f,80.0f / 255.0f,48.0f / 255.0f });
-			mParticle->SetColorMin({ 116.0f / 255.0f,80.0f / 255.0f,48.0f / 255.0f });
+			mSandsmokeParticle->Update();
+			mSandsmokeParticle->SetEmitTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{mTransform.translate.x,mTransform.translate.y,mTransform.translate.z} });
+			mSandsmokeParticle->SetParticleScale({ 2.0f,2.0f,2.0f });
+			mSandsmokeParticle->SetParticleTranslate({ 0.0f,5.0f,0.0f });
+			mSandsmokeParticle->SetVelocityMax({ 1.0f,4.0f,0.0f });
+			mSandsmokeParticle->SetVelocityMin({ 0.1f,4.0f,-1.0f });
+			mSandsmokeParticle->SetLifeTimeMax(0.5f);
+			mSandsmokeParticle->SetLifeTImeMin(0.2f);
+			mSandsmokeParticle->SetColorMax({ 116.0f / 255.0f,80.0f / 255.0f,48.0f / 255.0f });
+			mSandsmokeParticle->SetColorMin({ 116.0f / 255.0f,80.0f / 255.0f,48.0f / 255.0f });
+			mSandsmokeParticle->SetParticleScale({
+				mSandsmokeParticle->GetTransformInit().scale.x - 0.1f,
+				mSandsmokeParticle->GetTransformInit().scale.y - 0.1f,
+				mSandsmokeParticle->GetTransformInit().scale.z - 1.0f });
 		}
 
 		//Rスティック
@@ -179,6 +192,7 @@ void Player::Update(Input* input, float theta) {
 		}
 	}
 
+
 	mTransform.UpdateMatrix();
 	Vector3 worldPos = GetWorldPosition();
 	mAABBtranslate = CalculateAABB(worldPos);
@@ -200,6 +214,13 @@ void Player::Update(Input* input, float theta) {
 	ImGui::DragFloat3("player Position", &mTransform.translate.x, 0.01f);
 	ImGui::DragFloat3("player Rotation", &mTransform.rotate.x, 0.01f);
 	ImGui::End();
+
+	//mFireParticle->DrawImGui();
+
+	/*if (mAttackTimes > 0) {
+		mFireParticle->Update();
+		mFireParticle->SetEmitTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{mTransform.translate.x,mTransform.translate.y,mTransform.translate.z} });
+	}*/
 }
 
 void Player::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera) {
@@ -220,7 +241,8 @@ void Player::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera) {
 }
 
 void Player::ParticleDraw(ID3D12GraphicsCommandList* commandList, Camera* camera) {
-	mParticle->Draw(commandList, camera);
+	mSandsmokeParticle->Draw(commandList, camera);
+	//mFireParticle->Draw(commandList, camera);
 }
 
 AABB Player::CalculateAABB(const Vector3& translate) {

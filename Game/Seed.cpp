@@ -10,12 +10,13 @@ Seed::~Seed(){
 
 void Seed::Initialize(DirectXCommon* dxCommon){
 	mDxCommon = dxCommon;
-	mTransform = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
+	mTransform = { {0.5f,0.5f,0.5f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 	mModel = new Model();
-	mModel->Create(mDxCommon, "resources/Model/Blocks/Cube", "cube.obj");
+	mModel->Create(mDxCommon, "resources/Model/Seed", "Seed.obj");
 }
 
 void Seed::Update(){
+	mTransform.rotate.y += 0.05f;
 	mAABB = CalculateAABB(mTransform.translate);
 	mTransform.UpdateMatrix();
 }

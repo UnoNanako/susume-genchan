@@ -63,9 +63,16 @@ void Map::Create(DirectXCommon* dxCommon){
 				block->mModel->SetModelIndex(3);
 				block->mModel->Create(mDxCommon, "resources/Model/House", "House1.obj");
 				break;
+
 			case COLLISION:
 				block->mModel = new Model();
 				block->mModel->SetModelIndex(4);
+				break;
+
+			case HOUSE2:
+				block->mModel = new Model();
+				block->mModel->SetModelIndex(5);
+				block->mModel->Create(mDxCommon, "resources/Model/House2", "House2.obj");
 				break;
 			}
 
@@ -157,6 +164,12 @@ void Map::Update(){
 			case COLLISION:
 				(*iter)->mModel = new Model();
 				(*iter)->mModel->SetModelIndex(4);
+				break;
+
+			case HOUSE2:
+				(*iter)->mModel = new Model();
+				(*iter)->mModel->SetModelIndex(5);
+				(*iter)->mModel->Create(mDxCommon, "resources/Model/House", "House2.obj");
 				break;
 			}
 		}

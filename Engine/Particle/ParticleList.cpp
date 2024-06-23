@@ -129,6 +129,22 @@ void ParticleList::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera) 
 	commandList->DrawInstanced(6, mNumInstance, 0, 0);
 }
 
+void ParticleList::DrawImGui(){
+	ImGui::Begin("Particle");
+	ImGui::Text("particle");
+	ImGui::DragFloat3("translateMin",&mTranslateMin.x,0.1f);
+	ImGui::DragFloat3("translateMax", &mTranslateMax.x,0.1f);
+	ImGui::DragFloat3("scale", &mTransformInit.scale.x, 0.1f);
+	ImGui::DragFloat3("velocityMin", &mVelocityMin.x, 0.1f);
+	ImGui::DragFloat3("velocityMax", &mVelocityMax.x, 0.1f);
+	ImGui::DragFloat("lifeTimeMin", &mLifeTimeMin, 0.1f);
+	ImGui::DragFloat("lifeTimeMax", &mLifeTimeMax, 0.1f);
+
+	ImGui::Text("Emitter");
+	ImGui::DragFloat("frequency", &mEmitter.frequency, 0.1f);
+	ImGui::End();
+}
+
 Particle ParticleList::MakeNewParticle(const Vector3& translate) {
 	Particle particle;
 	particle.mTransform.scale = { mTransformInit.scale.x,mTransformInit.scale.y,mTransformInit.scale.z };

@@ -24,6 +24,7 @@ public:
 	void Create(DirectXCommon* dxCommon);
 	void Update();
 	void Draw(ID3D12GraphicsCommandList* commandList, Camera* camera);
+	void DrawImGui();
 	Particle MakeNewParticle(const Vector3& translate);
 	std::list<Particle> Emit(const Emitter& emitter);
 	/// <summary>
@@ -34,6 +35,7 @@ public:
 	void SetEmitScale(Vector3 scale) { mEmitter.transform.scale = scale; }
 	void SetEmitRotate(Vector3 rotate) { mEmitter.transform.rotate = rotate; }
 	void SetEmitTranslate(Vector3 translate) { mEmitter.transform.translate = translate; }
+	void SetFrequency(float frequency) { mEmitter.frequency = frequency; }
 	
 	//パーティクル
 	void SetParticleTransform(Transform transform) { mTransformInit = transform; }
@@ -50,6 +52,7 @@ public:
 	void SetLifeTimeMax(float lifeTimeMax) { mLifeTimeMax = lifeTimeMax; }
 	void SetIsPlaying(bool isPlaying) { mIsPlaying = isPlaying; }
 	bool GetIsPlaying() { return mIsPlaying; }
+	Transform GetTransformInit() { return mTransformInit; }
 
 private:
 	const float kDeltaTime = 1.0f / 60.0f; //tを定義。とりあえず60fps
