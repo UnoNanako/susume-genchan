@@ -18,10 +18,12 @@ BirdEyeCamera::BirdEyeCamera(){
 }
 
 void BirdEyeCamera::Update(Input* input, Vector3 playerTranslate,bool isTitleScene){
+#ifdef DEBUG
 	ImGui::Begin("BirdCamera");
 	ImGui::DragFloat3("Position", &mTransform.translate.x, 0.05f);
 	ImGui::DragFloat3("Rotate", &mTransform.rotate.x, 0.05f);
 	ImGui::End();
+#endif // DEBUG
 
 	if (mIsHit == false && isTitleScene == false) {
 		//ゲームパッドの右スティックの入力を取得

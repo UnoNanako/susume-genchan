@@ -28,35 +28,196 @@
 #include "externals/imgui/imgui.h"
 #include "Block.h"
 #include "Engine/3D/Model.h"
+#include "Easing.h"
 
 GamePlayScene::GamePlayScene(Game* game) {
 	mGame = game;
 }
 
 void GamePlayScene::Initialize(DirectXCommon* dxCommon) {
-	//カメラの初期化
-	mPlayerCamera = std::make_unique<PlayerCamera>();
-	mPlayerCamera->Initialize(dxCommon);
-	//俯瞰カメラ
-	mBirdEyeCamera = std::make_unique<BirdEyeCamera>();
-	mBirdEyeCamera->Initialize(dxCommon);
+	mDxCommon = dxCommon;
+	////カメラの初期化
+	//mPlayerCamera = std::make_unique<PlayerCamera>();
+	//mPlayerCamera->Initialize(dxCommon);
+	////俯瞰カメラ
+	//mBirdEyeCamera = std::make_unique<BirdEyeCamera>();
+	//mBirdEyeCamera->Initialize(dxCommon);
+	////ライト
+	//mLightList = std::make_unique<LightList>();
+	//mLightList->Create(dxCommon);
+	////タイトルシーン
+	//mTitleScene = std::make_unique<TitleScene>();
+	//mTitleScene->Initialize(dxCommon);
+
+	///// <summary>
+	///// プレイヤー
+	///// <summary>
+	//mPlayer = std::make_unique<Player>();
+	//mPlayer->Initialize(dxCommon);
+	//mPlayer->SetLightList(mLightList.get());
+
+	///// <summary>
+	///// オブジェクト
+	///// <summary>
+	////地形
+	//mMap = std::make_unique<Map>();
+	//mMap->Create(dxCommon);
+	////天球
+	//mSkydome = std::make_unique<Skydome>();
+	//mSkydome->Initialize(dxCommon);
+	////草
+	//mGrasses.resize(mGRASS_MAX);
+	//for (uint32_t i = 0; i < mGrasses.size(); ++i) {
+	//	mGrasses[i] = std::make_unique<Grass>();
+	//	mGrasses[i]->Initialize(dxCommon);
+	//}
+	//mGrasses[0]->SetTranslate({ -12.5f,2.0f,20.0f });
+	//mGrasses[1]->SetTranslate({ -10.0f,7.5f,122.5f });
+	//mGrasses[2]->SetTranslate({ -22.5f,7.5f,122.5f });
+	////ジェム
+	//mGems.resize(2);
+	//for (uint32_t i = 0; i < mGems.size(); ++i) {
+	//	mGems[i] = std::make_unique<Gem>();
+	//	mGems[i]->Initialize(dxCommon);
+	//}
+	//mGems[0]->SetTranslate({ 22.0f,5.0f,-22.5f });
+	//mGems[1]->SetTranslate({ 17.5f,5.0f,97.5f });
+	////小さい橋
+	//mMiniBridges.resize(mMINIBRIDGE_MAX);
+	//for (uint32_t i = 0; i < mMiniBridges.size(); ++i) {
+	//	mMiniBridges[i] = std::make_unique<MiniBridge>();
+	//	mMiniBridges[i]->Initialize(dxCommon);
+	//}
+	//mMiniBridges[0]->SetTranslate({ 7.5f,17.0f,-15.0f });
+	//mMiniBridges[1]->SetTranslate({ 22.5f,17.0f,-15.0f });
+	//mMiniBridges[2]->SetTranslate({ 2.5f,17.0f,0.0f });
+	////フェンス
+	//mFences.resize(mFENCE_MAX);
+	//for (uint32_t i = 0; i < mFences.size(); ++i) {
+	//	mFences[i] = std::make_unique<Fence>();
+	//	mFences[i]->Initialize(dxCommon);
+	//}
+	//mFences[0]->SetTranslate({ -7.5f,20.0f,-10.5f });
+	//mFences[1]->SetTranslate({ -2.5f,20.0f,-10.5f });
+	//mFences[2]->SetTranslate({ 2.5f,20.0f,-10.5f });
+	//mFences[3]->SetTranslate({ -7.5f,20.0f,-4.5f });
+	//mFences[3]->SetRotate({ 0.0f,kPi,0.0f });
+	//mFences[4]->SetTranslate({ -2.5f,20.0f,-4.5 });
+	//mFences[4]->SetRotate({ 0.0f,kPi,0.0f });
+	//mFences[5]->SetTranslate({ 32.0f,20.0f,-15.0f });
+	//mFences[5]->SetRotate({ 0.0f,kPi / 2.0f,0.0f });
+	//mFences[6]->SetTranslate({ 32.0f,15.0f,-20.0f }); //これ高さが足りないので修正
+	//mFences[6]->SetRotate({ 0.0f,kPi / 2.0f,0.0f });
+	//mFences[7]->SetTranslate({ 32.0f,10.0f,-25.0f });
+	//mFences[7]->SetRotate({ 0.0f,kPi / 2.0f,0.0f });
+	//mFences[8]->SetTranslate({ 27.5f,10.0f,-30.0f });
+	//mFences[8]->SetRotate({ 0.0f,kPi,0.0f });
+	//mFences[9]->SetTranslate({ -2.5f,20.0f,19.5f });
+	//mFences[10]->SetTranslate({ 2.5f,20.0f,19.5f });
+	//mFences[11]->SetTranslate({ 7.5f,20.0f,15.0f });
+	//mFences[11]->SetRotate({ 0.0f,kPi / 2.0f,0.0f });
+	//mFences[12]->SetTranslate({ 7.5f,20.0f,10.0f });
+	//mFences[12]->SetRotate({ 0.0f,kPi / 2.0f,0.0f });
+
+	////スター
+	//mStar = std::make_unique<Star>();
+	//mStar->Initialize(dxCommon);
+	//mStar->SetTranslate({ -15.0f,30.0f,90.0f });
+	////種
+	//mSeeds.resize(mSEED_MAX);
+	//for (uint32_t i = 0; i < mSEED_MAX; ++i) {
+	//	mSeeds[i] = std::make_unique<Seed>();
+	//	mSeeds[i]->Initialize(dxCommon);
+	//}
+	////本島
+	//mSeeds[0]->SetTranslate({ -2.5f,5.0f,20.0f });
+	//mSeeds[1]->SetTranslate({ -2.5f,5.0f,-10.0f });
+	//mSeeds[2]->SetTranslate({ -2.5f,5.0f,-5.0f });
+	////離島
+	//mSeeds[3]->SetTranslate({ -15.0f,7.5f,132.5f });
+	//mSeeds[4]->SetTranslate({ -20.0f,7.5f,132.5f });
+	////クランクモデル
+	//mCrank = std::make_unique<Crank>();
+	//mCrank->Initialize(dxCommon);
+	////クランクを回すと回る床
+	//mRotateFloor = std::make_unique<RotateFloor>();
+	//mRotateFloor->Initialize(dxCommon);
+
+	//LadderInitialize(dxCommon); //はしごの初期化
+
+	///// <summary>
+	///// 敵
+	///// <summary>
+	////rotateEnemy(回転するだけの敵)
+	//mRotateEnemies.resize(mROTATEENEMY_MAX);
+	//for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
+	//	mRotateEnemies[i] = std::make_unique<RotateEnemy>();
+	//	mRotateEnemies[i]->Initialize(dxCommon);
+	//}
+	//mRotateEnemies[0]->SetTranslate({ 15.0f,2.0f,12.5f });
+	//mRotateEnemies[0]->SetInitTranslate({ 15.0f,2.0f,12.5f });
+	//mRotateEnemies[1]->SetTranslate({ 12.5f,17.5f,102.5f });
+	//mRotateEnemies[1]->SetInitTranslate({ 12.5f,17.5f,102.5f });
+	////walkEnemy(歩き回る敵)
+	//mWalkEnemies.resize(mWALKENEMY_MAX);
+	//for (uint32_t i = 0; i < mWalkEnemies.size(); ++i) {
+	//	mWalkEnemies[i] = std::make_unique<WalkEnemy>();
+	//	mWalkEnemies[i]->Initialize(dxCommon);
+	//}
+	//mWalkEnemies[0]->SetTranslate({ -7.5f,2.0f,25.0f });
+	//mWalkEnemies[0]->SetMoveMax({ -7.5f,0.0f,25.0f });
+	//mWalkEnemies[0]->SetMoveMin({ -17.5f,0.0f,15.0f });
+	//mWalkEnemies[1]->SetTranslate({ 7.5f,2.0f,-25.0f });
+	//mWalkEnemies[1]->SetMoveMax({ 22.5f,0.0f,-10.0f });
+	//mWalkEnemies[1]->SetMoveMin({ 7.5f,0.0f,-25.0f });
+	//mWalkEnemies[2]->SetTranslate({ 27.5f,2.0f,5.0f });
+	//mWalkEnemies[2]->SetMoveMax({ 27.5f,0.0f,5.0f });
+	//mWalkEnemies[2]->SetMoveMin({ 2.5f,0.0f,-5.0f });
+	//mWalkEnemies[3]->SetTranslate({ 22.5f,2.0f,90.5f });
+	//mWalkEnemies[3]->SetMoveMax({ 25.0f,0.0f,114.0f });
+	//mWalkEnemies[3]->SetMoveMin({ 0.0f,0.0f,90.0f });
+	//mWalkEnemies[4]->SetTranslate({ -5.0f,7.5f,117.5f });
+	//mWalkEnemies[4]->SetMoveMax({ -5.0f,0.0f,127.5f });
+	//mWalkEnemies[4]->SetMoveMin({ -15.0f,0.0f,117.5f });
+	//mWalkEnemies[4]->SetDirection(WalkEnemy::LEFT);
+	//mWalkEnemies[5]->SetTranslate({ -27.5f,7.5f,127.5f });
+	//mWalkEnemies[5]->SetMoveMax({ -17.5f,0.0f,127.5f });
+	//mWalkEnemies[5]->SetMoveMin({ -27.5f,0.0f,117.5f });
+	//mWalkEnemies[5]->SetDirection(WalkEnemy::RIGHT);
+	////ghost(テレサ)
+	//mGhosts.resize(mGHOST_MAX);
+	//for (uint32_t i = 0; i < mGhosts.size(); ++i) {
+	//	mGhosts[i] = std::make_unique<Ghost>();
+	//	mGhosts[i]->Initialize(dxCommon);
+	//}
+	//mGhosts[0]->SetTranslate({ 22.5f,5.0f,-5.0f });
+	//mGhosts[0]->SetRotate({ 0.0f,-kPi / 2.0f,0.0f });
+
+	///// <summary>
+	///// スプライト
+	///// <summary>
+	////クロスヘア
+	//mCrosshair = std::make_unique<Crosshair>();
+	//mCrosshair->Initialize(dxCommon);
+	////Aボタン
+	//mAbuttonSprite = std::make_unique<Sprite>();
+	//mAbuttonSprite->Create(dxCommon, "resources/Sprite/Ui/Buttons/xbox_button_color_a.png");
+	//mAbuttonSprite->SetTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{620.0f,550.0f,0.0f} });
+	////クリアテキスト
+	//mClearSprite = std::make_unique<Sprite>();
+	//mClearSprite->Create(dxCommon, "resources/Sprite/Text/COURSE_CLEAR.png");
+	//mClearSprite->SetTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{100.0f,300.0f,0.0f} });
+	////ゲームオーバーテキスト
+	//mGameoverSprite = std::make_unique<Sprite>();
+	//mGameoverSprite->Create(dxCommon, "resources/Sprite/Text/GAME_OVER.png");
+	//mGameoverSprite->SetTransform({ {1.0f,1.0f,1.0f,},{0.0f,0.0f,0.0f},{200.0f,300.0f,0.0f} });
+
 	//ライト
 	mLightList = std::make_unique<LightList>();
 	mLightList->Create(dxCommon);
 	//タイトルシーン
 	mTitleScene = std::make_unique<TitleScene>();
 	mTitleScene->Initialize(dxCommon);
-
-	/// <summary>
-	/// プレイヤー
-	/// <summary>
-	mPlayer = std::make_unique<Player>();
-	mPlayer->Initialize(dxCommon);
-	mPlayer->SetLightList(mLightList.get());
-
-	/// <summary>
-	/// オブジェクト
-	/// <summary>
 	//地形
 	mMap = std::make_unique<Map>();
 	mMap->Create(dxCommon);
@@ -72,14 +233,6 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon) {
 	mGrasses[0]->SetTranslate({ -12.5f,2.0f,20.0f });
 	mGrasses[1]->SetTranslate({ -10.0f,7.5f,122.5f });
 	mGrasses[2]->SetTranslate({ -22.5f,7.5f,122.5f });
-	//ジェム
-	mGems.resize(2);
-	for (uint32_t i = 0; i < mGems.size(); ++i) {
-		mGems[i] = std::make_unique<Gem>();
-		mGems[i]->Initialize(dxCommon);
-	}
-	mGems[0]->SetTranslate({ 22.0f,5.0f,-22.5f });
-	mGems[1]->SetTranslate({ 17.5f,5.0f,97.5f });
 	//小さい橋
 	mMiniBridges.resize(mMINIBRIDGE_MAX);
 	for (uint32_t i = 0; i < mMiniBridges.size(); ++i) {
@@ -116,80 +269,9 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon) {
 	mFences[11]->SetRotate({ 0.0f,kPi / 2.0f,0.0f });
 	mFences[12]->SetTranslate({ 7.5f,20.0f,10.0f });
 	mFences[12]->SetRotate({ 0.0f,kPi / 2.0f,0.0f });
-
-	//スター
-	mStar = std::make_unique<Star>();
-	mStar->Initialize(dxCommon);
-	mStar->SetTranslate({ -15.0f,30.0f,90.0f });
-	//種
-	mSeeds.resize(mSEED_MAX);
-	for (uint32_t i = 0; i < mSEED_MAX; ++i) {
-		mSeeds[i] = std::make_unique<Seed>();
-		mSeeds[i]->Initialize(dxCommon);
-	}
-	//本島
-	mSeeds[0]->SetTranslate({ -2.5f,5.0f,20.0f });
-	mSeeds[1]->SetTranslate({ -2.5f,5.0f,-10.0f });
-	mSeeds[2]->SetTranslate({ -2.5f,5.0f,-5.0f });
-	//離島
-	mSeeds[3]->SetTranslate({ -15.0f,7.5f,132.5f });
-	mSeeds[4]->SetTranslate({ -20.0f,7.5f,132.5f });
 	//クランクモデル
 	mCrank = std::make_unique<Crank>();
 	mCrank->Initialize(dxCommon);
-	//クランクを回すと回る床
-	mRotateFloor = std::make_unique<RotateFloor>();
-	mRotateFloor->Initialize(dxCommon);
-
-	LadderInitialize(dxCommon); //はしごの初期化
-
-	/// <summary>
-	/// 敵
-	/// <summary>
-	//rotateEnemy(回転するだけの敵)
-	mRotateEnemies.resize(mROTATEENEMY_MAX);
-	for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
-		mRotateEnemies[i] = std::make_unique<RotateEnemy>();
-		mRotateEnemies[i]->Initialize(dxCommon);
-	}
-	mRotateEnemies[0]->SetTranslate({ 15.0f,2.0f,12.5f });
-	mRotateEnemies[0]->SetInitTranslate({ 15.0f,2.0f,12.5f });
-	mRotateEnemies[1]->SetTranslate({ 12.5f,17.5f,102.5f });
-	mRotateEnemies[1]->SetInitTranslate({ 12.5f,17.5f,102.5f });
-	//walkEnemy(歩き回る敵)
-	mWalkEnemies.resize(mWALKENEMY_MAX);
-	for (uint32_t i = 0; i < mWalkEnemies.size(); ++i) {
-		mWalkEnemies[i] = std::make_unique<WalkEnemy>();
-		mWalkEnemies[i]->Initialize(dxCommon);
-	}
-	mWalkEnemies[0]->SetTranslate({ -7.5f,2.0f,25.0f });
-	mWalkEnemies[0]->SetMoveMax({ -7.5f,0.0f,25.0f });
-	mWalkEnemies[0]->SetMoveMin({ -17.5f,0.0f,15.0f });
-	mWalkEnemies[1]->SetTranslate({ 7.5f,2.0f,-25.0f });
-	mWalkEnemies[1]->SetMoveMax({ 22.5f,0.0f,-10.0f });
-	mWalkEnemies[1]->SetMoveMin({ 7.5f,0.0f,-25.0f });
-	mWalkEnemies[2]->SetTranslate({ 27.5f,2.0f,5.0f });
-	mWalkEnemies[2]->SetMoveMax({ 27.5f,0.0f,5.0f });
-	mWalkEnemies[2]->SetMoveMin({ 2.5f,0.0f,-5.0f });
-	mWalkEnemies[3]->SetTranslate({ 22.5f,2.0f,90.5f });
-	mWalkEnemies[3]->SetMoveMax({ 25.0f,0.0f,114.0f });
-	mWalkEnemies[3]->SetMoveMin({ 0.0f,0.0f,90.0f });
-	mWalkEnemies[4]->SetTranslate({ -5.0f,7.5f,117.5f });
-	mWalkEnemies[4]->SetMoveMax({ -5.0f,0.0f,127.5f });
-	mWalkEnemies[4]->SetMoveMin({ -15.0f,0.0f,117.5f });
-	mWalkEnemies[4]->SetDirection(WalkEnemy::LEFT);
-	mWalkEnemies[5]->SetTranslate({ -27.5f,7.5f,127.5f });
-	mWalkEnemies[5]->SetMoveMax({ -17.5f,0.0f,127.5f });
-	mWalkEnemies[5]->SetMoveMin({ -27.5f,0.0f,117.5f });
-	mWalkEnemies[5]->SetDirection(WalkEnemy::RIGHT);
-	//ghost(テレサ)
-	mGhosts.resize(mGHOST_MAX);
-	for (uint32_t i = 0; i < mGhosts.size(); ++i) {
-		mGhosts[i] = std::make_unique<Ghost>();
-		mGhosts[i]->Initialize(dxCommon);
-	}
-	mGhosts[0]->SetTranslate({ 22.5f,5.0f,-5.0f });
-	mGhosts[0]->SetRotate({ 0.0f,-kPi / 2.0f,0.0f });
 
 	/// <summary>
 	/// スプライト
@@ -209,10 +291,19 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon) {
 	mGameoverSprite = std::make_unique<Sprite>();
 	mGameoverSprite->Create(dxCommon, "resources/Sprite/Text/GAME_OVER.png");
 	mGameoverSprite->SetTransform({ {1.0f,1.0f,1.0f,},{0.0f,0.0f,0.0f},{200.0f,300.0f,0.0f} });
+	//NowLoading
+	mNowLoadingSprite = std::make_unique<Sprite>();
+	mNowLoadingSprite->Create(dxCommon, "resources/Sprite/Text/NowLoading.png");
+	mNowLoadingSprite->SetTransform({ { 1.0f,1.0f,1.0f },{0.0f,0.0f,0.0f},{-1280.0f,0.0f,0.0f} });
+	//イージング
+	mStart = { -1280.0f,0.0f,0.0f };
+	mEnd = { 0.0f,0.0f,0.0f };
+	t = 0.0f;
+	
+	GameInit(dxCommon);
 }
 
-void GamePlayScene::Finalize()
-{
+void GamePlayScene::Finalize(){
 	mMap->Finalize();
 }
 
@@ -231,14 +322,29 @@ void GamePlayScene::Update(Input* input) {
 		break;
 	case CLEAR:
 		if (input->GetButton(XINPUT_GAMEPAD_A) || input->PushKey(DIK_SPACE)) {
-			mIsTitleScene = true;
-			mScene = GAME;
+			mIsPushAButton = true;
+		}
+		//NowLoadingイージング処理
+		if (mIsPushAButton == true) {
+			t += 0.05f;
+			if (t >= 1.0f) {
+				t = 1.0f;
+				mIsTitleScene = true;
+				GameInit(mDxCommon);
+				mScene = GAME;
+			}
+			mNowLoadingSprite->SetTranslate(Leap(mStart, mEnd, Easing::EaseInOutCubic(t)));
 		}
 		break;
 	case OVER:
+		if (input->GetButton(XINPUT_GAMEPAD_A) || input->PushKey(DIK_SPACE)) {
+			mIsTitleScene = true;
+			GameInit(mDxCommon);
+			mScene = GAME;
+		}
 		break;
 	}
-	
+
 #ifdef DEBUG
 	/// <summary>
 	/// ImGui
@@ -345,6 +451,7 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon) {
 		mClearSprite->Draw(dxCommon->GetCommandList());
 		mAbuttonSprite->Draw(dxCommon->GetCommandList());
 	}
+	mNowLoadingSprite->Draw(dxCommon->GetCommandList());
 	if (mPlayer->GetHp() <= 0) {
 		//mGameoverSprite->Draw(dxCommon->GetCommandList());
 	}
@@ -489,6 +596,7 @@ void GamePlayScene::ObjectUpdate(Input* input) {
 	mGameoverSprite->Update(); //ゲームオーバースプライト
 	mCrosshair->Update(); //クロスヘア
 	mAbuttonSprite->Update(); //Aボタン
+	mNowLoadingSprite->Update(); //NowLoading
 	if (mIsTitleScene) {
 		mTitleScene->Update();
 	}
@@ -733,4 +841,104 @@ void GamePlayScene::Collision(Input* input) {
 	} else {
 		mPlayer->SetGravity(0.05f);
 	}
+}
+
+void GamePlayScene::GameInit(DirectXCommon* dxCommon) {
+	//カメラの初期化
+	mPlayerCamera = std::make_unique<PlayerCamera>();
+	mPlayerCamera->Initialize(dxCommon);
+	//俯瞰カメラ
+	mBirdEyeCamera = std::make_unique<BirdEyeCamera>();
+	mBirdEyeCamera->Initialize(dxCommon);
+
+	/// <summary>
+	/// プレイヤー
+	/// <summary>
+	mPlayer = std::make_unique<Player>();
+	mPlayer->Initialize(dxCommon);
+	mPlayer->SetLightList(mLightList.get());
+
+	/// <summary>
+	/// オブジェクト
+	/// <summary>
+	//ジェム
+	mGems.resize(2);
+	for (uint32_t i = 0; i < mGems.size(); ++i) {
+		mGems[i] = std::make_unique<Gem>();
+		mGems[i]->Initialize(dxCommon);
+	}
+	mGems[0]->SetTranslate({ 22.0f,5.0f,-22.5f });
+	mGems[1]->SetTranslate({ 17.5f,5.0f,97.5f });
+	//スター
+	mStar = std::make_unique<Star>();
+	mStar->Initialize(dxCommon);
+	mStar->SetTranslate({ -15.0f,30.0f,90.0f });
+	//種
+	mSeeds.resize(mSEED_MAX);
+	for (uint32_t i = 0; i < mSEED_MAX; ++i) {
+		mSeeds[i] = std::make_unique<Seed>();
+		mSeeds[i]->Initialize(dxCommon);
+	}
+	//本島
+	mSeeds[0]->SetTranslate({ -2.5f,5.0f,20.0f });
+	mSeeds[1]->SetTranslate({ -2.5f,5.0f,-10.0f });
+	mSeeds[2]->SetTranslate({ -2.5f,5.0f,-5.0f });
+	//離島
+	mSeeds[3]->SetTranslate({ -15.0f,7.5f,132.5f });
+	mSeeds[4]->SetTranslate({ -20.0f,7.5f,132.5f });
+	//クランクを回すと回る床
+	mRotateFloor = std::make_unique<RotateFloor>();
+	mRotateFloor->Initialize(dxCommon);
+	LadderInitialize(dxCommon); //はしごの初期化
+
+	/// <summary>
+	/// 敵
+	/// <summary>
+	//rotateEnemy(回転するだけの敵)
+	mRotateEnemies.resize(mROTATEENEMY_MAX);
+	for (uint32_t i = 0; i < mRotateEnemies.size(); ++i) {
+		mRotateEnemies[i] = std::make_unique<RotateEnemy>();
+		mRotateEnemies[i]->Initialize(dxCommon);
+	}
+	mRotateEnemies[0]->SetTranslate({ 15.0f,2.0f,12.5f });
+	mRotateEnemies[0]->SetInitTranslate({ 15.0f,2.0f,12.5f });
+	mRotateEnemies[1]->SetTranslate({ 12.5f,17.5f,102.5f });
+	mRotateEnemies[1]->SetInitTranslate({ 12.5f,17.5f,102.5f });
+	//walkEnemy(歩き回る敵)
+	mWalkEnemies.resize(mWALKENEMY_MAX);
+	for (uint32_t i = 0; i < mWalkEnemies.size(); ++i) {
+		mWalkEnemies[i] = std::make_unique<WalkEnemy>();
+		mWalkEnemies[i]->Initialize(dxCommon);
+	}
+	mWalkEnemies[0]->SetTranslate({ -7.5f,2.0f,25.0f });
+	mWalkEnemies[0]->SetMoveMax({ -7.5f,0.0f,25.0f });
+	mWalkEnemies[0]->SetMoveMin({ -17.5f,0.0f,15.0f });
+	mWalkEnemies[1]->SetTranslate({ 7.5f,2.0f,-25.0f });
+	mWalkEnemies[1]->SetMoveMax({ 22.5f,0.0f,-10.0f });
+	mWalkEnemies[1]->SetMoveMin({ 7.5f,0.0f,-25.0f });
+	mWalkEnemies[2]->SetTranslate({ 27.5f,2.0f,5.0f });
+	mWalkEnemies[2]->SetMoveMax({ 27.5f,0.0f,5.0f });
+	mWalkEnemies[2]->SetMoveMin({ 2.5f,0.0f,-5.0f });
+	mWalkEnemies[3]->SetTranslate({ 22.5f,2.0f,90.5f });
+	mWalkEnemies[3]->SetMoveMax({ 25.0f,0.0f,114.0f });
+	mWalkEnemies[3]->SetMoveMin({ 0.0f,0.0f,90.0f });
+	mWalkEnemies[4]->SetTranslate({ -5.0f,7.5f,117.5f });
+	mWalkEnemies[4]->SetMoveMax({ -5.0f,0.0f,127.5f });
+	mWalkEnemies[4]->SetMoveMin({ -15.0f,0.0f,117.5f });
+	mWalkEnemies[4]->SetDirection(WalkEnemy::LEFT);
+	mWalkEnemies[5]->SetTranslate({ -27.5f,7.5f,127.5f });
+	mWalkEnemies[5]->SetMoveMax({ -17.5f,0.0f,127.5f });
+	mWalkEnemies[5]->SetMoveMin({ -27.5f,0.0f,117.5f });
+	mWalkEnemies[5]->SetDirection(WalkEnemy::RIGHT);
+	//ghost(テレサ)
+	mGhosts.resize(mGHOST_MAX);
+	for (uint32_t i = 0; i < mGhosts.size(); ++i) {
+		mGhosts[i] = std::make_unique<Ghost>();
+		mGhosts[i]->Initialize(dxCommon);
+	}
+	mGhosts[0]->SetTranslate({ 22.5f,5.0f,-5.0f });
+	mGhosts[0]->SetRotate({ 0.0f,-kPi / 2.0f,0.0f });
+
+	//フラグ
+	mIsClear = false;
 }

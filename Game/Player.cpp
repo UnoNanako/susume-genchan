@@ -78,10 +78,14 @@ void Player::Update(Input* input, float theta) {
 		mVelocity.y = 0.0f;
 	}
 	mTransform.translate.y += mVelocity.y;
+
+#ifdef DEBUG
 	ImGui::Begin("Debug");
 	ImGui::DragFloat3("pos", &mTransform.translate.x);
 	ImGui::Text(std::format("{}", mVelocity.y).c_str());
 	ImGui::End();
+#endif // DEBUG
+
 	//読む！理解する！
 	//ここから
 	//3軸の回転行列を作成

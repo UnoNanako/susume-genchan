@@ -16,7 +16,8 @@ public:
 	void Create(DirectXCommon* dxCommon, const std::string& filePath);
 	void Update();
 	void Draw(ID3D12GraphicsCommandList *commandList);
-	void SetTransform(Transform mTransform) { this->mTransform = mTransform; }
+	void SetTransform(Transform transform) { mTransform = transform; }
+	void SetTranslate(Vector3 translate) { mTransform.translate = translate; }
 	~Sprite();
 private:
 	Texture* texture;

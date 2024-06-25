@@ -74,6 +74,7 @@ void ParticleList::Create(DirectXCommon* dxCommon) {
 }
 
 void ParticleList::Update() {
+#ifdef DEBUG
 	ImGui::Begin("Debug");
 	if (ImGui::Button("AddParticle")) {
 		mParticles.splice(mParticles.end(), Emit(mEmitter));
@@ -81,6 +82,8 @@ void ParticleList::Update() {
 		mParticles.splice(mParticles.end(), Emit(mEmitter));
 	}
 	ImGui::End();
+#endif // DEBUG
+
 	if (mIsPlaying == true) {
 		mEmitter.frequencyTime += kDeltaTime; //時刻を進める
 	}
@@ -130,19 +133,20 @@ void ParticleList::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera) 
 }
 
 void ParticleList::DrawImGui(){
+#ifdef DEBUG
 	ImGui::Begin("Particle");
 	ImGui::Text("particle");
-	ImGui::DragFloat3("translateMin",&mTranslateMin.x,0.1f);
-	ImGui::DragFloat3("translateMax", &mTranslateMax.x,0.1f);
+	ImGui::DragFloat3("translateMin", &mTranslateMin.x, 0.1f);
+	ImGui::DragFloat3("translateMax", &mTranslateMax.x, 0.1f);
 	ImGui::DragFloat3("scale", &mTransformInit.scale.x, 0.1f);
 	ImGui::DragFloat3("velocityMin", &mVelocityMin.x, 0.1f);
 	ImGui::DragFloat3("velocityMax", &mVelocityMax.x, 0.1f);
 	ImGui::DragFloat("lifeTimeMin", &mLifeTimeMin, 0.1f);
 	ImGui::DragFloat("lifeTimeMax", &mLifeTimeMax, 0.1f);
-
 	ImGui::Text("Emitter");
 	ImGui::DragFloat("frequency", &mEmitter.frequency, 0.1f);
 	ImGui::End();
+#endif // DEBUG
 }
 
 Particle ParticleList::MakeNewParticle(const Vector3& translate) {

@@ -18,4 +18,7 @@ namespace Easing {
 		float c3 = c1 + 1.0f;
 		return float(1 + c3 * pow(t - 1, 3) + c1 * pow(t - 1, 2));
 	}
+	float EaseInOutCubic(float t) {
+		return t < 0.5f ? 4 * t * t * t : 1 - pow(-2 * t + 2, 3) / 2;
+	}
 }

@@ -118,7 +118,6 @@ void ImGuiManager::Begin()
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
-	ImGui::ShowDemoWindow();
 }
 
 void ImGuiManager::End()

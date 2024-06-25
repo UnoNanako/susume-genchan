@@ -38,9 +38,11 @@ void RotateEnemy::Initialize(DirectXCommon* dxCommon) {
 }
 
 void RotateEnemy::Update(Player* player) {
+#ifdef DEBUG
 	ImGui::Begin("Debug");
 	ImGui::DragFloat3("enemy translate", &mTransform.translate.x, 0.01f);
 	ImGui::End();
+#endif // DEBUG
 
 	switch (mState) {
 	case EnemyState::ROTATE:

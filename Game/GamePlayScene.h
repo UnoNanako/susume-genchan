@@ -49,8 +49,10 @@ private:
 	void LadderInitialize(DirectXCommon* dxCommon);
 	void ObjectUpdate(Input* input);
 	void Collision(Input* input);
+	void GameInit(DirectXCommon* dxCommon);
 
 	Game* mGame;
+	DirectXCommon* mDxCommon;
 	std::unique_ptr<PlayerCamera> mPlayerCamera;
 	std::unique_ptr<BirdEyeCamera> mBirdEyeCamera; //俯瞰カメラ
 	std::unique_ptr<LightList> mLightList; //ライト
@@ -126,6 +128,12 @@ private:
 	std::unique_ptr<Sprite> mAbuttonSprite; //Aボタンスプライト
 	std::unique_ptr<Sprite> mClearSprite; //クリアスプライト
 	std::unique_ptr<Sprite> mGameoverSprite; //ゲームオーバースプライト
+	std::unique_ptr<Sprite> mNowLoadingSprite; //NowLoadingスプライト
+
+	//イージング用
+	Vector3 mStart;
+	Vector3 mEnd;
+	float t;
 
 	/// <summary>
 	/// シーン
@@ -144,6 +152,7 @@ private:
 	bool mIsGameover = false;
 	bool mLadderIsHit = false; //はしごに当たっているか
 	bool mIsTitleScene = true; //タイトルシーンか、そうでないか
+	bool mIsPushAButton = false;
 
 	//シーン
 	enum Scene {

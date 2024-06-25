@@ -9,10 +9,13 @@ PlayerCamera::PlayerCamera(){
 }
 
 void PlayerCamera::Update(){
+#ifdef DEBUG
 	ImGui::Begin("Camera");
 	ImGui::DragFloat3("Position", &mTransform.translate.x, 0.05f);
 	ImGui::DragFloat3("Rotate", &mTransform.rotate.x, 0.05f);
 	ImGui::End();
+#endif // DEBUG
+	
 	const float kPi = std::numbers::pi_v<float>;
 	mMatrix = MakeAffineMatrix(mTransform.scale,mTransform.rotate,mTransform.translate);
 	mViewMatrix = Inverse(mMatrix);

@@ -23,9 +23,11 @@ void Star::Initialize(DirectXCommon* dxCommon){
 void Star::Update(){
 	mTransform.rotate.y += 0.05f;
 	mAABB = CalculateAABB(mTransform.translate);
+#ifdef DEBUG
 	ImGui::Begin("Debug");
 	ImGui::DragFloat3("Star", &mTransform.translate.x, 0.01f);
 	ImGui::End();
+#endif // DEBUG
 	mTransform.UpdateMatrix();
 }
 

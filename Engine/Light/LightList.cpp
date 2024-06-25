@@ -39,8 +39,10 @@ void LightList::Create(DirectXCommon* dxCommon)
 
 void LightList::Update()
 {
+#ifdef DEBUG
+
 	ImGui::Begin("Debug");
-	ImGui::DragFloat3("Position", &mSpotLightData->position.x, 0.01f,0.0f,10.0f);
+	ImGui::DragFloat3("Position", &mSpotLightData->position.x, 0.01f, 0.0f, 10.0f);
 	ImGui::DragFloat3("Rotation", &mSpotLightData->direction.x, 0.01f, 0.0f, 10.0f);
 	ImGui::DragFloat("Distance", &mSpotLightData->distance, 0.01f, 0.0f, 10.0f);
 	ImGui::DragFloat3("Intensity", &mSpotLightData->intensity, 0.01f, 0.0f, 10.0f);
@@ -49,11 +51,13 @@ void LightList::Update()
 	ImGui::DragFloat("CosAngle", &mSpotLightData->cosAngle, 0.01f, 0.0f, 10.0f);
 	ImGui::DragFloat3("Color", &mSpotLightData->color.x, 0.01f, 0.0f, 10.0f);
 	ImGui::End();
+#endif // DEBUG
+
 }
 
 void LightList::Bind(ID3D12GraphicsCommandList* commandList)
 {
-	commandList->SetGraphicsRootConstantBufferView(3,mDirectionalLightResource->GetGPUVirtualAddress());
+	commandList->SetGraphicsRootConstantBufferView(3, mDirectionalLightResource->GetGPUVirtualAddress());
 	commandList->SetGraphicsRootConstantBufferView(5, mPointLightResource->GetGPUVirtualAddress());
 	commandList->SetGraphicsRootConstantBufferView(6, mSpotLightResource->GetGPUVirtualAddress());
 }
