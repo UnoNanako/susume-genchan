@@ -123,6 +123,7 @@ private:
 	/// スプライト
 	/// <summary>
 	std::unique_ptr<Crosshair> mCrosshair; //クロスヘア
+	std::unique_ptr<Sprite> mAbuttonSprite; //Aボタンスプライト
 	std::unique_ptr<Sprite> mClearSprite; //クリアスプライト
 	std::unique_ptr<Sprite> mGameoverSprite; //ゲームオーバースプライト
 

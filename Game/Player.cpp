@@ -210,10 +210,12 @@ void Player::Update(Input* input, float theta) {
 		}
 	}
 
+#ifdef DEBUG
 	ImGui::Begin("Debug");
 	ImGui::DragFloat3("player Position", &mTransform.translate.x, 0.01f);
 	ImGui::DragFloat3("player Rotation", &mTransform.rotate.x, 0.01f);
 	ImGui::End();
+#endif // DEBUG
 
 	//mFireParticle->DrawImGui();
 

@@ -72,7 +72,7 @@ void Map::Create(DirectXCommon* dxCommon){
 			case HOUSE2:
 				block->mModel = new Model();
 				block->mModel->SetModelIndex(5);
-				block->mModel->Create(mDxCommon, "resources/Model/House2", "House2.obj");
+				block->mModel->Create(mDxCommon, "resources/Model/House", "House2.obj");
 				break;
 			}
 

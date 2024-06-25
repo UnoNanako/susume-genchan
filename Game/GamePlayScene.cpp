@@ -197,6 +197,10 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon) {
 	//クロスヘア
 	mCrosshair = std::make_unique<Crosshair>();
 	mCrosshair->Initialize(dxCommon);
+	//Aボタン
+	mAbuttonSprite = std::make_unique<Sprite>();
+	mAbuttonSprite->Create(dxCommon, "resources/Sprite/Ui/Buttons/xbox_button_color_a.png");
+	mAbuttonSprite->SetTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{620.0f,550.0f,0.0f} });
 	//クリアテキスト
 	mClearSprite = std::make_unique<Sprite>();
 	mClearSprite->Create(dxCommon, "resources/Sprite/Text/COURSE_CLEAR.png");
@@ -221,8 +225,15 @@ void GamePlayScene::Update(Input* input) {
 		}
 		ObjectUpdate(input); //オブジェクトの更新
 		Collision(input); //当たり判定の更新
+		if (mIsClear == true) {
+			mScene = CLEAR;
+		}
 		break;
 	case CLEAR:
+		if (input->GetButton(XINPUT_GAMEPAD_A) || input->PushKey(DIK_SPACE)) {
+			mIsTitleScene = true;
+			mScene = GAME;
+		}
 		break;
 	case OVER:
 		break;
@@ -332,6 +343,7 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon) {
 	}
 	if (mIsClear) {
 		mClearSprite->Draw(dxCommon->GetCommandList());
+		mAbuttonSprite->Draw(dxCommon->GetCommandList());
 	}
 	if (mPlayer->GetHp() <= 0) {
 		//mGameoverSprite->Draw(dxCommon->GetCommandList());
@@ -476,6 +488,7 @@ void GamePlayScene::ObjectUpdate(Input* input) {
 	mClearSprite->Update(); //クリアスプライト
 	mGameoverSprite->Update(); //ゲームオーバースプライト
 	mCrosshair->Update(); //クロスヘア
+	mAbuttonSprite->Update(); //Aボタン
 	if (mIsTitleScene) {
 		mTitleScene->Update();
 	}
