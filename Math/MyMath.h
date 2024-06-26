@@ -15,8 +15,8 @@ inline T Min(const T& a, const T& b) {
 	return a < b ? a : b;
 }
 template <typename T>
-inline T Lerp(const T& a, const T& b, float t) {
-	return (1.0f - t) * a + t * b;
+inline T Lerp(const T& a, const T& b, float mInT) {
+	return (1.0f - mInT) * a + mInT * b;
 }
 
 const float kPi = std::numbers::pi_v<float>;
@@ -973,11 +973,11 @@ template<typename tLine> bool IsCollision(const Triangle& triangle, const tLine&
 	if (dot == 0.0f) {
 		return false;
 	}
-	float t = (plane.distance - Dot(line.origin, plane.normal)) / dot;
-	if ((t < tLine::kTMin) || (tLine::kTMax < t)) {
+	float mInT = (plane.distance - Dot(line.origin, plane.normal)) / dot;
+	if ((mInT < tLine::kTMin) || (tLine::kTMax < mInT)) {
 		return false;
 	}
-	Vector3 intersect = Add(line.origin, Multiply(t, line.diff));
+	Vector3 intersect = Add(line.origin, Multiply(mInT, line.diff));
 	Vector3 v1p = Subtract(intersect, triangle.vertices[1]);
 	if (Dot(Cross(v01, v1p), normal) < 0.0f) {
 		return false;

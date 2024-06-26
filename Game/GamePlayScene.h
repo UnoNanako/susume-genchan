@@ -131,9 +131,12 @@ private:
 	std::unique_ptr<Sprite> mNowLoadingSprite; //NowLoadingスプライト
 
 	//イージング用
-	Vector3 mStart;
-	Vector3 mEnd;
-	float t;
+	Vector3 mInStart;
+	Vector3 mInEnd;
+	Vector3 mOutStart;
+	Vector3 mOutEnd;
+	float mInT;
+	float mOutT;
 
 	/// <summary>
 	/// シーン

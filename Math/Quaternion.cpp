@@ -69,12 +69,12 @@ float Dot(const Quaternion& q1, const Quaternion& q2) {
 	return q1.w * q2.w + q1.x * q2.x + q1.y * q2.y + q1.z * q2.z;
 }
 
-Quaternion Lerp(const Quaternion& q1, const Quaternion& q2, float t) {
+Quaternion Lerp(const Quaternion& q1, const Quaternion& q2, float mInT) {
 	Quaternion ret;
-	ret.w = Lerp(q1.w, q2.w, t);
-	ret.x = Lerp(q1.x, q2.x, t);
-	ret.y = Lerp(q1.y, q2.y, t);
-	ret.z = Lerp(q1.z, q2.z, t);
+	ret.w = Lerp(q1.w, q2.w, mInT);
+	ret.x = Lerp(q1.x, q2.x, mInT);
+	ret.y = Lerp(q1.y, q2.y, mInT);
+	ret.z = Lerp(q1.z, q2.z, mInT);
 	ret.Normalize();
 	return ret;
 }
@@ -94,11 +94,11 @@ Quaternion Pow(const Quaternion& q, float e) {
 	return ret;
 }
 
-Quaternion Slerp(const Quaternion& q1, const Quaternion& q2, float t) {
-	if (t <= 0.0f) {
+Quaternion Slerp(const Quaternion& q1, const Quaternion& q2, float mInT) {
+	if (mInT <= 0.0f) {
 		return q1;
 	}
-	if (t >= 1.0f) {
+	if (mInT >= 1.0f) {
 		return q2;
 	}
 	float cosOmega = Dot(q1, q2);
@@ -115,14 +115,14 @@ Quaternion Slerp(const Quaternion& q1, const Quaternion& q2, float t) {
 	}
 	float k0, k1;
 	if (cosOmega > 0.999f) {
-		k0 = 1.0f - t;
-		k1 = t;
+		k0 = 1.0f - mInT;
+		k1 = mInT;
 	} else {
 		float sinOmega = sqrtf(1.0f - cosOmega * cosOmega);
 		float omega = atan2f(sinOmega, cosOmega);
 		float oneOverSin = 1.0f / sinOmega;
-		k0 = sinf((1.0f - t) * omega) * oneOverSin;
-		k1 = sinf(t * omega) * oneOverSin;
+		k0 = sinf((1.0f - mInT) * omega) * oneOverSin;
+		k1 = sinf(mInT * omega) * oneOverSin;
 	}
 	Quaternion ret;
 	ret.w = k0 * q1.w + k1 * w;
@@ -194,8 +194,8 @@ Quaternion ToQuaternion(const Vector3& e){
 }
 
 Quaternion ToQuaternion(const Matrix4x4& m){
-	auto t = Transpose(m);
-	auto a = t.m;
+	auto mInT = Transpose(m);
+	auto a = mInT.m;
 	Quaternion ret;
 	float trace = a[0][0] + a[1][1] + a[2][2];
 	if (trace > 0) {

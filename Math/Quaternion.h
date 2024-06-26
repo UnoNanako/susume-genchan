@@ -26,9 +26,9 @@ Vector3 operator*(const Vector3& v, const Quaternion& q);
 Quaternion operator*=(Quaternion& q1, const Quaternion& q2);
 Vector3 operator*=(Vector3& v, const Quaternion& q);
 float Dot(const Quaternion& q1, const Quaternion& q2);
-Quaternion Lerp(const Quaternion& q1, const Quaternion& q2, float t);
+Quaternion Lerp(const Quaternion& q1, const Quaternion& q2, float mInT);
 Quaternion Pow(const Quaternion& q, float e);
-Quaternion Slerp(const Quaternion& q1, const Quaternion& q2, float t);
+Quaternion Slerp(const Quaternion& q1, const Quaternion& q2, float mInT);
 float GetTheta(const Quaternion& q);
 Vector3 GetAxis(const Quaternion& q);
 

@@ -9,13 +9,15 @@ class DirectXCommon;
 class Texture;
 struct AABB;
 class ParticleList;
+class Sprite;
 
 class Gem : public GameObject{
 public:
 	~Gem();
-	void Initialize(DirectXCommon* dxCommon) override;
+	void Initialize(DirectXCommon* dxCommon, Vector3 translate);
 	void Update() override;
 	void Draw(ID3D12GraphicsCommandList* commandList, Camera* camera);
+	void SpriteDraw(ID3D12GraphicsCommandList* commandList);
 	void ParticleDraw(ID3D12GraphicsCommandList* commandList, Camera* camera);
 	//minとmaxを求める関数
 	AABB CalculateAABB(const Vector3& translate);
@@ -33,5 +35,7 @@ private:
 	AABB mAABB;
 	bool mIsHit = false;
 	std::unique_ptr<ParticleList> mParticle;
+	std::unique_ptr<Sprite> mGemSprite;
+	std::unique_ptr<Sprite> mNotGemSprite;
 };
 

@@ -3,6 +3,7 @@
 #include "Engine/2D/Texture.h"
 #include "Engine/DirectXCommon.h"
 #include "Engine/3D/Model.h"
+#include "Engine/2D/Sprite.h"
 
 Seed::~Seed(){
 	delete mModel;

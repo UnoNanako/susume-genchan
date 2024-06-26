@@ -2393,10 +2393,10 @@ IM_MSVC_RUNTIME_CHECKS_RESTORE
 
 IMGUI_API ImU32 ImAlphaBlendColors(ImU32 col_a, ImU32 col_b)
 {
-    float t = ((col_b >> IM_COL32_A_SHIFT) & 0xFF) / 255.f;
-    int r = ImLerp((int)(col_a >> IM_COL32_R_SHIFT) & 0xFF, (int)(col_b >> IM_COL32_R_SHIFT) & 0xFF, t);
-    int g = ImLerp((int)(col_a >> IM_COL32_G_SHIFT) & 0xFF, (int)(col_b >> IM_COL32_G_SHIFT) & 0xFF, t);
-    int b = ImLerp((int)(col_a >> IM_COL32_B_SHIFT) & 0xFF, (int)(col_b >> IM_COL32_B_SHIFT) & 0xFF, t);
+    float mInT = ((col_b >> IM_COL32_A_SHIFT) & 0xFF) / 255.f;
+    int r = ImLerp((int)(col_a >> IM_COL32_R_SHIFT) & 0xFF, (int)(col_b >> IM_COL32_R_SHIFT) & 0xFF, mInT);
+    int g = ImLerp((int)(col_a >> IM_COL32_G_SHIFT) & 0xFF, (int)(col_b >> IM_COL32_G_SHIFT) & 0xFF, mInT);
+    int b = ImLerp((int)(col_a >> IM_COL32_B_SHIFT) & 0xFF, (int)(col_b >> IM_COL32_B_SHIFT) & 0xFF, mInT);
     return IM_COL32(r, g, b, 0xFF);
 }
 
@@ -2458,15 +2458,15 @@ void ImGui::ColorConvertHSVtoRGB(float h, float s, float v, float& out_r, float&
     float f = h - (float)i;
     float p = v * (1.0f - s);
     float q = v * (1.0f - s * f);
-    float t = v * (1.0f - s * (1.0f - f));
+    float mInT = v * (1.0f - s * (1.0f - f));
 
     switch (i)
     {
-    case 0: out_r = v; out_g = t; out_b = p; break;
+    case 0: out_r = v; out_g = mInT; out_b = p; break;
     case 1: out_r = q; out_g = v; out_b = p; break;
-    case 2: out_r = p; out_g = v; out_b = t; break;
+    case 2: out_r = p; out_g = v; out_b = mInT; break;
     case 3: out_r = p; out_g = q; out_b = v; break;
-    case 4: out_r = t; out_g = p; out_b = v; break;
+    case 4: out_r = mInT; out_g = p; out_b = v; break;
     case 5: default: out_r = v; out_g = p; out_b = q; break;
     }
 }
@@ -8937,8 +8937,8 @@ int ImGui::GetKeyPressedAmount(ImGuiKey key, float repeat_delay, float repeat_ra
     const ImGuiKeyData* key_data = GetKeyData(key);
     if (!key_data->Down) // In theory this should already be encoded as (DownDuration < 0.0f), but testing this facilitates eating mechanism (until we finish work on key ownership)
         return 0;
-    const float t = key_data->DownDuration;
-    return CalcTypematicRepeatAmount(t - g.IO.DeltaTime, t, repeat_delay, repeat_rate);
+    const float mInT = key_data->DownDuration;
+    return CalcTypematicRepeatAmount(mInT - g.IO.DeltaTime, mInT, repeat_delay, repeat_rate);
 }
 
 // Return 2D vector representing the combination of four cardinal direction, with analog value support (for e.g. ImGuiKey_GamepadLStick* values).
@@ -9215,25 +9215,25 @@ bool ImGui::IsKeyPressed(ImGuiKey key, ImGuiID owner_id, ImGuiInputFlags flags)
     const ImGuiKeyData* key_data = GetKeyData(key);
     if (!key_data->Down) // In theory this should already be encoded as (DownDuration < 0.0f), but testing this facilitates eating mechanism (until we finish work on key ownership)
         return false;
-    const float t = key_data->DownDuration;
-    if (t < 0.0f)
+    const float mInT = key_data->DownDuration;
+    if (mInT < 0.0f)
         return false;
     IM_ASSERT((flags & ~ImGuiInputFlags_SupportedByIsKeyPressed) == 0); // Passing flags not supported by this function!
     if (flags & (ImGuiInputFlags_RepeatRateMask_ | ImGuiInputFlags_RepeatUntilMask_)) // Setting any _RepeatXXX option enables _Repeat
         flags |= ImGuiInputFlags_Repeat;
 
-    bool pressed = (t == 0.0f);
+    bool pressed = (mInT == 0.0f);
     if (!pressed && (flags & ImGuiInputFlags_Repeat) != 0)
     {
         float repeat_delay, repeat_rate;
         GetTypematicRepeatRate(flags, &repeat_delay, &repeat_rate);
-        pressed = (t > repeat_delay) && GetKeyPressedAmount(key, repeat_delay, repeat_rate) > 0;
+        pressed = (mInT > repeat_delay) && GetKeyPressedAmount(key, repeat_delay, repeat_rate) > 0;
         if (pressed && (flags & ImGuiInputFlags_RepeatUntilMask_))
         {
             // Slightly bias 'key_pressed_time' as DownDuration is an accumulation of DeltaTime which we compare to an absolute time value.
             // Ideally we'd replace DownDuration with KeyPressedTime but it would break user's code.
             ImGuiContext& g = *GImGui;
-            double key_pressed_time = g.Time - t + 0.00001f;
+            double key_pressed_time = g.Time - mInT + 0.00001f;
             if ((flags & ImGuiInputFlags_RepeatUntilKeyModsChange) && (g.LastKeyModsChangeTime > key_pressed_time))
                 pressed = false;
             if ((flags & ImGuiInputFlags_RepeatUntilKeyModsChangeFromNone) && (g.LastKeyModsChangeFromNoneTime > key_pressed_time))
@@ -9289,13 +9289,13 @@ bool ImGui::IsMouseClicked(ImGuiMouseButton button, ImGuiID owner_id, ImGuiInput
     IM_ASSERT(button >= 0 && button < IM_ARRAYSIZE(g.IO.MouseDown));
     if (!g.IO.MouseDown[button]) // In theory this should already be encoded as (DownDuration < 0.0f), but testing this facilitates eating mechanism (until we finish work on key ownership)
         return false;
-    const float t = g.IO.MouseDownDuration[button];
-    if (t < 0.0f)
+    const float mInT = g.IO.MouseDownDuration[button];
+    if (mInT < 0.0f)
         return false;
     IM_ASSERT((flags & ~ImGuiInputFlags_SupportedByIsMouseClicked) == 0); // Passing flags not supported by this function! // FIXME: Could support RepeatRate and RepeatUntil flags here.
 
     const bool repeat = (flags & ImGuiInputFlags_Repeat) != 0;
-    const bool pressed = (t == 0.0f) || (repeat && t > g.IO.KeyRepeatDelay && CalcTypematicRepeatAmount(t - g.IO.DeltaTime, t, g.IO.KeyRepeatDelay, g.IO.KeyRepeatRate) > 0);
+    const bool pressed = (mInT == 0.0f) || (repeat && mInT > g.IO.KeyRepeatDelay && CalcTypematicRepeatAmount(mInT - g.IO.DeltaTime, mInT, g.IO.KeyRepeatDelay, g.IO.KeyRepeatRate) > 0);
     if (!pressed)
         return false;
 

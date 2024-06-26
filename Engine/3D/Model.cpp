@@ -247,8 +247,8 @@ Vector3 Model::CalculateValue(const std::vector<KeyframeVector3>& keyframes, flo
 		//indexとnextIndexの2つのkeyframeを取得して範囲内に時刻があるかを判定
 		if (keyframes[index].time <= time && time <= keyframes[nextIndex].time) {
 			//範囲内を補間する
-			float t = (time - keyframes[index].time) / (keyframes[nextIndex].time - keyframes[index].time);
-			return Lerp(keyframes[index].value, keyframes[nextIndex].value, t);
+			float mInT = (time - keyframes[index].time) / (keyframes[nextIndex].time - keyframes[index].time);
+			return Lerp(keyframes[index].value, keyframes[nextIndex].value, mInT);
 		}
 	}
 	//ここまできた場合は一番後の時刻よりも後ろなので最後の値を返すことにする
@@ -265,8 +265,8 @@ Quaternion Model::CalculateValue(const std::vector<KeyframeQuaternion>& keyframe
 		//indexとnextIndexの2つのkeyframeを取得して範囲内に時刻があるかを判定
 		if (keyframes[index].time <= time && time <= keyframes[nextIndex].time) {
 			//範囲内を補間する
-			float t = (time - keyframes[index].time) / (keyframes[nextIndex].time - keyframes[index].time);
-			return Lerp(keyframes[index].value, keyframes[nextIndex].value, t);
+			float mInT = (time - keyframes[index].time) / (keyframes[nextIndex].time - keyframes[index].time);
+			return Lerp(keyframes[index].value, keyframes[nextIndex].value, mInT);
 		}
 	}
 	//ここまできた場合は一番後の時刻よりも後ろなので最後の値を返すことにする

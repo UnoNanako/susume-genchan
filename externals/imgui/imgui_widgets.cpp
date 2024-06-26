@@ -2733,13 +2733,13 @@ float ImGui::ScaleRatioFromValueT(ImGuiDataType data_type, TYPE v, TYPE v_min, T
 
 // Convert a parametric position on a slider into a value v in the output space (the logical opposite of ScaleRatioFromValueT)
 template<typename TYPE, typename SIGNEDTYPE, typename FLOATTYPE>
-TYPE ImGui::ScaleValueFromRatioT(ImGuiDataType data_type, float t, TYPE v_min, TYPE v_max, bool is_logarithmic, float logarithmic_zero_epsilon, float zero_deadzone_halfsize)
+TYPE ImGui::ScaleValueFromRatioT(ImGuiDataType data_type, float mInT, TYPE v_min, TYPE v_max, bool is_logarithmic, float logarithmic_zero_epsilon, float zero_deadzone_halfsize)
 {
     // We special-case the extents because otherwise our logarithmic fudging can lead to "mathematically correct"
     // but non-intuitive behaviors like a fully-left slider not actually reaching the minimum value. Also generally simpler.
-    if (t <= 0.0f || v_min == v_max)
+    if (mInT <= 0.0f || v_min == v_max)
         return v_min;
-    if (t >= 1.0f)
+    if (mInT >= 1.0f)
         return v_max;
 
     TYPE result = (TYPE)0;
@@ -2757,7 +2757,7 @@ TYPE ImGui::ScaleValueFromRatioT(ImGuiDataType data_type, float t, TYPE v_min, T
         if ((v_max == 0.0f) && (v_min < 0.0f))
             v_max_fudged = -logarithmic_zero_epsilon;
 
-        float t_with_flip = flipped ? (1.0f - t) : t; // t, but flipped if necessary to account for us flipping the range
+        float t_with_flip = flipped ? (1.0f - mInT) : mInT; // t, but flipped if necessary to account for us flipping the range
 
         if ((v_min * v_max) < 0.0f) // Range crosses zero, so we have to do this in two parts
         {
@@ -2782,15 +2782,15 @@ TYPE ImGui::ScaleValueFromRatioT(ImGuiDataType data_type, float t, TYPE v_min, T
         const bool is_floating_point = (data_type == ImGuiDataType_Float) || (data_type == ImGuiDataType_Double);
         if (is_floating_point)
         {
-            result = ImLerp(v_min, v_max, t);
+            result = ImLerp(v_min, v_max, mInT);
         }
-        else if (t < 1.0)
+        else if (mInT < 1.0)
         {
             // - For integer values we want the clicking position to match the grab box so we round above
             //   This code is carefully tuned to work with large values (e.g. high ranges of U64) while preserving this property..
             // - Not doing a *1.0 multiply at the end of a range as it tends to be lossy. While absolute aiming at a large s64/u64
             //   range is going to be imprecise anyway, with this check we at least make the edge values matches expected limits.
-            FLOATTYPE v_new_off_f = (SIGNEDTYPE)(v_max - v_min) * t;
+            FLOATTYPE v_new_off_f = (SIGNEDTYPE)(v_max - v_min) * mInT;
             result = (TYPE)((SIGNEDTYPE)v_min + (SIGNEDTYPE)(v_new_off_f + (FLOATTYPE)(v_min > v_max ? -0.5 : 0.5)));
         }
     }
@@ -7073,8 +7073,8 @@ int ImGui::PlotEx(ImGuiPlotType plot_type, const char* label, float (*values_get
         // Tooltip on hover
         if (hovered && inner_bb.Contains(g.IO.MousePos))
         {
-            const float t = ImClamp((g.IO.MousePos.x - inner_bb.Min.x) / (inner_bb.Max.x - inner_bb.Min.x), 0.0f, 0.9999f);
-            const int v_idx = (int)(t * item_count);
+            const float mInT = ImClamp((g.IO.MousePos.x - inner_bb.Min.x) / (inner_bb.Max.x - inner_bb.Min.x), 0.0f, 0.9999f);
+            const int v_idx = (int)(mInT * item_count);
             IM_ASSERT(v_idx >= 0 && v_idx < values_count);
 
             const float v0 = values_getter(data, (v_idx + values_offset) % values_count);

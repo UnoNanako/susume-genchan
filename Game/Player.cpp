@@ -8,6 +8,7 @@
 #include "Light/LightList.h"
 #include "externals/imgui/imgui.h"
 #include "Engine/Particle/ParticleList.h"
+#include "Engine/2D/Sprite.h"
 #include <format>
 
 Player::Player()
@@ -60,6 +61,12 @@ void Player::Initialize(DirectXCommon* dxCommon) {
 	mSandsmokeParticle->SetLifeTImeMin(0.5f);
 	mSandsmokeParticle->SetLifeTimeMax(1.0f);
 
+	mSeedSprite.resize(5);
+	for (uint32_t i = 0; i < mSeedSprite.size(); ++i) {
+		mSeedSprite[i] = std::make_unique<Sprite>();
+		mSeedSprite[i]->Create(dxCommon, "resources/Sprite/Ui/Seed/SeedSprite.png");
+	}
+	
 	/*mFireParticle = std::make_unique<ParticleList>();
 	mFireParticle->Create(mDxCommon);
 	mFireParticle->SetFrequency(0.01f);
@@ -78,8 +85,12 @@ void Player::Update(Input* input, float theta) {
 		mVelocity.y = 0.0f;
 	}
 	mTransform.translate.y += mVelocity.y;
+	for (uint32_t i = 0; i < mAttackTimes; ++i) {
+		mSeedSprite[i]->SetTranslate({ 64.0f * i,80.0f,0.0f });
+		mSeedSprite[i]->Update();
+	}
 
-#ifdef DEBUG
+#ifdef _DEBUG
 	ImGui::Begin("Debug");
 	ImGui::DragFloat3("pos", &mTransform.translate.x);
 	ImGui::Text(std::format("{}", mVelocity.y).c_str());
@@ -214,7 +225,7 @@ void Player::Update(Input* input, float theta) {
 		}
 	}
 
-#ifdef DEBUG
+#ifdef _DEBUG
 	ImGui::Begin("Debug");
 	ImGui::DragFloat3("player Position", &mTransform.translate.x, 0.01f);
 	ImGui::DragFloat3("player Rotation", &mTransform.rotate.x, 0.01f);
@@ -243,6 +254,12 @@ void Player::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera) {
 	mTexture->Bind(commandList);
 	if ((mInvincibleTime / 5) % 2 == 0) {
 		mModel->Draw(commandList, camera, mTransform);
+	}
+}
+
+void Player::SpriteDraw(ID3D12GraphicsCommandList* commandList){
+	for (uint32_t i = 0; i < mAttackTimes; ++i) {
+		mSeedSprite[i]->Draw(commandList);
 	}
 }
 

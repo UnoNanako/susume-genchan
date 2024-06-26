@@ -12,7 +12,7 @@ class Seed : public GameObject
 {
 public:
 	~Seed();
-	void Initialize(DirectXCommon* dxCommon) override;
+	void Initialize(DirectXCommon* dxCommon);
 	void Update();
 	void Draw(ID3D12GraphicsCommandList* commandList, Camera* camera);
 	//minAmaxを求める関数

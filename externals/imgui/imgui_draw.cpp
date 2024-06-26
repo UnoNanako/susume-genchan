@@ -1244,22 +1244,22 @@ void ImDrawList::PathEllipticalArcTo(const ImVec2& center, const ImVec2& radius,
     }
 }
 
-ImVec2 ImBezierCubicCalc(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, const ImVec2& p4, float t)
+ImVec2 ImBezierCubicCalc(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, const ImVec2& p4, float mInT)
 {
-    float u = 1.0f - t;
+    float u = 1.0f - mInT;
     float w1 = u * u * u;
-    float w2 = 3 * u * u * t;
-    float w3 = 3 * u * t * t;
-    float w4 = t * t * t;
+    float w2 = 3 * u * u * mInT;
+    float w3 = 3 * u * mInT * mInT;
+    float w4 = mInT * mInT * mInT;
     return ImVec2(w1 * p1.x + w2 * p2.x + w3 * p3.x + w4 * p4.x, w1 * p1.y + w2 * p2.y + w3 * p3.y + w4 * p4.y);
 }
 
-ImVec2 ImBezierQuadraticCalc(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, float t)
+ImVec2 ImBezierQuadraticCalc(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, float mInT)
 {
-    float u = 1.0f - t;
+    float u = 1.0f - mInT;
     float w1 = u * u;
-    float w2 = 2 * u * t;
-    float w3 = t * t;
+    float w2 = 2 * u * mInT;
+    float w3 = mInT * mInT;
     return ImVec2(w1 * p1.x + w2 * p2.x + w3 * p3.x, w1 * p1.y + w2 * p2.y + w3 * p3.y);
 }
 
@@ -2273,10 +2273,10 @@ void ImGui::ShadeVertsLinearColorGradientKeepAlpha(ImDrawList* draw_list, int ve
     for (ImDrawVert* vert = vert_start; vert < vert_end; vert++)
     {
         float d = ImDot(vert->pos - gradient_p0, gradient_extent);
-        float t = ImClamp(d * gradient_inv_length2, 0.0f, 1.0f);
-        int r = (int)(col0_r + col_delta_r * t);
-        int g = (int)(col0_g + col_delta_g * t);
-        int b = (int)(col0_b + col_delta_b * t);
+        float mInT = ImClamp(d * gradient_inv_length2, 0.0f, 1.0f);
+        int r = (int)(col0_r + col_delta_r * mInT);
+        int g = (int)(col0_g + col_delta_g * mInT);
+        int b = (int)(col0_b + col_delta_b * mInT);
         vert->col = (r << IM_COL32_R_SHIFT) | (g << IM_COL32_G_SHIFT) | (b << IM_COL32_B_SHIFT) | (vert->col & IM_COL32_A_MASK);
     }
 }

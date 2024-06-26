@@ -1372,12 +1372,12 @@ static stbtt__buf stbtt__get_subrs(stbtt__buf cff, stbtt__buf fontdict)
 // since most people won't use this, find this table the first time it's needed
 static int stbtt__get_svg(stbtt_fontinfo *info)
 {
-   stbtt_uint32 t;
+   stbtt_uint32 mInT;
    if (info->svg < 0) {
-      t = stbtt__find_table(info->data, info->fontstart, "SVG ");
-      if (t) {
-         stbtt_uint32 offset = ttULONG(info->data + t + 2);
-         info->svg = t + offset;
+      mInT = stbtt__find_table(info->data, info->fontstart, "SVG ");
+      if (mInT) {
+         stbtt_uint32 offset = ttULONG(info->data + mInT + 2);
+         info->svg = mInT + offset;
       } else {
          info->svg = 0;
       }
@@ -1387,7 +1387,7 @@ static int stbtt__get_svg(stbtt_fontinfo *info)
 
 static int stbtt_InitFont_internal(stbtt_fontinfo *info, unsigned char *data, int fontstart)
 {
-   stbtt_uint32 cmap, t;
+   stbtt_uint32 cmap, mInT;
    stbtt_int32 i,numTables;
 
    info->data = data;
@@ -1458,9 +1458,9 @@ static int stbtt_InitFont_internal(stbtt_fontinfo *info, unsigned char *data, in
       info->charstrings = stbtt__cff_get_index(&b);
    }
 
-   t = stbtt__find_table(data, fontstart, "maxp");
-   if (t)
-      info->numGlyphs = ttUSHORT(data+t+4);
+   mInT = stbtt__find_table(data, fontstart, "maxp");
+   if (mInT)
+      info->numGlyphs = ttUSHORT(data+mInT+4);
    else
       info->numGlyphs = 0xffff;
 
@@ -3148,14 +3148,14 @@ static void stbtt__fill_active_edges_new(float *scanline, float *scanline_fill, 
                // covers 2+ pixels
                if (x_top > x_bottom) {
                   // flip scanline vertically; signed area is the same
-                  float t;
+                  float mInT;
                   sy0 = y_bottom - (sy0 - y_top);
                   sy1 = y_bottom - (sy1 - y_top);
-                  t = sy0, sy0 = sy1, sy1 = t;
-                  t = x_bottom, x_bottom = x_top, x_top = t;
+                  mInT = sy0, sy0 = sy1, sy1 = mInT;
+                  mInT = x_bottom, x_bottom = x_top, x_top = mInT;
                   dx = -dx;
                   dy = -dy;
-                  t = x0, x0 = xb, xb = t;
+                  mInT = x0, x0 = xb, xb = mInT;
                }
                STBTT_assert(dy >= 0);
                STBTT_assert(dx >= 0);
@@ -3408,7 +3408,7 @@ static void stbtt__sort_edges_ins_sort(stbtt__edge *p, int n)
 {
    int i,j;
    for (i=1; i < n; ++i) {
-      stbtt__edge t = p[i], *a = &t;
+      stbtt__edge mInT = p[i], *a = &mInT;
       j = i;
       while (j > 0) {
          stbtt__edge *b = &p[j-1];
@@ -3418,7 +3418,7 @@ static void stbtt__sort_edges_ins_sort(stbtt__edge *p, int n)
          --j;
       }
       if (i != j)
-         p[j] = t;
+         p[j] = mInT;
    }
 }
 
@@ -3426,7 +3426,7 @@ static void stbtt__sort_edges_quicksort(stbtt__edge *p, int n)
 {
    /* threshold for transitioning to insertion sort */
    while (n > 12) {
-      stbtt__edge t;
+      stbtt__edge mInT;
       int c01,c12,c,m,i,j;
 
       /* compute median of three */
@@ -3441,15 +3441,15 @@ static void stbtt__sort_edges_quicksort(stbtt__edge *p, int n)
          /* 0>mid && mid<n:  0>n => n; 0<n => 0 */
          /* 0<mid && mid>n:  0>n => 0; 0<n => n */
          z = (c == c12) ? 0 : n-1;
-         t = p[z];
+         mInT = p[z];
          p[z] = p[m];
-         p[m] = t;
+         p[m] = mInT;
       }
       /* now p[m] is the median-of-three */
       /* swap it to the beginning so it won't move around */
-      t = p[0];
+      mInT = p[0];
       p[0] = p[m];
-      p[m] = t;
+      p[m] = mInT;
 
       /* partition loop */
       i=1;
@@ -3465,9 +3465,9 @@ static void stbtt__sort_edges_quicksort(stbtt__edge *p, int n)
          }
          /* make sure we haven't crossed */
          if (i >= j) break;
-         t = p[i];
+         mInT = p[i];
          p[i] = p[j];
-         p[j] = t;
+         p[j] = mInT;
 
          ++i;
          --j;
@@ -4673,8 +4673,8 @@ STBTT_DEF unsigned char * stbtt_GetGlyphSDF(const stbtt_fontinfo *info, float sc
                      float px = x0-sx, py = y0-sy;
                      // minimize (px+t*dx)^2 + (py+t*dy)^2 = px*px + 2*px*dx*t + t^2*dx*dx + py*py + 2*py*dy*t + t^2*dy*dy
                      // derivative: 2*px*dx + 2*py*dy + (2*dx*dx+2*dy*dy)*t, set to 0 and solve
-                     float t = -(px*dx + py*dy) / (dx*dx + dy*dy);
-                     if (t >= 0.0f && t <= 1.0f)
+                     float mInT = -(px*dx + py*dy) / (dx*dx + dy*dy);
+                     if (mInT >= 0.0f && mInT <= 1.0f)
                         min_dist = dist;
                   }
                } else if (verts[i].type == STBTT_vcurve) {
@@ -4691,7 +4691,7 @@ STBTT_DEF unsigned char * stbtt_GetGlyphSDF(const stbtt_fontinfo *info, float sc
                      float bx = x0 - 2*x1 + x2, by = y0 - 2*y1 + y2;
                      float mx = x0 - sx, my = y0 - sy;
                      float res[3] = {0.f,0.f,0.f};
-                     float px,py,t,it,dist2;
+                     float px,py,mInT,it,dist2;
                      float a_inv = precompute[i];
                      if (a_inv == 0.0) { // if a_inv is 0, it's 2nd degree so use quadratic formula
                         float a = 3*(ax*bx + ay*by);
@@ -4723,25 +4723,25 @@ STBTT_DEF unsigned char * stbtt_GetGlyphSDF(const stbtt_fontinfo *info, float sc
                         min_dist = (float) STBTT_sqrt(dist2);
 
                      if (num >= 1 && res[0] >= 0.0f && res[0] <= 1.0f) {
-                        t = res[0], it = 1.0f - t;
-                        px = it*it*x0 + 2*t*it*x1 + t*t*x2;
-                        py = it*it*y0 + 2*t*it*y1 + t*t*y2;
+                        mInT = res[0], it = 1.0f - mInT;
+                        px = it*it*x0 + 2*mInT*it*x1 + mInT*mInT*x2;
+                        py = it*it*y0 + 2*mInT*it*y1 + mInT*mInT*y2;
                         dist2 = (px-sx)*(px-sx) + (py-sy)*(py-sy);
                         if (dist2 < min_dist * min_dist)
                            min_dist = (float) STBTT_sqrt(dist2);
                      }
                      if (num >= 2 && res[1] >= 0.0f && res[1] <= 1.0f) {
-                        t = res[1], it = 1.0f - t;
-                        px = it*it*x0 + 2*t*it*x1 + t*t*x2;
-                        py = it*it*y0 + 2*t*it*y1 + t*t*y2;
+                        mInT = res[1], it = 1.0f - mInT;
+                        px = it*it*x0 + 2*mInT*it*x1 + mInT*mInT*x2;
+                        py = it*it*y0 + 2*mInT*it*y1 + mInT*mInT*y2;
                         dist2 = (px-sx)*(px-sx) + (py-sy)*(py-sy);
                         if (dist2 < min_dist * min_dist)
                            min_dist = (float) STBTT_sqrt(dist2);
                      }
                      if (num >= 3 && res[2] >= 0.0f && res[2] <= 1.0f) {
-                        t = res[2], it = 1.0f - t;
-                        px = it*it*x0 + 2*t*it*x1 + t*t*x2;
-                        py = it*it*y0 + 2*t*it*y1 + t*t*y2;
+                        mInT = res[2], it = 1.0f - mInT;
+                        px = it*it*x0 + 2*mInT*it*x1 + mInT*mInT*x2;
+                        py = it*it*y0 + 2*mInT*it*y1 + mInT*mInT*y2;
                         dist2 = (px-sx)*(px-sx) + (py-sy)*(py-sy);
                         if (dist2 < min_dist * min_dist)
                            min_dist = (float) STBTT_sqrt(dist2);

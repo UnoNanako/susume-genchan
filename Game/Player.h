@@ -3,6 +3,7 @@
 #include "Transform.h"
 #include <d3d12.h>
 #include <memory>
+#include <vector>
 
 class Input;
 class Texture;
@@ -10,6 +11,7 @@ class LightList;
 struct AABB;
 class MovingFloor;
 class ParticleList;
+class Sprite;
 
 class Player : public GameObject{
 public:
@@ -18,6 +20,7 @@ public:
 	void Initialize(DirectXCommon* dxCommon);
 	void Update(Input* input, float theta);
 	void Draw(ID3D12GraphicsCommandList* commandList,Camera* camera);
+	void SpriteDraw(ID3D12GraphicsCommandList* commandList);
 	void ParticleDraw(ID3D12GraphicsCommandList* commandList, Camera* camera);
 	AABB CalculateAABB(const Vector3& translate);
 	
@@ -68,6 +71,7 @@ private:
 	Matrix4x4 mTransposeViewMatrix;
 	MovingFloor* mMovingFloor; //動く床
 
+	std::vector<std::unique_ptr<Sprite>> mSeedSprite;
 	std::unique_ptr<ParticleList> mSandsmokeParticle;
 	//std::unique_ptr<ParticleList> mFireParticle;
 };

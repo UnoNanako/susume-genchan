@@ -296,26 +296,44 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon) {
 	mNowLoadingSprite->Create(dxCommon, "resources/Sprite/Text/NowLoading.png");
 	mNowLoadingSprite->SetTransform({ { 1.0f,1.0f,1.0f },{0.0f,0.0f,0.0f},{-1280.0f,0.0f,0.0f} });
 	//イージング
-	mStart = { -1280.0f,0.0f,0.0f };
-	mEnd = { 0.0f,0.0f,0.0f };
-	t = 0.0f;
-	
+	mInStart = { -1280.0f,0.0f,0.0f };
+	mInEnd = { 0.0f,0.0f,0.0f };
+	mOutStart = { 0.0f,0.0f,0.0f };
+	mOutEnd = { 1280.0f,0.0f,0.0f };
+	mInT = 0.0f;
+	mOutT = 1.0f;
+
 	GameInit(dxCommon);
 }
 
-void GamePlayScene::Finalize(){
+void GamePlayScene::Finalize() {
 	mMap->Finalize();
 }
 
 void GamePlayScene::Update(Input* input) {
 	switch (mScene) {
 	case GAME:
-		if (input->GetButton(XINPUT_GAMEPAD_A) || input->PushKey(DIK_SPACE)) {
-			mIsTitleScene = false;
-			mPlayer->SetIsOperatable(true);
+		mIsPushAButton = false;
+		//NowLoadingイージング処理
+		mOutT += 0.05f;
+		if (mOutT >= 1.0f) {
+			mOutT = 1.0f;
+			if (input->GetButton(XINPUT_GAMEPAD_A) || input->PushKey(DIK_SPACE)) {
+				mIsTitleScene = false;
+				mPlayer->SetIsOperatable(true);
+			}
 		}
+		mNowLoadingSprite->SetTranslate(Leap(mOutStart, mOutEnd, Easing::EaseInOutCubic(mOutT)));
+		mNowLoadingSprite->Update();
 		ObjectUpdate(input); //オブジェクトの更新
 		Collision(input); //当たり判定の更新
+
+#ifdef _DEBUG
+		ImGui::Begin("Debug");
+		ImGui::Checkbox("Clear", &mIsClear);
+		ImGui::End();
+#endif // DEBUG
+
 		if (mIsClear == true) {
 			mScene = CLEAR;
 		}
@@ -326,26 +344,38 @@ void GamePlayScene::Update(Input* input) {
 		}
 		//NowLoadingイージング処理
 		if (mIsPushAButton == true) {
-			t += 0.05f;
-			if (t >= 1.0f) {
-				t = 1.0f;
+			mInT += 0.05f;
+			if (mInT >= 1.0f) {
+				mInT = 1.0f;
 				mIsTitleScene = true;
 				GameInit(mDxCommon);
 				mScene = GAME;
+				mOutT = 0.0f;
 			}
-			mNowLoadingSprite->SetTranslate(Leap(mStart, mEnd, Easing::EaseInOutCubic(t)));
+			mNowLoadingSprite->SetTranslate(Leap(mInStart, mInEnd, Easing::EaseInOutCubic(mInT)));
+			mNowLoadingSprite->Update(); //NowLoading
 		}
 		break;
 	case OVER:
 		if (input->GetButton(XINPUT_GAMEPAD_A) || input->PushKey(DIK_SPACE)) {
-			mIsTitleScene = true;
-			GameInit(mDxCommon);
-			mScene = GAME;
+			mIsPushAButton = true;
+		}
+		if (mIsPushAButton == true) {
+			mInT += 0.05f;
+			if (mInT >= 1.0f) {
+				mInT = 1.0f;
+				mIsTitleScene = true;
+				GameInit(mDxCommon);
+				mScene = GAME;
+				mOutT = 0.0f;
+			}
+			mNowLoadingSprite->SetTranslate(Leap(mInStart, mInEnd, Easing::EaseInOutCubic(mInT)));
+			mNowLoadingSprite->Update(); //NowLoading
 		}
 		break;
 	}
 
-#ifdef DEBUG
+#ifdef _DEBUG
 	/// <summary>
 	/// ImGui
 	/// <summary>
@@ -443,6 +473,10 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon) {
 	mPlayer->ParticleDraw(dxCommon->GetCommandList(), mBirdEyeCamera.get());
 
 	mGame->GetModelCommon()->Bind(dxCommon);
+	for (uint32_t i = 0; i < mGems.size(); ++i) {
+		mGems[i]->SpriteDraw(dxCommon->GetCommandList());
+	}
+	mPlayer->SpriteDraw(dxCommon->GetCommandList());
 	mCrosshair->Draw(dxCommon->GetCommandList());
 	if (mIsTitleScene) {
 		mTitleScene->Draw(dxCommon->GetCommandList());
@@ -451,10 +485,10 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon) {
 		mClearSprite->Draw(dxCommon->GetCommandList());
 		mAbuttonSprite->Draw(dxCommon->GetCommandList());
 	}
-	mNowLoadingSprite->Draw(dxCommon->GetCommandList());
 	if (mPlayer->GetHp() <= 0) {
 		//mGameoverSprite->Draw(dxCommon->GetCommandList());
 	}
+	mNowLoadingSprite->Draw(dxCommon->GetCommandList());
 }
 
 void GamePlayScene::LadderInitialize(DirectXCommon* dxCommon) {
@@ -560,8 +594,8 @@ void GamePlayScene::ObjectUpdate(Input* input) {
 	}
 	//ゴースト(テレサ)
 	for (uint32_t i = 0; i < mGhosts.size(); ++i) {
+		mGhosts[i]->Update();
 		if (mIsTitleScene == false) {
-			mGhosts[i]->Update();
 			mGhosts[i]->TrackPlayer(mPlayer.get());
 		}
 	}
@@ -596,7 +630,6 @@ void GamePlayScene::ObjectUpdate(Input* input) {
 	mGameoverSprite->Update(); //ゲームオーバースプライト
 	mCrosshair->Update(); //クロスヘア
 	mAbuttonSprite->Update(); //Aボタン
-	mNowLoadingSprite->Update(); //NowLoading
 	if (mIsTitleScene) {
 		mTitleScene->Update();
 	}
@@ -706,8 +739,6 @@ void GamePlayScene::Collision(Input* input) {
 	for (uint32_t i = 0; i < mGems.size(); ++i) {
 		if (IsCollision(mPlayer->GetAABB(), mGems[i]->GetAABB(), collisionResult)) {
 			mGems[i]->SetIsHit(true);
-		} else {
-			mGems[i]->SetIsHit(false);
 		}
 	}
 
@@ -844,6 +875,7 @@ void GamePlayScene::Collision(Input* input) {
 }
 
 void GamePlayScene::GameInit(DirectXCommon* dxCommon) {
+	mInT = 0.0f; //イージング用
 	//カメラの初期化
 	mPlayerCamera = std::make_unique<PlayerCamera>();
 	mPlayerCamera->Initialize(dxCommon);
@@ -862,13 +894,14 @@ void GamePlayScene::GameInit(DirectXCommon* dxCommon) {
 	/// オブジェクト
 	/// <summary>
 	//ジェム
-	mGems.resize(2);
+	mGems.resize(3);
 	for (uint32_t i = 0; i < mGems.size(); ++i) {
 		mGems[i] = std::make_unique<Gem>();
-		mGems[i]->Initialize(dxCommon);
+		mGems[i]->Initialize(dxCommon,{64.0f*i,10.0f,0.0f});
 	}
 	mGems[0]->SetTranslate({ 22.0f,5.0f,-22.5f });
 	mGems[1]->SetTranslate({ 17.5f,5.0f,97.5f });
+	mGems[2]->SetTranslate({ -16.0f,18.5f,90.75f });
 	//スター
 	mStar = std::make_unique<Star>();
 	mStar->Initialize(dxCommon);
