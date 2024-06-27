@@ -35,11 +35,11 @@ void Map::Create(DirectXCommon* dxCommon){
 
 			//特定の番号に対応するモデルとテクスチャを設定する
 			switch (modelIndex) {
-			case FLOOR:
+			case FLOOR1:
 				//床のモデルを読み込む
 				block->mModel = new Model();
 				block->mModel->SetModelIndex(0);
-				block->mModel->Create(mDxCommon, "resources/Model/Floor/Floor", "floor.obj");
+				block->mModel->Create(mDxCommon, "resources/Model/Floor/Floor", "Ground1.obj");
 				break;
 
 			case GRASS:
@@ -73,6 +73,12 @@ void Map::Create(DirectXCommon* dxCommon){
 				block->mModel = new Model();
 				block->mModel->SetModelIndex(5);
 				block->mModel->Create(mDxCommon, "resources/Model/House", "House2.obj");
+				break;
+
+			case FLOOR2:
+				block->mModel = new Model();
+				block->mModel->SetModelIndex(6);
+				block->mModel->Create(mDxCommon, "resources/Model/Floor/Floor", "Ground2.obj");
 				break;
 			}
 
@@ -132,11 +138,11 @@ void Map::Update(){
 		ImGui::DragFloat3(std::format("min##{}", i).c_str(), &(*iter)->mAABB.min.x);
 		if (Combo(std::format("ModelIndex##{}", i).c_str(), (*iter)->mModelIndex)) {
 			switch ((*iter)->mModelIndex) {
-			case FLOOR:
+			case FLOOR1:
 				//床のモデルを読み込む
 				(*iter)->mModel = new Model();
 				(*iter)->mModel->SetModelIndex(0);
-				(*iter)->mModel->Create(mDxCommon, "resources/Model/Floor/Floor", "floor.obj");
+				(*iter)->mModel->Create(mDxCommon, "resources/Model/Floor/Floor", "Ground1.obj");
 				break;
 
 			case GRASS:
@@ -170,6 +176,12 @@ void Map::Update(){
 				(*iter)->mModel = new Model();
 				(*iter)->mModel->SetModelIndex(5);
 				(*iter)->mModel->Create(mDxCommon, "resources/Model/House", "House2.obj");
+				break;
+
+			case FLOOR2:
+				(*iter)->mModel = new Model();
+				(*iter)->mModel->SetModelIndex(6);
+				(*iter)->mModel->Create(mDxCommon, "resources/Model/Floor/Floor", "Ground2.obj");
 				break;
 			}
 		}

@@ -95,7 +95,7 @@ void Ghost::TrackPlayer(Player* player){
 	mTransform.rotate.z = 0.0f;
 
 	//敵をプレイヤーの方向に移動させる
-	float moveSpeed = 0.1f;
+	float moveSpeed = 0.08f;
 	Vector3 moveDirection = toPlayer * moveSpeed;
 	if (mIsPlayerInView == true)
 	{

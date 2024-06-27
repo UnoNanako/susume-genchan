@@ -15,7 +15,7 @@ ParticleList::~ParticleList()
 	delete texture;
 }
 
-void ParticleList::Create(DirectXCommon* dxCommon) {
+void ParticleList::Create(DirectXCommon* dxCommon,const std::string& directoryPath) {
 	instancingResourse = dxCommon->CreateBufferResource(dxCommon->GetDevice(), sizeof(ParticleForGPU) * kNumMaxInstance);
 	instancingResourse->Map(0, nullptr, reinterpret_cast<void**>(&instancingData));
 
@@ -34,7 +34,7 @@ void ParticleList::Create(DirectXCommon* dxCommon) {
 
 	//Texture
 	texture = new Texture();
-	texture->Create(dxCommon, "resources/Particle/circle.png");
+	texture->Create(dxCommon,directoryPath);
 
 	vertexResource = dxCommon->CreateBufferResource(dxCommon->GetDevice(), sizeof(VertexData) * 6);
 	vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));

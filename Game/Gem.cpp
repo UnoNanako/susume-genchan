@@ -22,7 +22,7 @@ void Gem::Initialize(DirectXCommon* dxCommon,Vector3 translate){
 	mModel->SetAnimation(mModel->LoadAnimationFile("resources/Model/Gem", "Gem_gltf.gltf"));
 	mModel->Update();
 	mParticle = std::make_unique<ParticleList>();
-	mParticle->Create(mDxCommon);
+	mParticle->Create(mDxCommon, "resources/Particle/circle.png");
 	mParticle->SetTranslateMin({ -1.0f,-1.0f,-1.0f });
 	mParticle->SetTranslateMax({ 1.0f,1.0f,1.0f });
 	mParticle->SetVelocityMin({ -5.0f,5.0f,-5.0f });
@@ -69,7 +69,9 @@ void Gem::SpriteDraw(ID3D12GraphicsCommandList* commandList){
 }
 
 void Gem::ParticleDraw(ID3D12GraphicsCommandList* commandList, Camera* camera) {
-	mParticle->Draw(commandList, camera);
+	if (mIsHit == false) {
+		mParticle->Draw(commandList, camera);
+	}
 }
 
 AABB Gem::CalculateAABB(const Vector3& translate){

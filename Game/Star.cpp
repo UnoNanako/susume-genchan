@@ -4,26 +4,40 @@
 #include "2D/Texture.h"
 #include "VertexData.h"
 #include "externals/imgui/imgui.h"
+#include "Engine/Particle/ParticleList.h"
 
-Star::~Star(){
+Star::~Star() {
 	delete mModel;
 }
 
-void Star::Initialize(DirectXCommon* dxCommon){
+void Star::Initialize(DirectXCommon* dxCommon) {
 	mDxCommon = dxCommon;
-	mTransform = { 
+	mTransform = {
 		{1.0f,1.0f,1.0f},
 		{0.0f,0.0f,0.0f},
 		{0.0f,0.0f,0.0f}
 	};
 	mModel = new Model();
 	mModel->Create(mDxCommon, "resources/Model/Star", "star.obj");
+	mParticle = std::make_unique<ParticleList>();
+	mParticle->Create(mDxCommon, "resources/Particle/circle.png");
+	mParticle->SetTranslateMin({ -1.0f,-1.0f,-1.0f });
+	mParticle->SetTranslateMax({ 1.0f,1.0f,1.0f });
+	mParticle->SetVelocityMin({ -5.0f,5.0f,-5.0f });
+	mParticle->SetVelocityMax({ 5.0f,6.0f,5.0f });
+	mParticle->SetColorMin({ 150.0f/255.0f,150.0f/255.0f,0.0f });
+	mParticle->SetColorMax({ 1.0f,1.0f,0.0f });
+	mParticle->SetLifeTImeMin(0.5f);
+	mParticle->SetLifeTimeMax(1.0f);
 }
 
-void Star::Update(){
+void Star::Update() {
 	mTransform.rotate.y += 0.05f;
 	mAABB = CalculateAABB(mTransform.translate);
-#ifdef DEBUG
+	mParticle->Update();
+	mParticle->SetEmitTranslate({ mTransform.translate.x,mTransform.translate.y,mTransform.translate.z });
+	mParticle->SetParticleScale({ 1.0f,1.0f,1.0f });
+#ifdef _DEBUG
 	ImGui::Begin("Debug");
 	ImGui::DragFloat3("Star", &mTransform.translate.x, 0.01f);
 	ImGui::End();
@@ -31,11 +45,15 @@ void Star::Update(){
 	mTransform.UpdateMatrix();
 }
 
-void Star::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera){
+void Star::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera) {
 	mModel->Draw(commandList, camera, mTransform);
 }
 
-AABB Star::CalculateAABB(const Vector3& translate){
+void Star::ParticleDraw(ID3D12GraphicsCommandList* commandList, Camera* camera) {
+	mParticle->Draw(commandList, camera);
+}
+
+AABB Star::CalculateAABB(const Vector3& translate) {
 	AABB ret;
 	ret.min = {
 		{translate.x - (2.0f / 2.0f)},

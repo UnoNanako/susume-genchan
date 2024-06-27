@@ -38,7 +38,7 @@ void RotateEnemy::Initialize(DirectXCommon* dxCommon) {
 }
 
 void RotateEnemy::Update(Player* player) {
-#ifdef DEBUG
+#ifdef _DEBUG
 	ImGui::Begin("Debug");
 	ImGui::DragFloat3("enemy translate", &mTransform.translate.x, 0.01f);
 	ImGui::End();
@@ -112,7 +112,7 @@ void RotateEnemy::TrackPlayer(Player* player) {
 			mTransform.rotate.z = 0.0f;
 
 			//敵をプレイヤーの方向に移動させる
-			mMoveSpeed = 0.1f;
+			mMoveSpeed = 0.08f;
 			Vector3 moveDirection = toPlayer * mMoveSpeed;
 			mTransform.translate.x += moveDirection.x;
 			mTransform.translate.z += moveDirection.z;

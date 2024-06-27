@@ -19,7 +19,7 @@ Player::Player()
 	, mAABBtranslate({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} })
 	, mLightList(nullptr)
 	, mRotateSpeed(0.05f)
-	, mSpeed(0.2f)
+	, mSpeed(0.15f)
 	, mTexture(nullptr)
 	, mVelocity({ 0.1f,0.0f,0.1f })
 	, mGravity(0.05f)
@@ -53,7 +53,7 @@ void Player::Initialize(DirectXCommon* dxCommon) {
 	mModel->Create(mDxCommon, "resources/Model/Player/Chick", "Chick.obj");
 	mModel->SetTexture(mTexture);
 	mSandsmokeParticle = std::make_unique<ParticleList>();
-	mSandsmokeParticle->Create(mDxCommon);
+	mSandsmokeParticle->Create(mDxCommon, "resources/Particle/SandSmoke.png");
 	mSandsmokeParticle->SetTranslateMin({ -1.0f,-1.0f,-1.0f });
 	mSandsmokeParticle->SetTranslateMax({ 1.0f,1.0f,1.0f });
 	mSandsmokeParticle->SetVelocityMin({ -5.0f,5.0f,-5.0f });
@@ -67,6 +67,12 @@ void Player::Initialize(DirectXCommon* dxCommon) {
 		mSeedSprite[i]->Create(dxCommon, "resources/Sprite/Ui/Seed/SeedSprite.png");
 	}
 	
+	mHeartSprite.resize(2);
+	for (int32_t i = 0; i < mHeartSprite.size(); ++i) {
+		mHeartSprite[i] = std::make_unique<Sprite>();
+		mHeartSprite[i]->Create(dxCommon, "resources/Sprite/Ui/Heart/Heart.png");
+	}
+
 	/*mFireParticle = std::make_unique<ParticleList>();
 	mFireParticle->Create(mDxCommon);
 	mFireParticle->SetFrequency(0.01f);
@@ -88,6 +94,10 @@ void Player::Update(Input* input, float theta) {
 	for (uint32_t i = 0; i < mAttackTimes; ++i) {
 		mSeedSprite[i]->SetTranslate({ 64.0f * i,80.0f,0.0f });
 		mSeedSprite[i]->Update();
+	}
+	for (int32_t i = 0; i < mHp; ++i) {
+		mHeartSprite[i]->SetTranslate({ 64.0f * i,10.0f,0.0f });
+		mHeartSprite[i]->Update();
 	}
 
 #ifdef _DEBUG
@@ -206,8 +216,7 @@ void Player::Update(Input* input, float theta) {
 			}
 		}
 	}
-
-
+	
 	mTransform.UpdateMatrix();
 	Vector3 worldPos = GetWorldPosition();
 	mAABBtranslate = CalculateAABB(worldPos);
@@ -260,6 +269,9 @@ void Player::Draw(ID3D12GraphicsCommandList* commandList, Camera* camera) {
 void Player::SpriteDraw(ID3D12GraphicsCommandList* commandList){
 	for (uint32_t i = 0; i < mAttackTimes; ++i) {
 		mSeedSprite[i]->Draw(commandList);
+	}
+	for (int32_t i = 0; i < mHp; ++i) {
+		mHeartSprite[i]->Draw(commandList);
 	}
 }
 

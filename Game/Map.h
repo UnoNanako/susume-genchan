@@ -18,12 +18,13 @@ class Map : public GameObject{
 public:
 	//モデル、テクスチャの種類を管理するenum
 	enum ModelIndex : unsigned int {
-		FLOOR, //0
-		GRASS, //1
-		Wall, //2
-		HOUSE, //3
-		COLLISION, //4
-		HOUSE2
+		FLOOR1, 
+		GRASS, 
+		Wall, 
+		HOUSE,
+		COLLISION, 
+		HOUSE2,
+		FLOOR2
 	};
 
 	void Create(DirectXCommon* dxCommon);

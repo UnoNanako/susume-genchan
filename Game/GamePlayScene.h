@@ -69,7 +69,7 @@ private:
 	const uint32_t mROTATEENEMY_MAX = 2;
 	std::vector<std::unique_ptr<RotateEnemy>> mRotateEnemies;
 	//歩く敵
-	const uint32_t mWALKENEMY_MAX = 6;
+	const uint32_t mWALKENEMY_MAX = 7;
 	std::vector<std::unique_ptr<WalkEnemy>> mWalkEnemies;
 	//幽霊(テレサ)
 	const uint32_t mGHOST_MAX = 1;
@@ -125,10 +125,12 @@ private:
 	/// スプライト
 	/// <summary>
 	std::unique_ptr<Crosshair> mCrosshair; //クロスヘア
-	std::unique_ptr<Sprite> mAbuttonSprite; //Aボタンスプライト
-	std::unique_ptr<Sprite> mClearSprite; //クリアスプライト
-	std::unique_ptr<Sprite> mGameoverSprite; //ゲームオーバースプライト
-	std::unique_ptr<Sprite> mNowLoadingSprite; //NowLoadingスプライト
+	std::unique_ptr<Sprite> mAbuttonSprite; //Aボタン
+	std::unique_ptr<Sprite> mClearSprite; //クリア
+	std::unique_ptr<Sprite> mGameoverSprite; //ゲームオーバー
+	std::unique_ptr<Sprite> mNowLoadingSprite; //NowLoading
+	std::unique_ptr<Sprite> mGameRuleSprite; //ゲームルール
+	std::unique_ptr<Sprite> mYButtonSprite; //Yボタン
 
 	//イージング用
 	Vector3 mInStart;
@@ -156,6 +158,7 @@ private:
 	bool mLadderIsHit = false; //はしごに当たっているか
 	bool mIsTitleScene = true; //タイトルシーンか、そうでないか
 	bool mIsPushAButton = false;
+	bool mIsPushYButton = false; //ゲームルール表示用
 
 	//シーン
 	enum Scene {

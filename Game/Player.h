@@ -50,7 +50,7 @@ public:
 	void SetAttackTimes(uint32_t attackTImes) { mAttackTimes = attackTImes; }
 
 private:
-	uint32_t mHp; //最大2
+	int32_t mHp; //最大2
 	uint32_t mInvincibleTime; //無敵時間(2秒)
 	Vector3 mVelocity;
 	Texture* mTexture;
@@ -72,6 +72,7 @@ private:
 	MovingFloor* mMovingFloor; //動く床
 
 	std::vector<std::unique_ptr<Sprite>> mSeedSprite;
+	std::vector<std::unique_ptr<Sprite>> mHeartSprite;
 	std::unique_ptr<ParticleList> mSandsmokeParticle;
 	//std::unique_ptr<ParticleList> mFireParticle;
 };

@@ -21,7 +21,7 @@ class ParticleList
 {
 public:
 	~ParticleList();
-	void Create(DirectXCommon* dxCommon);
+	void Create(DirectXCommon* dxCommon, const std::string& directoryPath);
 	void Update();
 	void Draw(ID3D12GraphicsCommandList* commandList, Camera* camera);
 	void DrawImGui();

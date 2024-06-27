@@ -57,10 +57,10 @@ void Crank::Update(Input* input){
 		mCurrentAngle = atan2(rStick.y, rStick.x); //ラジアンが求まる
 		float angle = mCurrentAngle - mCalculateAngle;
 		if (angle > 0.05f) {
-			angle = 0.05f;
+			angle = 0.02f;
 		}
 		if (angle < -0.05f) {
-			angle = -0.05f;
+			angle = -0.02f;
 		}		
 		mTransform.rotate.y -= angle;
 	}
