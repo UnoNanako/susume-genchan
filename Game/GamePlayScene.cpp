@@ -105,15 +105,15 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon) {
 	//Aボタン
 	mAbuttonSprite = std::make_unique<Sprite>();
 	mAbuttonSprite->Create(dxCommon, "resources/Sprite/Ui/Buttons/xbox_button_color_a.png");
-	mAbuttonSprite->SetTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{620.0f,550.0f,0.0f} });
+	mAbuttonSprite->SetTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{620.0f,450.0f,0.0f} });
 	//クリアテキスト
 	mClearSprite = std::make_unique<Sprite>();
-	mClearSprite->Create(dxCommon, "resources/Sprite/Text/COURSE_CLEAR.png");
-	mClearSprite->SetTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{100.0f,300.0f,0.0f} });
+	mClearSprite->Create(dxCommon, "resources/Sprite/Text/GameClear.png");
+	mClearSprite->SetTransform({ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{105.0f,295.0f,0.0f} });
 	//ゲームオーバーテキスト
 	mGameoverSprite = std::make_unique<Sprite>();
-	mGameoverSprite->Create(dxCommon, "resources/Sprite/Text/GAME_OVER.png");
-	mGameoverSprite->SetTransform({ {1.0f,1.0f,1.0f,},{0.0f,0.0f,0.0f},{200.0f,300.0f,0.0f} });
+	mGameoverSprite->Create(dxCommon, "resources/Sprite/Text/GameOver.png");
+	mGameoverSprite->SetTransform({ {1.0f,1.0f,1.0f,},{0.0f,0.0f,0.0f},{105.0f,295.0f,0.0f} });
 	//NowLoading
 	mNowLoadingSprite = std::make_unique<Sprite>();
 	mNowLoadingSprite->Create(dxCommon, "resources/Sprite/Text/NowLoading.png");
@@ -341,6 +341,7 @@ void GamePlayScene::Draw(DirectXCommon* dxCommon) {
 	if (mPlayer->GetHp() <= 0) {
 		mIsGameover = true;
 		mGameoverSprite->Draw(dxCommon->GetCommandList());
+		mAbuttonSprite->Draw(dxCommon->GetCommandList());
 	}
 	mNowLoadingSprite->Draw(dxCommon->GetCommandList());
 }

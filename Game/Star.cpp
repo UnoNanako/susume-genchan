@@ -30,7 +30,7 @@ void Star::Initialize(DirectXCommon* dxCommon) {
 	mParticle->SetLifeTImeMin(0.5f);
 	mParticle->SetLifeTimeMax(1.0f);
 }
-
+  
 void Star::Update() {
 	mTransform.rotate.y += 0.05f;
 	mAABB = CalculateAABB(mTransform.translate);
