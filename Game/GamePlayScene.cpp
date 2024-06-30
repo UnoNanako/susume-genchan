@@ -787,7 +787,7 @@ void GamePlayScene::GameInit(DirectXCommon* dxCommon) {
 	mSeeds[1]->SetTranslate({ -2.5f,5.0f,-10.0f });
 	mSeeds[2]->SetTranslate({ -2.5f,5.0f,-5.0f });
 	//離島
-	mSeeds[3]->SetTranslate({ -15.0f,8.5f,132.5f });
+	mSeeds[3]->SetTranslate({ -10.0f,8.5f,132.5f });
 	mSeeds[4]->SetTranslate({ -20.0f,8.5f,132.5f });
 	//クランクを回すと回る床
 	mRotateFloor = std::make_unique<RotateFloor>();

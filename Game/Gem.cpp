@@ -77,14 +77,14 @@ void Gem::ParticleDraw(ID3D12GraphicsCommandList* commandList, Camera* camera) {
 AABB Gem::CalculateAABB(const Vector3& translate){
 	AABB ret;
 	ret.min = {
-		{translate.x - (5.0f / 2.0f)},
-		{translate.y - (5.0f / 2.0f)},
-		{translate.z - (5.0f / 2.0f)}
+		{translate.x - (4.0f / 2.0f)},
+		{translate.y - (4.0f / 2.0f)},
+		{translate.z - (4.0f / 2.0f)}
 	};
 	ret.max = {
-		{translate.x + (5.0f / 2.0f)},
-		{translate.y + (5.0f / 2.0f)},
-		{translate.z + (5.0f / 2.0f)}
+		{translate.x + (4.0f / 2.0f)},
+		{translate.y + (4.0f / 2.0f)},
+		{translate.z + (4.0f / 2.0f)}
 	};
 	return ret;
 }

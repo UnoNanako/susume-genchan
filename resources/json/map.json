@@ -482,15 +482,15 @@
     "Terrain116": {
         "Max": [
             2.5,
-            2.5,
+            2.549999952316284,
             7.5
         ],
         "Min": [
             -2.5,
-            -2.5,
+            -2.549999952316284,
             -7.5
         ],
-        "ModelIndex": 1,
+        "ModelIndex": 4,
         "Name": "CollisionGrass10",
         "Position": [
             27.5,

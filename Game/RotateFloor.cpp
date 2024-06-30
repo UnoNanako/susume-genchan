@@ -15,7 +15,7 @@ void RotateFloor::Initialize(DirectXCommon* dxCommon) {
 	mTransform = {
 		{1.0f,1.0f,1.0f},
 		{0.0f,kPi / 2.0f,0.0f},
-		{15.0f,1.5f,57.5f}
+		{15.0f,1.5f,55.0f}
 	};
 	mModel = new Model();
 	mModel->Create(mDxCommon, "resources/Model/Bridge", "Bridge.obj");
